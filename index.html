@@ -6450,7 +6450,12 @@ if (achievementsGrid) {
         });
         
         const signInWithProvider = async (provider) => {
-            const { error } = await supabaseClient.auth.signInWithOAuth({ provider });
+            const { error } = await supabaseClient.auth.signInWithOAuth({ 
+                provider: provider,
+                options: {
+                    redirectTo: 'https://pulsepom.github.io/pulsepom1/'
+                }
+            });
             if (error) {
                 document.getElementById('auth-error-message').textContent = error.message;
             }
@@ -8002,6 +8007,7 @@ if (achievementsGrid) {
     </script>
 </body>
 </html>
+
 
 
 
