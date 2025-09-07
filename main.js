@@ -6058,3 +6058,44 @@ if (achievementsGrid) {
             });
 
         });
+
+// --- Guest sign-in using generated email/password (Supabase has no true anonymous auth) ---
+async function signInAsGuest() {
+  try {
+    const id = (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : (Date.now().toString(36) + Math.random().toString(36).slice(2));
+    const guestEmail = `${id}@guest.pulsepom.app`;
+    const guestPassword = (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : (Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2));
+
+    const { data, error } = await supabase.auth.signUp({ email: guestEmail, password: guestPassword });
+    if (error) {
+      console.error('Guest signup failed:', error);
+      if (typeof showToast === 'function') showToast('Guest login not available right now', 'error');
+      return;
+    }
+
+    if (typeof showToast === 'function') showToast('Signed in as guest', 'success');
+    window.currentUser = data.user;
+    if (typeof ensureProfileRow === 'function') await ensureProfileRow();
+    if (typeof loadMyProfile === 'function') loadMyProfile();
+  } catch (err) {
+    console.error('signInAsGuest crashed:', err);
+  }
+}
+
+// Backward-compat alias if your HTML calls signInAnonymously()
+async function signInAnonymously(e) {
+  if (e && typeof e.preventDefault === 'function') e.preventDefault();
+  return signInAsGuest();
+}
+
+
+try {
+  supabase.auth.onAuthStateChange((_event, session) => {
+    const user = session?.user ?? null;
+    window.currentUser = user || null;
+    if (user) {
+      if (typeof ensureProfileRow === 'function') ensureProfileRow();
+      if (typeof loadMyProfile === 'function') loadMyProfile();
+    }
+  });
+} catch (e) { console.warn('Failed to attach onAuthStateChange:', e); }
