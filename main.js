@@ -1,5 +1,8 @@
     // Supabase SDK
-    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+    const supabaseUrl = 'https://ofysppndssyllkolxjky.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9meXNwcG5kc3N5bGxrb2x4amt5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcxNDg1MTAsImV4cCI6MjA3MjcyNDUxMH0.x6_aRXrbxSOP7I71oSooWx8x8dedczrtemoUEWiDta8';
+    const supabase = createClient(supabaseUrl, supabaseKey);
         const ACHIEVEMENTS = {
     'novice_scholar': { name: 'Novice Scholar', description: 'Study for a total of 1 hour.' },
     'dedicated_learner': { name: 'Dedicated Learner', description: 'Study for a total of 10 hours.' },
@@ -166,7 +169,7 @@
         const getCurrentDate = () => new Date();
 
         // --- App State ---
-        let supabase, db, auth, storage;
+        let db, auth, storage;
         let currentUser = null;
         let currentUserData = {};
         let dashboardCharts = {};
@@ -1226,10 +1229,6 @@ let pauseStartTime = 0;
         // --- Supabase Initialization ---
         function initializeSupabase() {
             try {
-                const supabaseUrl = 'https://ofysppndssyllkolxjky.supabase.co';
-                const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9meXNwcG5kc3N5bGxrb2x4amt5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcxNDg1MTAsImV4cCI6MjA3MjcyNDUxMH0.x6_aRXrbxSOP7I71oSooWx8x8dedczrtemoUEWiDta8';
-
-                supabase = createClient(supabaseUrl, supabaseAnonKey);
                 auth = supabase.auth;
                 db = supabase;
                 storage = supabase.storage;
@@ -1859,7 +1858,6 @@ if (sessionType === 'study') {
             document.getElementById('profile-page-name').textContent = username;
             document.getElementById('profile-page-email').textContent = email;
             
-            const headerAvatar = document.getElementById('header-avatar');
             const profileAvatar = document.getElementById('profile-page-avatar');
             
             [headerAvatar, profileAvatar].forEach(el => {
@@ -4323,16 +4321,23 @@ if (achievementsGrid) {
             }
         });
 
-        ael('google-signin-btn', 'click', async () => {
-            authError.textContent = '';
-            const provider = new GoogleAuthProvider();
-            try {
-                await signInWithPopup(auth, provider);
-            } catch (error) {
-                authError.textContent = error.message;
-                console.error("Google Sign-in Error:", error);
-            }
-        });
+        const googleBtn = document.getElementById('google-signin-btn');
+        if (googleBtn) {
+            googleBtn.addEventListener('click', async () => {
+                try {
+                    const { data, error } = await supabase.auth.signInWithOAuth({
+                        provider: 'google',
+                        options: {
+                            redirectTo: window.location.origin,
+                        },
+                    });
+                    if (error) throw error;
+                } catch (err) {
+                    console.error('Google sign-in error:', err);
+                    alert('Google login failed: ' + err.message);
+                }
+            });
+        }
         
         ael('username-setup-form', 'submit', async (e) => {
             e.preventDefault();
