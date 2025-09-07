@@ -4452,7 +4452,7 @@ if (achievementsGrid) {
                     email,
                     password,
                     options: {
-                        emailRedirectTo: window.location.origin,
+                        emailRedirectTo: 'https://pulsepom.github.io/pulsepom1/',
                     },
                 });
                 if (error) {
@@ -4493,7 +4493,7 @@ if (achievementsGrid) {
                     const { data, error } = await supabase.auth.signInWithOAuth({
                         provider: 'google',
                         options: {
-                            redirectTo: window.location.origin,
+                            redirectTo: 'https://pulsepom.github.io/pulsepom1/',
                         },
                     });
                     if (error) throw error;
