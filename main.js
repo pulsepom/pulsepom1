@@ -559,10 +559,9 @@ let pauseStartTime = 0;
                 const publicUrl = publicUrlData.publicUrl;
 
                 const { data: userData, error: userError } = await db
-                    .from('profiles')
-                    .select('username')
+                    .from('profiles').select('username')
                     .eq('id', currentUser.id)
-                    .maybeSingle();
+                    .single();
                 if (userError) throw userError;
 
                 const { error: insertError } = await db
