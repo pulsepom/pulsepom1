@@ -28,7 +28,7 @@
             .from('profiles')
             .select('id')
             .eq('id', currentUser.id)
-            .single();
+            .maybeSingle();
 
         // If a profile is found (data is not null), we don't need to do anything.
         if (data) {
@@ -525,7 +525,7 @@ let pauseStartTime = 0;
                 .from('profiles')
                 .select('username, photo_url, email')
                 .eq('id', currentUser.id)
-                .single();
+                .maybeSingle();
             if (error) { console.error(error); return; }
             // TODO: update your DOM
             // avatarImg.src = data.photo_url || '/assets/default-avatar.png';
@@ -559,10 +559,10 @@ let pauseStartTime = 0;
                 const publicUrl = publicUrlData.publicUrl;
 
                 const { data: userData, error: userError } = await db
-                    .from('users')
+                    .from('profiles')
                     .select('username')
                     .eq('id', currentUser.id)
-                    .single();
+                    .maybeSingle();
                 if (userError) throw userError;
 
                 const { error: insertError } = await db
@@ -593,7 +593,7 @@ let pauseStartTime = 0;
                     .from('profiles')
                     .select('total_study_sessions, current_streak, last_study_date')
                     .eq('id', currentUser.id)
-                    .single();
+                    .maybeSingle();
                 if (readErr) throw readErr;
 
                 const today = new Date().toISOString().slice(0, 10);
