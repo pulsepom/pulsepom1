@@ -6149,3 +6149,71 @@ async function signInAnonymously(e) {
   if (e && typeof e.preventDefault === 'function') e.preventDefault();
   return signInAsGuest();
 }
+
+
+// --- Update username and refresh UI ---
+async function updateUsername(newName) {
+  try {
+    const { data: userRes, error: uErr } = await supabase.auth.getUser();
+    if (uErr || !userRes?.user) {
+      if (typeof showToast === 'function') showToast('Please sign in first.', 'error');
+      return;
+    }
+    const uid = userRes.user.id;
+    newName = (newName || '').trim();
+    if (newName.length < 3) {
+      if (typeof showToast === 'function') showToast('Username must be at least 3 characters.', 'error');
+      return;
+    }
+
+    const { data, error } = await supabase
+      .from('profiles')
+      .update({ username: newName, completed_setup: true })
+      .eq('id', uid)
+      .select('id, username')
+      .maybeSingle();
+
+    if (error) {
+      console.error('Username update failed:', error);
+      if (typeof showToast === 'function') showToast(error.message || 'Could not update username', 'error');
+      return;
+    }
+
+    if (typeof showToast === 'function') showToast('Username updated!', 'success');
+    if (typeof loadMyProfile === 'function') loadMyProfile();
+  } catch (e) {
+    console.error('updateUsername crashed:', e);
+  }
+}
+
+
+
+
+// --- Bind UI events for profile settings (username + avatar) ---
+function bindProfileSettingsUI() {
+  const unameInput = document.getElementById('username-input');
+  const unameBtn = document.getElementById('save-username-btn');
+  const avatarInput = document.getElementById('avatar-input');
+  const avatarBtn = document.getElementById('upload-avatar-btn');
+
+  if (unameBtn && unameInput) {
+    unameBtn.addEventListener('click', () => updateUsername(unameInput.value));
+  }
+  if (avatarBtn && avatarInput) {
+    avatarBtn.addEventListener('click', () => {
+      const f = avatarInput.files && avatarInput.files[0];
+      if (!f) { if (typeof showToast==='function') showToast('Choose an image first.', 'info'); return; }
+      if (typeof uploadProfilePicture === 'function') uploadProfilePicture(f);
+    });
+  }
+}
+
+// Call binder after DOMContentLoaded
+(function() {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bindProfileSettingsUI);
+  } else {
+    bindProfileSettingsUI();
+  }
+})();
+
