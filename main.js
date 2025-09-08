@@ -6217,3 +6217,37 @@ function bindProfileSettingsUI() {
   }
 })();
 
+
+
+
+// --- Load header values: username, email, avatar ---
+async function loadProfileHeader() {
+  try {
+    const res = await supabase.auth.getUser();
+    const user = res?.data?.user;
+    if (!user) return;
+    const uid = user.id;
+    const email = user.email || '';
+
+    const { data: prof, error } = await supabase
+      .from('profiles')
+      .select('username, photo_url')
+      .eq('id', uid)
+      .maybeSingle();
+    if (error) { console.warn('load profile header error:', error); }
+
+    const unameEl = document.querySelector('#profile-username');
+    const emailEl = document.querySelector('#profile-email');
+    const avatarEl = document.querySelector('#profile-avatar');
+
+    if (unameEl) unameEl.textContent = (prof?.username) || (user.user_metadata?.name) || 'User';
+    if (emailEl) emailEl.textContent = email;
+    if (avatarEl) {
+      const url = prof?.photo_url;
+      if (url) avatarEl.src = url;
+    }
+  } catch (e) {
+    console.error('loadProfileHeader crashed:', e);
+  }
+}
+
