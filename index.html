@@ -2050,8 +2050,16 @@
     }
 
     function parseDocPath(ref) {
+        if (!ref || !ref.path || ref.path.length < 2) {
+            console.error("Invalid doc reference passed to parseDocPath:", ref);
+            return { table: undefined, id: undefined, parent: null };
+        }
         let segments = stripArtifacts(ref.path);
         segments = stripPublic(segments);
+        if (segments.length < 2) {
+             console.error("Invalid doc segments after stripping:", segments);
+            return { table: undefined, id: undefined, parent: null };
+        }
         let table = segments[segments.length - 2];
         if (table === 'users') {
             table = 'profiles'; // Remap 'users' to 'profiles'
@@ -2065,8 +2073,16 @@
     }
 
     function parseCollectionPath(ref) {
+        if (!ref || !ref.path || ref.path.length < 1) {
+            console.error("Invalid collection reference passed to parseCollectionPath:", ref);
+            return { table: undefined, parent: null };
+        }
         let segments = stripArtifacts(ref.path);
         segments = stripPublic(segments);
+        if (segments.length < 1) {
+             console.error("Invalid collection segments after stripping:", segments);
+             return { table: undefined, parent: null };
+        }
         const table = segments[segments.length - 1];
         let parent = segments.length > 1 ? { table: segments[0], id: segments[1] } : null;
         if (parent && parent.table === 'users') {
@@ -2187,6 +2203,12 @@
                 // Special handling for 'in' operator which expects a string like '(val1, val2)'
                 if (supabaseOp === 'in' && Array.isArray(value)) {
                     value = `(${value.map(v => typeof v === 'string' ? `"${v}"` : v).join(',')})`;
+                }
+
+                // FIX: Special handling for 'array-contains' on native array columns (like uuid[]).
+                // The format '{value}' is the correct literal syntax for a single-element array.
+                if ((supabaseOp === 'cs' || supabaseOp === 'cd') && !Array.isArray(value)) {
+                    value = `{${value}}`;
                 }
 
                 req = req.filter(mod.field, supabaseOp, value);
@@ -2347,6 +2369,8 @@
             showPage('page-username-setup');
         } else {
             await loadMyProfile();
+            // This is the critical fix: Attach all real-time listeners after the user is verified.
+            setupRealtimeListeners(); 
             showPage('page-timer');
         }
     }
@@ -4276,8 +4300,7 @@ if (achievementsGrid) {
             // Fetch subjects ordered by 'order' field
             const subjectsCollectionRef = query(collection(userDocRef, 'subjects'), orderBy('order', 'asc'));
             const sessionsCollectionRef = collection(userDocRef, 'sessions');
-            const plannerTasksRef = collection(userDocRef, 'plannerTasks');
-
+            
             onSnapshot(userDocRef, (doc) => {
                 if (doc.exists()) {
                     const data = doc.data();
@@ -4306,7 +4329,7 @@ if (achievementsGrid) {
                 }
             });
             
-            onSnapshot(groupsCollectionRef, () => {
+            onSnapshot(query(groupsCollectionRef), () => {
                 if (document.getElementById('page-find-groups').classList.contains('active')) {
                    renderGroupRankings();
                 }
@@ -4322,7 +4345,7 @@ if (achievementsGrid) {
                 renderSubjectSelectionList(subjects);
             });
             
-            onSnapshot(usersCollectionRef, () => {
+            onSnapshot(query(usersCollectionRef), () => {
                 if (document.getElementById('page-ranking').classList.contains('active')) {
                     const activeTab = document.querySelector('#ranking-period-tabs .ranking-tab-btn.active');
                     renderLeaderboard(activeTab ? activeTab.dataset.period : 'weekly');
@@ -4347,11 +4370,7 @@ if (achievementsGrid) {
                     renderLeaderboard(activeTab ? activeTab.dataset.period : 'weekly');
                 }
             });
-            // --- DEPRECATED ---
-            onSnapshot(query(plannerTasksRef, orderBy("date")), (snapshot) => {
-                // This is now handled by the new planner logic
-            });
-            
+
             // --- NEW PLANNER LISTENERS ---
             setupPlannerListeners();
         }
@@ -7232,13 +7251,8 @@ if (achievementsGrid) {
 
             await addDoc(subjectsRef, { name: subjectName, color: color, order: lastOrder + 1 });
             
-            // --- FIX START: Manually refresh the list after adding ---
-            const subjectsCollectionRef = query(collection(userRef, 'subjects'), orderBy('order', 'asc'));
-            const snapshot = await getDocs(subjectsCollectionRef);
-            const subjects = [];
-            snapshot.docs.forEach(doc => subjects.push({ id: doc.id, ...doc.data() })); // Corrected this line
-            renderSubjectSelectionList(subjects, subjectName); // Re-render and select the new one
-            // --- FIX END ---
+            // The onSnapshot listener now handles the UI update automatically.
+            // The redundant manual refresh code that was here has been removed.
 
             subjectNameInput.value = '';
             modal.classList.remove('active');
@@ -8516,6 +8530,13 @@ function bindProfileSettingsUI() {
 
 </body>
 </html>
+
+
+
+
+
+
+
 
 
 
