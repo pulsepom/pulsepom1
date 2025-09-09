@@ -1991,38 +1991,224 @@
 
     <div id="pomodoro-settings-modal" class="modal"><div class="modal-content no-scrollbar"><div class="modal-header"><div class="modal-title">Pomodoro Settings</div><button class="close-modal">&times;</button></div><form id="pomodoro-settings-form" class="space-y-4"><div class="grid grid-cols-1 gap-4"><div><label for="pomodoro-work-duration" class="block text-sm font-medium text-gray-300">Focus Duration (minutes)</label><input type="number" id="pomodoro-work-duration" class="w-full bg-gray-700 border-gray-600 rounded-lg p-2 mt-1 text-white" min="1" required></div><div><label for="pomodoro-short-break-duration" class="block text-sm font-medium text-gray-300">Short Break (minutes)</label><input type="number" id="pomodoro-short-break-duration" class="w-full bg-gray-700 border-gray-600 rounded-lg p-2 mt-1 text-white" min="1" required></div><div><label for="pomodoro-long-break-duration" class="block text-sm font-medium text-gray-300">Long Break (minutes)</label><input type="number" id="pomodoro-long-break-duration" class="w-full bg-gray-700 border-gray-600 rounded-lg p-2 mt-1 text-white" min="1" required></div><div><label for="pomodoro-long-break-interval" class="block text-sm font-medium text-gray-300">Long Break Interval (sessions)</label><input type="number" id="pomodoro-long-break-interval" class="w-full bg-gray-700 border-gray-600 rounded-lg p-2 mt-1 text-white" min="2" required></div></div><hr class="border-gray-600 my-2"><h3 class="text-lg font-semibold text-gray-200">Alarms</h3><div class="grid grid-cols-1 gap-4"><div><label for="pomodoro-volume" class="block text-sm font-medium text-gray-300">Volume</label><input type="range" id="pomodoro-volume" min="0" max="1" step="0.1" class="w-full mt-1"></div><div><label for="pomodoro-start-sound" class="block text-sm font-medium text-gray-300">Starting Bell</label><select id="pomodoro-start-sound" class="w-full bg-gray-700 border-gray-600 rounded-lg p-2 mt-1 text-white"></select></div><div><label for="pomodoro-focus-sound" class="block text-sm font-medium text-gray-300">Focus Alarm (End of Break)</label><select id="pomodoro-focus-sound" class="w-full bg-gray-700 border-gray-600 rounded-lg p-2 mt-1 text-white"></select></div><div><label for="pomodoro-break-sound" class="block text-sm font-medium text-gray-300">Break Alarm (End of Focus)</label><select id="pomodoro-break-sound" class="w-full bg-gray-700 border-gray-600 rounded-lg p-2 mt-1 text-white"></select></div></div><hr class="border-gray-600 my-2"><h3 class="text-lg font-semibold text-gray-200">Automation</h3><div class="space-y-3"> <div class="flex items-center justify-between"><span class="text-sm font-medium text-gray-300">Auto-start next focus session?</span><label class="toggle-switch"><input type="checkbox" id="pomodoro-auto-start-focus"><span class="slider"></span></label></div><div class="flex items-center justify-between"><span class="text-sm font-medium text-gray-300">Auto-start next break?</span><label class="toggle-switch"><input type="checkbox" id="pomodoro-auto-start-break"><span class="slider"></span></label></div></div><button type="submit" class="w-full bg-gradient-to-r from-teal-500 to-sky-500 text-white font-bold py-3 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-sky-500/40 hover:scale-105 mt-4">Save Settings</button></form></div></div>
 
+    <img id="profileAvatar" alt="avatar" />
+    <h3 id="profileName">User Name</h3>
+    <p id="profileEmail">user@example.com</p>
+
+    <form id="profileForm">
+      <input id="usernameInput" type="text" placeholder="Display name" />
+      <input id="avatarInput" type="file" accept="image/*" />
+      <button type="submit">Save</button>
+    </form>
+
+    <div id="saveMsg" hidden>Profile updated!</div>
+
     <script type="module">
-        // Firebase Firestore SDK
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-    import {
-        getFirestore,
-        doc,
-        getDoc,
-        setDoc,
-        updateDoc,
-        collection,
-        addDoc,
-        getDocs,
-        query,
-        where,
-        orderBy
-    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-
-    const firebaseConfig = {
-        apiKey: 'dummy',
-        authDomain: 'dummy.firebaseapp.com',
-        projectId: 'dummy'
-    };
-    const firebaseApp = initializeApp(firebaseConfig);
-    const db = getFirestore(firebaseApp);
-
-    // Supabase SDK
+        // Supabase SDK
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
     const supabaseUrl = 'https://ofysppndssyllkolxjky.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9meXNwcG5kc3N5bGxrb2x4amt5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcxNDg1MTAsImV4cCI6MjA3MjcyNDUxMH0.x6_aRXrbxSOP7I71oSooWx8x8dedczrtemoUEWiDta8';
     const supabase = createClient(supabaseUrl, supabaseKey);
     const auth = supabase.auth;
     const storage = supabase.storage;
+
+    // Firestore compatibility layer implemented with Supabase
+    const db = {};
+
+    function flattenSegments(segs) {
+        return segs.flatMap(s => {
+            if (!s) return [];
+            if (typeof s === 'string') return s.split('/').filter(Boolean);
+            if (s.path) return s.path;
+            return [s];
+        });
+    }
+
+    function doc(...args) {
+        if (args.length && typeof args[0] === 'object' && !args[0].path) {
+            args = args.slice(1);
+        }
+        if (args.length === 1 && args[0]?.path) {
+            const path = [...args[0].path];
+            const id = (typeof crypto !== 'undefined' && crypto.randomUUID)
+                ? crypto.randomUUID().replace(/-/g, '')
+                : Math.random().toString(36).slice(2);
+            path.push(id);
+            return { path };
+        }
+        const segments = flattenSegments(args);
+        return { path: segments };
+    }
+
+    function collection(...args) {
+        if (args.length && typeof args[0] === 'object' && !args[0].path) {
+            args = args.slice(1);
+        }
+        const segments = flattenSegments(args);
+        return { path: segments };
+    }
+
+    function stripArtifacts(segments) {
+        if (segments[0] === 'artifacts') return segments.slice(2);
+        return segments;
+    }
+
+    function stripPublic(segments) {
+        if (segments[0] === 'public' && segments[1] === 'data') {
+            return segments.slice(2);
+        }
+        return segments;
+    }
+
+    function parseDocPath(ref) {
+        let segments = stripArtifacts(ref.path);
+        segments = stripPublic(segments);
+        const table = segments[segments.length - 2];
+        const id = segments[segments.length - 1];
+        const parent = segments.length > 2 ? { table: segments[0], id: segments[1] } : null;
+        return { table, id, parent };
+    }
+
+    function parseCollectionPath(ref) {
+        let segments = stripArtifacts(ref.path);
+        segments = stripPublic(segments);
+        const table = segments[segments.length - 1];
+        const parent = segments.length > 1 ? { table: segments[0], id: segments[1] } : null;
+        return { table, parent };
+    }
+
+    function buildForeignKey(parent) {
+        if (!parent) return {};
+        return { [`${parent.table.slice(0, -1)}_id`]: parent.id };
+    }
+
+    function convertTimestamps(obj) {
+        if (!obj || typeof obj !== 'object') return obj;
+        for (const [key, value] of Object.entries(obj)) {
+            if (value && typeof value === 'object' && !('toDate' in value)) {
+                convertTimestamps(value);
+            } else if (typeof value === 'string' || value instanceof Date) {
+                const lower = key.toLowerCase();
+                if (lower.includes('time') || lower.includes('date')) {
+                    const d = new Date(value);
+                    if (!isNaN(d)) {
+                        obj[key] = { toDate: () => d };
+                    }
+                }
+            }
+        }
+        return obj;
+    }
+
+    async function getDoc(ref) {
+        const { table, id } = parseDocPath(ref);
+        const { data, error } = await supabase.from(table).select('*').eq('id', id).single();
+        if (error) throw error;
+        return { exists: () => !!data, data: () => convertTimestamps(data) };
+    }
+
+    async function setDoc(ref, data) {
+        const { table, id, parent } = parseDocPath(ref);
+        const payload = { id, ...buildForeignKey(parent), ...data };
+        const { error } = await supabase.from(table).upsert(payload);
+        if (error) throw error;
+    }
+
+    async function updateDoc(ref, data) {
+        const { table, id } = parseDocPath(ref);
+        const { data: existing } = await supabase.from(table).select('*').eq('id', id).single();
+        const payload = {};
+        for (const [k, v] of Object.entries(data)) {
+            if (v && v.__op === 'increment') {
+                payload[k] = (existing?.[k] || 0) + v.value;
+            } else if (v && v.__op === 'arrayUnion') {
+                const arr = new Set([...(existing?.[k] || []), v.value]);
+                payload[k] = Array.from(arr);
+            } else if (v && v.__op === 'arrayRemove') {
+                payload[k] = (existing?.[k] || []).filter(item => item !== v.value);
+            } else {
+                payload[k] = v;
+            }
+        }
+        const { error } = await supabase.from(table).update(payload).eq('id', id);
+        if (error) throw error;
+    }
+
+    async function addDoc(collRef, data) {
+        const { table, parent } = parseCollectionPath(collRef);
+        const payload = { ...buildForeignKey(parent), ...data };
+        const { data: inserted, error } = await supabase.from(table).insert(payload).select().single();
+        if (error) throw error;
+        return { id: inserted.id };
+    }
+
+    function query(collectionRef, ...mods) {
+        return { collectionRef, mods };
+    }
+
+    function orderBy(field, dir = 'asc') {
+        return { type: 'orderBy', field, dir };
+    }
+
+    function where(field, op, value) {
+        return { type: 'where', field, op, value };
+    }
+
+    function limit(count) {
+        return { type: 'limit', count };
+    }
+
+    async function getDocs(q) {
+        const { collectionRef, mods } = q;
+        const { table, parent } = parseCollectionPath(collectionRef);
+        let req = supabase.from(table).select('*');
+        if (parent) req = req.eq(`${parent.table.slice(0, -1)}_id`, parent.id);
+        for (const mod of mods) {
+            if (mod.type === 'orderBy') req = req.order(mod.field, { ascending: mod.dir !== 'desc' });
+            else if (mod.type === 'where') req = req.filter(mod.field, mod.op, mod.value);
+            else if (mod.type === 'limit') req = req.limit(mod.count);
+        }
+        const { data, error } = await req;
+        if (error) throw error;
+        return { docs: data.map(d => ({ id: d.id, data: () => convertTimestamps(d) })), empty: data.length === 0 };
+    }
+
+    function runTransaction(_db, fn) {
+        return fn({ get: getDoc, update: updateDoc, set: setDoc });
+    }
+
+    function serverTimestamp() {
+        const d = new Date();
+        return { toDate: () => d };
+    }
+
+    function increment(value) {
+        return { __op: 'increment', value };
+    }
+
+    function arrayUnion(value) {
+        return { __op: 'arrayUnion', value };
+    }
+
+    function arrayRemove(value) {
+        return { __op: 'arrayRemove', value };
+    }
+
+    function onSnapshot(refOrQuery, callback) {
+        if (refOrQuery.collectionRef) {
+            getDocs(refOrQuery).then(snapshot => {
+                const wrapped = {
+                    docs: snapshot.docs,
+                    empty: snapshot.empty,
+                    forEach: fn => snapshot.docs.forEach(doc => fn(doc))
+                };
+                callback(wrapped);
+            });
+        } else {
+            getDoc(refOrQuery).then(doc => callback(doc));
+        }
+        return () => {};
+    }
 
     let currentUser = null;
 
@@ -3511,7 +3697,7 @@ let pauseStartTime = 0;
 
             // --- New: Check and save idle time before starting a new study session ---
             if (currentUser) {
-                const sessionsRef = collection(db, 'artifacts', appId, 'users', currentUser.uid, 'sessions');
+                const sessionsRef = collection(db, 'artifacts', appId, 'users', currentUser.id, 'sessions');
                 const q = query(sessionsRef, orderBy('endedAt', 'desc'), limit(1));
                 const lastSessionSnapshot = await getDocs(q);
 
@@ -3570,7 +3756,7 @@ let pauseStartTime = 0;
             document.getElementById('pause-btn').classList.remove('hidden');
             document.getElementById('manual-start-btn').classList.add('hidden');
 
-            const userRef = doc(db, 'artifacts', appId, 'users', currentUser.uid);
+            const userRef = doc(db, 'artifacts', appId, 'users', currentUser.id);
             await updateDoc(userRef, { studying: { subject: activeSubject, startTime: serverTimestamp(), type: 'study' } });
         }
         
@@ -3623,7 +3809,7 @@ let pauseStartTime = 0;
             document.getElementById('manual-start-btn').classList.add('hidden');
 
             // Update user status in Firestore to show they are no longer studying
-            const userRef = doc(db, 'artifacts', appId, 'users', currentUser.uid);
+            const userRef = doc(db, 'artifacts', appId, 'users', currentUser.id);
             await updateDoc(userRef, { studying: null });
         }
         
@@ -3705,7 +3891,7 @@ let pauseStartTime = 0;
             // Update cycle in Firestore only after a break is completed (meaning a work session is starting)
             if (state === 'work') {
                 const newCycleCount = (currentUserData.pomodoroCycle || 0) + 1;
-                updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid), { pomodoroCycle: newCycleCount });
+                updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.id), { pomodoroCycle: newCycleCount });
             }
         }
 
@@ -3747,8 +3933,8 @@ let pauseStartTime = 0;
 
             try {
                 await runTransaction(db, async (transaction) => {
-                    const userDocRef = doc(db, 'artifacts', appId, 'users', currentUser.uid);
-                    const publicUserDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', currentUser.uid);
+                    const userDocRef = doc(db, 'artifacts', appId, 'users', currentUser.id);
+                    const publicUserDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', currentUser.id);
                     
                     const userDoc = await transaction.get(userDocRef);
                     const publicUserDoc = await transaction.get(publicUserDocRef);
@@ -3789,7 +3975,7 @@ if (sessionType === 'study') {
                         currentDailyBreakSeconds = data.totalBreakTimeToday.seconds || 0;
                     }
 
-                    const newSessionDocRef = doc(collection(db, 'artifacts', appId, 'users', currentUser.uid, 'sessions'));
+                    const newSessionDocRef = doc(collection(db, 'artifacts', appId, 'users', currentUser.id, 'sessions'));
                     transaction.set(newSessionDocRef, {
                         subject: subject,
                         durationSeconds: cappedDuration, // Use capped duration
@@ -3863,7 +4049,7 @@ if (sessionType === 'study') {
     if (!currentUser) return;
 
     try {
-        const userDocRef = doc(db, 'artifacts', appId, 'users', currentUser.uid);
+        const userDocRef = doc(db, 'artifacts', appId, 'users', currentUser.id);
         const userDoc = await getDoc(userDocRef);
         if (!userDoc.exists()) return;
 
@@ -3913,7 +4099,7 @@ if (sessionType === 'study') {
             }
             // --- END: ADDED GUEST LOGIC ---
             
-            const userRef = doc(db, 'artifacts', appId, 'users', currentUser.uid);
+            const userRef = doc(db, 'artifacts', appId, 'users', currentUser.id);
             const userDoc = await getDoc(userRef);
 
             if (userDoc.exists()) {
@@ -3944,7 +4130,7 @@ if (sessionType === 'study') {
         }
 
         async function getOrCreateUserDocument(user) {
-            const userDocRef = doc(db, 'artifacts', appId, 'users', user.uid);
+            const userDocRef = doc(db, 'artifacts', appId, 'users', user.id);
             let userDoc = await getDoc(userDocRef);
 
             if (!userDoc.exists()) {
@@ -3986,7 +4172,7 @@ if (sessionType === 'study') {
                     }
                 };
                 await setDoc(userDocRef, initialData);
-                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', user.uid), {
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', user.id), {
                     username: user.displayName,
                     email: user.email,
                     totalStudySeconds: 0,
@@ -4071,7 +4257,7 @@ if (achievementsGrid) {
             if (!currentUser) return;
             const groupsCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'groups');
             const usersCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'users');
-            const userDocRef = doc(db, 'artifacts', appId, 'users', currentUser.uid);
+            const userDocRef = doc(db, 'artifacts', appId, 'users', currentUser.id);
             // Fetch subjects ordered by 'order' field
             const subjectsCollectionRef = query(collection(userDocRef, 'subjects'), orderBy('order', 'asc'));
             const sessionsCollectionRef = collection(userDocRef, 'sessions');
@@ -4181,7 +4367,7 @@ if (achievementsGrid) {
             // 1. Listener for Lists
             const listsQuery = query(
                 collection(db, `/artifacts/${appId}/public/data/lists`),
-                where('members', 'array-contains', currentUser.uid)
+                where('members', 'array-contains', currentUser.id)
             );
             const listsUnsub = onSnapshot(listsQuery, (snapshot) => {
                 plannerState.lists = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -4192,7 +4378,7 @@ if (achievementsGrid) {
             // 2. Listener for Tasks
             const tasksQuery = query(
                 collection(db, `/artifacts/${appId}/public/data/tasks`),
-                where('members', 'array-contains', currentUser.uid)
+                where('members', 'array-contains', currentUser.id)
             );
             const tasksUnsub = onSnapshot(tasksQuery, (snapshot) => {
                 plannerState.tasks = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -4711,7 +4897,7 @@ if (achievementsGrid) {
 
         async function addPlannerTask(title, dueDateStr = null) {
             if (!currentUser || !title.trim()) return;
-            const currentList = plannerState.lists.find(l => l.id === plannerState.activeListId) || { members: [currentUser.uid] };
+            const currentList = plannerState.lists.find(l => l.id === plannerState.activeListId) || { members: [currentUser.id] };
             
             try {
                 await addDoc(collection(db, `/artifacts/${appId}/public/data/tasks`), {
@@ -4720,8 +4906,8 @@ if (achievementsGrid) {
                     priority: 'none',
                     listId: plannerState.activeListId,
                     createdAt: serverTimestamp(),
-                    createdBy: currentUser.uid,
-                    members: currentList.members || [currentUser.uid],
+                    createdBy: currentUser.id,
+                    members: currentList.members || [currentUser.id],
                     notes: '',
                     subtasks: [],
                     tags: [],
@@ -4803,7 +4989,7 @@ if (achievementsGrid) {
                             // --- END NEW ---
 
                             return `
-                                <div class="text-center cursor-pointer studicon-member-card" data-user-id="${member.uid}">
+                                <div class="text-center cursor-pointer studicon-member-card" data-user-id="${member.id}">
                                     <div class="relative w-20 h-20 mx-auto">
                                         <div class="member-avatar ${isStudying ? 'studying' : ''} w-full h-full">
                                             <img src="${studiconUrl}" class="w-full h-full object-cover rounded-full pointer-events-none">
@@ -4900,7 +5086,7 @@ if (achievementsGrid) {
                     : `<span>${(user.username || 'U').charAt(0).toUpperCase()}</span>`;
 
                 return `
-                    <div class="ranking-item ${currentUser.uid === user.id ? 'bg-blue-900/30' : ''}" data-user-id="${user.id}">
+                    <div class="ranking-item ${currentUser.id === user.id ? 'bg-blue-900/30' : ''}" data-user-id="${user.id}">
                         <div class="rank ${rankClass}">${rank}</div>
                         <div class="user-avatar bg-gray-600 overflow-hidden">${avatarHTML}</div>
                         <div class="user-info">
@@ -5413,8 +5599,8 @@ if (achievementsGrid) {
         async function deleteSession(sessionId, durationSeconds, endedAt) {
             if (!currentUser || !sessionId) return;
             
-            const userRef = doc(db, 'artifacts', appId, 'users', currentUser.uid);
-            const publicUserRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', currentUser.uid);
+            const userRef = doc(db, 'artifacts', appId, 'users', currentUser.id);
+            const publicUserRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', currentUser.id);
             const sessionRef = doc(userRef, 'sessions', sessionId);
 
             try {
@@ -5741,10 +5927,10 @@ if (achievementsGrid) {
 
         async function joinGroup(groupId) {
             if (!currentUser) return;
-            const userRef = doc(db, 'artifacts', appId, 'users', currentUser.uid);
+            const userRef = doc(db, 'artifacts', appId, 'users', currentUser.id);
             const groupRef = doc(db, 'artifacts', appId, 'public', 'data', 'groups', groupId);
             await setDoc(userRef, { joinedGroups: arrayUnion(groupId) }, { merge: true });
-            await updateDoc(groupRef, { members: arrayUnion(currentUser.uid) });
+            await updateDoc(groupRef, { members: arrayUnion(currentUser.id) });
             showToast("Group joined successfully!", "success");
         }
 
@@ -6113,7 +6299,7 @@ if (achievementsGrid) {
                     ? `<img src="${memberData.photoURL}" class="w-full h-full object-cover">`
                     : `<span>${(memberData.username || 'U').charAt(0).toUpperCase()}</span>`;
                 
-                const wakeUpButtonHTML = memberId !== currentUser.uid
+                const wakeUpButtonHTML = memberId !== currentUser.id
                     ? `<button 
                           class="wake-up-btn text-xs py-1 px-3 rounded-full transition ${isStudying ? 'bg-gray-700 text-gray-500 cursor-not-allowed' : 'bg-cyan-500 hover:bg-cyan-600 text-white'}" 
                           data-target-user-id="${memberId}" 
@@ -6228,7 +6414,7 @@ if (achievementsGrid) {
                     : `<span>${(user.username || 'U').charAt(0).toUpperCase()}</span>`;
 
                 return `
-                    <div class="ranking-item ${currentUser.uid === user.id ? 'bg-blue-900/30' : ''}" data-user-id="${user.id}">
+                    <div class="ranking-item ${currentUser.id === user.id ? 'bg-blue-900/30' : ''}" data-user-id="${user.id}">
                         <div class="rank ${rankClass}">${rank}</div>
                         <div class="user-avatar bg-gray-600 overflow-hidden">${avatarHTML}</div>
                         <div class="user-info">
@@ -6375,7 +6561,7 @@ if (achievementsGrid) {
                 chatMessagesContainer.innerHTML = '';
                 snapshot.forEach(doc => {
                     const msg = doc.data();
-                    const isSent = msg.senderId === currentUser.uid;
+                    const isSent = msg.senderId === currentUser.id;
                     const messageEl = document.createElement('div');
                     messageEl.classList.add('chat-message', isSent ? 'sent' : 'received');
 
@@ -6405,10 +6591,10 @@ if (achievementsGrid) {
                 e.preventDefault();
                 const text = chatInput.value.trim();
                 if (text && currentUser) {
-                    const userDoc = await getDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid));
+                    const userDoc = await getDoc(doc(db, 'artifacts', appId, 'users', currentUser.id));
                     await addDoc(messagesRef, {
                         text: text,
-                        senderId: currentUser.uid,
+                        senderId: currentUser.id,
                         senderName: userDoc.data().username,
                         timestamp: serverTimestamp()
                     });
@@ -7023,7 +7209,7 @@ if (achievementsGrid) {
             }
             const color = colorEl.dataset.color;
 
-            const userRef = doc(db, 'artifacts', appId, 'users', currentUser.uid);
+            const userRef = doc(db, 'artifacts', appId, 'users', currentUser.id);
             const subjectsRef = collection(userRef, 'subjects');
             const q = query(subjectsRef, orderBy('order', 'desc'), limit(1));
             const lastSubjectSnap = await getDocs(q);
@@ -7112,12 +7298,12 @@ if (achievementsGrid) {
             try {
                 const newGroupRef = await addDoc(collection(db, `artifacts/${appId}/public/data/groups`), {
                     name, password: password || null, category, timeGoal, capacity, description,
-                    leaderId: currentUser.uid, leaderName: currentUserData.username,
-                    members: [currentUser.uid], createdAt: serverTimestamp(),
+                    leaderId: currentUser.id, leaderName: currentUserData.username,
+                    members: [currentUser.id], createdAt: serverTimestamp(),
                     avgTime: '0h 0m', attendance: 0
                 });
         
-                const userRef = doc(db, 'artifacts', appId, 'users', currentUser.uid);
+                const userRef = doc(db, 'artifacts', appId, 'users', currentUser.id);
                 await updateDoc(userRef, { joinedGroups: arrayUnion(newGroupRef.id) });
         
                 showToast('Group created successfully!', 'success');
@@ -7384,7 +7570,7 @@ if (achievementsGrid) {
             const userProfileTrigger = e.target.closest('.member-profile-link, .studicon-member-card');
             if (userProfileTrigger) {
                 const userId = userProfileTrigger.closest('[data-user-id]').dataset.userId;
-                if (userId && userId !== currentUser.uid) {
+                if (userId && userId !== currentUser.id) {
                     showUserProfileModal(userId);
                 }
             }
@@ -7392,7 +7578,7 @@ if (achievementsGrid) {
 
         function openGroupSettingsModal(groupData) {
             const modal = document.getElementById('group-settings-modal');
-            const isLeader = currentUser.uid === groupData.leaderId;
+            const isLeader = currentUser.id === groupData.leaderId;
 
             modal.querySelectorAll('.group-settings-item').forEach(item => {
                 const action = item.dataset.action;
@@ -7433,7 +7619,7 @@ if (achievementsGrid) {
 
                 const groupData = groupSnap.data();
                 const rules = groupData.rules || 'No rules have been set for this group yet.';
-                const isLeader = currentUser.uid === groupData.leaderId;
+                const isLeader = currentUser.id === groupData.leaderId;
 
                 // Reset state
                 displayEl.textContent = rules;
@@ -7501,7 +7687,7 @@ if (achievementsGrid) {
                 return;
             }
             
-            const userRef = doc(db, 'artifacts', appId, 'users', currentUser.uid);
+            const userRef = doc(db, 'artifacts', appId, 'users', currentUser.id);
             await updateDoc(userRef, { 
                 pomodoroSettings: newSettings,
                 pomodoroSounds: newSounds
@@ -7524,7 +7710,7 @@ if (achievementsGrid) {
                 </div>
             `).join('');
             
-            const currentStudicon = (currentUserData && groupRealtimeData.members[currentUser.uid]) ? groupRealtimeData.members[currentUser.uid].studiconURL : null;
+            const currentStudicon = (currentUserData && groupRealtimeData.members[currentUser.id]) ? groupRealtimeData.members[currentUser.id].studiconURL : null;
 
             if (currentStudicon) {
                 const selectedOption = pickerContainer.querySelector(`.avatar-option[data-url="${currentStudicon}"]`);
@@ -7567,13 +7753,12 @@ if (achievementsGrid) {
             if (saveBtn) {
                 const selectedStudicon = document.querySelector('#studicon-picker .avatar-option.selected')?.dataset.url;
                 if (selectedStudicon && currentUser) {
-                    const userRef = doc(db, 'artifacts', appId, 'users', currentUser.uid);
-                    const publicUserRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', currentUser.uid);
                     try {
-                        const batch = firestoreWriteBatch(db);
-                        batch.update(userRef, { studiconURL: selectedStudicon });
-                        batch.update(publicUserRef, { studiconURL: selectedStudicon });
-                        await batch.commit();
+                        const { error } = await supabase
+                            .from('profiles')
+                            .update({ studiconURL: selectedStudicon })
+                            .eq('id', currentUser.id);
+                        if (error) throw error;
                         document.getElementById('studicon-store-modal').classList.remove('active');
                         showToast('Studicon updated!', 'success');
                     } catch (error) {
@@ -7625,8 +7810,8 @@ if (achievementsGrid) {
                 return;
             }
 
-            const userRef = doc(db, 'artifacts', appId, 'users', currentUser.uid);
-            const publicUserRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', currentUser.uid);
+            const userRef = doc(db, 'artifacts', appId, 'users', currentUser.id);
+            const publicUserRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', currentUser.id);
             
             try {
                 await updateDoc(userRef, { username: newUsername });
@@ -7655,8 +7840,8 @@ if (achievementsGrid) {
             const newDurationSeconds = newDurationMinutes * 60;
             const durationDifference = newDurationSeconds - oldDurationSeconds;
 
-            const userRef = doc(db, 'artifacts', appId, 'users', currentUser.uid);
-            const publicUserRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', currentUser.uid);
+            const userRef = doc(db, 'artifacts', appId, 'users', currentUser.id);
+            const publicUserRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', currentUser.id);
             const sessionRef = doc(userRef, 'sessions', sessionId);
 
             try {
@@ -7766,31 +7951,54 @@ if (achievementsGrid) {
                         'Are you sure you want to leave this group? This action cannot be undone.',
                         async () => {
                             if (!currentUser || !currentGroupId) return;
-                            const userRef = doc(db, 'artifacts', appId, 'users', currentUser.uid);
-                            const groupRef = doc(db, 'artifacts', appId, 'public', 'data', 'groups', currentGroupId);
-                            
-                            const groupSnap = await getDoc(groupRef);
-                            if (groupSnap.exists()) {
-                                const groupData = groupSnap.data();
-                                if (groupData.leaderId === currentUser.uid && groupData.members.length > 1) {
-                                    showToast('Please transfer leadership or kick all members before leaving.', 'error');
-                                    return;
-                                }
+
+                            const { data: groupData, error: groupErr } = await supabase
+                                .from('groups')
+                                .select('leaderId, members')
+                                .eq('id', currentGroupId)
+                                .single();
+                            if (groupErr) {
+                                console.error('Error fetching group:', groupErr);
+                                showToast('Failed to leave the group.', 'error');
+                                return;
+                            }
+                            if (groupData.leaderId === currentUser.id && (groupData.members?.length || 0) > 1) {
+                                showToast('Please transfer leadership or kick all members before leaving.', 'error');
+                                return;
                             }
 
-                            try {
-                                const batch = firestoreWriteBatch(db);
-                                batch.update(userRef, { joinedGroups: arrayRemove(currentGroupId) });
-                                batch.update(groupRef, { members: arrayRemove(currentUser.uid) });
-                                await batch.commit();
-
-                                showToast('You have left the group.', 'success');
-                                renderJoinedGroups();
-                                showPage('page-my-groups');
-                            } catch (error) {
-                                console.error("Error leaving group:", error);
-                                showToast("Failed to leave the group.", "error");
+                            const { data: userData, error: userErr } = await supabase
+                                .from('profiles')
+                                .select('joinedGroups')
+                                .eq('id', currentUser.id)
+                                .single();
+                            if (userErr) {
+                                console.error('Error fetching user profile:', userErr);
+                                showToast('Failed to leave the group.', 'error');
+                                return;
                             }
+
+                            const updatedJoinedGroups = (userData.joinedGroups || []).filter(id => id !== currentGroupId);
+                            const updatedMembers = (groupData.members || []).filter(id => id !== currentUser.id);
+
+                            const { error: upUserErr } = await supabase
+                                .from('profiles')
+                                .update({ joinedGroups: updatedJoinedGroups })
+                                .eq('id', currentUser.id);
+                            const { error: upGroupErr } = await supabase
+                                .from('groups')
+                                .update({ members: updatedMembers })
+                                .eq('id', currentGroupId);
+
+                            if (upUserErr || upGroupErr) {
+                                console.error('Error leaving group:', upUserErr || upGroupErr);
+                                showToast('Failed to leave the group.', 'error');
+                                return;
+                            }
+
+                            showToast('You have left the group.', 'success');
+                            renderJoinedGroups();
+                            showPage('page-my-groups');
                         }
                     );
                     break;
@@ -7927,7 +8135,7 @@ if (achievementsGrid) {
                 }
                 const color = colorEl.dataset.color;
 
-                const userRef = doc(db, 'artifacts', appId, 'users', currentUser.uid);
+                const userRef = doc(db, 'artifacts', appId, 'users', currentUser.id);
                 const subjectsRef = collection(userRef, 'subjects');
                 // Get the highest current order value to append the new subject at the end
                 const q = query(subjectsRef, orderBy('order', 'desc'), limit(1));
@@ -7951,7 +8159,7 @@ if (achievementsGrid) {
                 const rankingItem = e.target.closest('.ranking-item[data-user-id]');
                 if (rankingItem) {
                     const userId = rankingItem.dataset.userId;
-                    if (userId && userId !== currentUser.uid) {
+                    if (userId && userId !== currentUser.id) {
                         showUserProfileModal(userId);
                     }
                 }
@@ -8176,12 +8384,95 @@ async function updateUsername(newName) {
     if (typeof showToast === 'function') showToast('Username updated!', 'success');
     if (typeof loadMyProfile === 'function') loadMyProfile();
   } catch (e) {
-    console.error('updateUsername crashed:', e);
+  console.error('updateUsername crashed:', e);
+  }
+}
+async function loadProfile() {
+  const { data: { user }, error: authErr } = await supabase.auth.getUser();
+  if (authErr || !user) {
+    console.warn('Not signed in:', authErr);
+    return;
+  }
+
+  document.getElementById('profileEmail').textContent = user.email ?? '';
+
+  const { data: profile, error } = await supabase
+    .from('users')
+    .select('username, avatar_url')
+    .eq('id', user.id)
+    .maybeSingle();
+
+  if (error) {
+    console.error('Profile fetch error:', error);
+    return;
+  }
+
+  const name = profile?.username || 'Anonymous';
+  const avatar = profile?.avatar_url || '';
+
+  document.getElementById('profileName').textContent = name;
+
+  const imgEl = document.getElementById('profileAvatar');
+  if (avatar) {
+    imgEl.src = avatar;
+  } else {
+    imgEl.removeAttribute('src');
   }
 }
 
+loadProfile();
 
+document.getElementById('profileForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
 
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return;
+
+  const username = document.getElementById('usernameInput').value.trim();
+  const file = document.getElementById('avatarInput').files[0];
+
+  let avatarUrl = null;
+
+  if (file) {
+    const fileExt = file.name.split('.').pop();
+    const filePath = `${user.id}/${Date.now()}.${fileExt}`;
+
+    const { error: uploadErr } = await supabase.storage
+      .from('avatars')
+      .upload(filePath, file, { upsert: true });
+
+    if (uploadErr) {
+      console.error('Avatar upload error:', uploadErr);
+      } else {
+        const { data: signed } = await supabase
+          .storage.from('avatars')
+          .createSignedUrl(filePath, 60 * 60);
+        avatarUrl = signed?.signedUrl ?? null;
+      }
+  }
+
+  const update = {};
+  if (username) update.username = username;
+  if (avatarUrl) update.avatar_url = avatarUrl;
+
+  const { data, error } = await supabase
+    .from('users')
+    .update(update)
+    .eq('id', user.id)
+    .select()
+    .maybeSingle();
+
+  if (error) {
+    console.error('Error updating profile:', error);
+    return;
+  }
+
+  await loadProfile();
+
+  const msg = document.getElementById('saveMsg');
+  msg.hidden = false;
+  setTimeout(() => (msg.hidden = true), 2000);
+});
 
 // --- Bind UI events for profile settings (username + avatar) ---
 function bindProfileSettingsUI() {
@@ -8211,7 +8502,7 @@ function bindProfileSettingsUI() {
   }
 })();
 
-</script/>
+</script>
 
 </body>
 </html>
