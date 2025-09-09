@@ -2161,10 +2161,38 @@
         const { table, parent } = parseCollectionPath(collectionRef);
         let req = supabase.from(table).select('*');
         if (parent) req = req.eq(`${parent.table.slice(0, -1)}_id`, parent.id);
+        
+        const operatorMap = {
+            '==': 'eq',
+            '<': 'lt',
+            '<=': 'lte',
+            '>': 'gt',
+            '>=': 'gte',
+            '!=': 'neq',
+            'array-contains': 'cs',
+            'in': 'in',
+            'array-contains-any': 'cs', // Supabase `cs` (contains) is the closest for arrays of strings/numbers
+        };
+
         for (const mod of mods) {
-            if (mod.type === 'orderBy') req = req.order(mod.field, { ascending: mod.dir !== 'desc' });
-            else if (mod.type === 'where') req = req.filter(mod.field, mod.op, mod.value);
-            else if (mod.type === 'limit') req = req.limit(mod.count);
+            if (mod.type === 'orderBy') {
+                req = req.order(mod.field, { ascending: mod.dir !== 'desc' });
+            } else if (mod.type === 'where') {
+                const supabaseOp = operatorMap[mod.op] || mod.op;
+                let value = mod.value;
+                if (value instanceof Date) {
+                    value = value.toISOString(); // Convert Date objects to ISO string
+                }
+                
+                // Special handling for 'in' operator which expects a string like '(val1, val2)'
+                if (supabaseOp === 'in' && Array.isArray(value)) {
+                    value = `(${value.map(v => typeof v === 'string' ? `"${v}"` : v).join(',')})`;
+                }
+
+                req = req.filter(mod.field, supabaseOp, value);
+            } else if (mod.type === 'limit') {
+                req = req.limit(mod.count);
+            }
         }
         const { data, error } = await req;
         if (error) throw error;
@@ -5012,7 +5040,7 @@ if (achievementsGrid) {
             container.innerHTML = '<div class="text-center text-gray-500 py-8"><i class="fas fa-spinner fa-spin fa-2x"></i></div>';
 
             const usersCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'users');
-            const usersSnapshot = await getDocs(usersCollectionRef);
+            const usersSnapshot = await getDocs(query(usersCollectionRef));
 
             const userPromises = usersSnapshot.docs.map(async (userDoc) => {
                 const userData = userDoc.data();
@@ -5041,7 +5069,7 @@ if (achievementsGrid) {
                 const sessionsSnapshot = await getDocs(q);
                 
                 let totalSeconds = 0;
-                sessionsSnapshot.forEach(sessionDoc => {
+                sessionsSnapshot.docs.forEach(sessionDoc => {
                     // Only count study sessions for ranking
                     if (sessionDoc.data().type === 'study') {
                         totalSeconds += sessionDoc.data().durationSeconds;
@@ -8488,5 +8516,8 @@ function bindProfileSettingsUI() {
 
 </body>
 </html>
+
+
+
 
 
