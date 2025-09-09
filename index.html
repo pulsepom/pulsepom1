@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -2175,8 +2176,7 @@
     }
 
     function serverTimestamp() {
-        const d = new Date();
-        return { toDate: () => d };
+        return new Date().toISOString();
     }
 
     function increment(value) {
@@ -3965,121 +3965,70 @@ let pauseStartTime = 0;
             }
             // --- END: ADDED GUEST LOGIC ---
 
-            // Cap break time at 3 hours (10800 seconds)
             const MAX_BREAK_SECONDS = 3 * 3600; // 3 hours in seconds
             const cappedDuration = (sessionType === 'break' && durationSeconds > MAX_BREAK_SECONDS) ? MAX_BREAK_SECONDS : durationSeconds;
 
             try {
-                await runTransaction(db, async (transaction) => {
-                    const userDocRef = doc(db, 'artifacts', appId, 'users', currentUser.id);
-                    const publicUserDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', currentUser.id);
-                    
-                    const userDoc = await transaction.get(userDocRef);
-                    const publicUserDoc = await transaction.get(publicUserDocRef);
-                    const userDataForStreak = userDoc.data();
-if (sessionType === 'study') {
-    const todayStr = new Date().toISOString().split('T')[0];
-    const yesterdayStr = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+                // Get references to documents
+                const userDocRef = doc(db, 'artifacts', appId, 'users', currentUser.id);
+                const publicUserDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', currentUser.id);
+                const sessionsCollectionRef = collection(userDocRef, 'sessions');
 
-    const lastStudyDay = userDataForStreak.lastStudyDay || '';
-    let currentStreak = userDataForStreak.currentStreak || 0;
-
-    if (lastStudyDay !== todayStr) {
-        if (lastStudyDay === yesterdayStr) {
-            currentStreak++; // Continued the streak
-        } else {
-            currentStreak = 1; // Streak was broken, reset to 1
-        }
-        transaction.update(userDocRef, {
-            currentStreak: currentStreak,
-            lastStudyDay: todayStr
-        });
-    }
-}
-
-                    if (!userDoc.exists()) {
-                        throw new Error("Transaction failed: User document not found.");
-                    }
-
-                    const data = userDoc.data();
-                    const todayStr = getCurrentDate().toISOString().split('T')[0];
-
-                    let currentDailyStudySeconds = 0;
-                    if (data.totalTimeToday && data.totalTimeToday.date === todayStr) {
-                        currentDailyStudySeconds = data.totalTimeToday.seconds || 0;
-                    }
-                    let currentDailyBreakSeconds = 0;
-                    if (data.totalBreakTimeToday && data.totalBreakTimeToday.date === todayStr) {
-                        currentDailyBreakSeconds = data.totalBreakTimeToday.seconds || 0;
-                    }
-
-                    const newSessionDocRef = doc(collection(db, 'artifacts', appId, 'users', currentUser.id, 'sessions'));
-                    transaction.set(newSessionDocRef, {
-                        subject: subject,
-                        durationSeconds: cappedDuration, // Use capped duration
-                        endedAt: serverTimestamp(),
-                        type: sessionType // Store session type
-                    });
-
-                    const updateData = {};
-                    if (sessionType === 'study') {
-                        updateData.totalStudySeconds = increment(cappedDuration);
-                        updateData.totalTimeToday = {
-                            date: todayStr,
-                            seconds: currentDailyStudySeconds + cappedDuration
-                        };
-                    } else { // 'break'
-                        updateData.totalBreakSeconds = increment(cappedDuration);
-                        updateData.totalBreakTimeToday = {
-                            date: todayStr,
-                            seconds: currentDailyBreakSeconds + cappedDuration
-                        };
-                    }
-                    transaction.update(userDocRef, updateData);
-
-                    if (sessionType === 'study') {
-                        if (!publicUserDoc.exists()) {
-                            transaction.set(publicUserDocRef, {
-                                username: currentUserData.username || 'Anonymous',
-                                email: currentUserData.email || currentUser.email || '',
-                                totalStudySeconds: 0,
-                                totalBreakSeconds: 0 // Initialize break time for public too
-                            });
-                        }
-                        transaction.update(publicUserDocRef, {
-                            totalStudySeconds: increment(cappedDuration)
-                        });
-                    } else { // 'break' - update public break time
-                         if (!publicUserDoc.exists()) {
-                            transaction.set(publicUserDocRef, {
-                                username: currentUserData.username || 'Anonymous',
-                                email: currentUserData.email || currentUser.email || '',
-                                totalStudySeconds: 0,
-                                totalBreakSeconds: 0
-                            });
-                        }
-                        transaction.update(publicUserDocRef, {
-                            totalBreakSeconds: increment(cappedDuration)
-                        });
-                    }
-
-                    // Update local state after successful transaction
-                    if (sessionType === 'study') {
-                        totalTimeTodayInSeconds = currentDailyStudySeconds + cappedDuration;
-                    } else {
-                        totalBreakTimeTodayInSeconds = currentDailyBreakSeconds + cappedDuration;
-                    }
-                });
+                // 1. Get current user data to perform calculations
+                const userDoc = await getDoc(userDocRef);
+                if (!userDoc.exists()) throw new Error("User document not found.");
                 
-                updateTotalTimeDisplay(); // This now updates both
+                const userData = userDoc.data();
+                const todayStr = new Date().toISOString().split('T')[0];
+
+                // 2. Prepare updates for the user's profile
+                const profileUpdate = {};
+                const publicProfileUpdate = {};
+
+                if (sessionType === 'study') {
+                    const yesterdayStr = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+                    const lastStudyDay = userData.lastStudyDay || '';
+                    let currentStreak = userData.currentStreak || 0;
+                    if (lastStudyDay !== todayStr) {
+                        currentStreak = (lastStudyDay === yesterdayStr) ? currentStreak + 1 : 1;
+                        profileUpdate.currentStreak = currentStreak;
+                        profileUpdate.lastStudyDay = todayStr;
+                    }
+
+                    const currentDailyStudy = (userData.totalTimeToday?.date === todayStr) ? userData.totalTimeToday.seconds : 0;
+                    profileUpdate.totalStudySeconds = increment(cappedDuration);
+                    profileUpdate.totalTimeToday = { date: todayStr, seconds: currentDailyStudy + cappedDuration };
+                    publicProfileUpdate.totalStudySeconds = increment(cappedDuration);
+                    totalTimeTodayInSeconds = currentDailyStudy + cappedDuration;
+                } else { // 'break'
+                    const currentDailyBreak = (userData.totalBreakTimeToday?.date === todayStr) ? userData.totalBreakTimeToday.seconds : 0;
+                    profileUpdate.totalBreakSeconds = increment(cappedDuration);
+                    profileUpdate.totalBreakTimeToday = { date: todayStr, seconds: currentDailyBreak + cappedDuration };
+                    publicProfileUpdate.totalBreakSeconds = increment(cappedDuration);
+                    totalBreakTimeTodayInSeconds = currentDailyBreak + cappedDuration;
+                }
+
+                // 3. Execute all database operations
+                await Promise.all([
+                    updateDoc(userDocRef, profileUpdate),
+                    updateDoc(publicUserDocRef, publicProfileUpdate),
+                    addDoc(sessionsCollectionRef, {
+                        subject: subject,
+                        durationSeconds: cappedDuration,
+                        endedAt: serverTimestamp(),
+                        type: sessionType
+                    })
+                ]);
+
+                // 4. Update UI and check for achievements
+                updateTotalTimeDisplay();
                 showToast(`Session of ${formatTime(cappedDuration, false)} saved!`, "success");
-                // After saving, check if any achievements were unlocked for this study session
-if (sessionType === 'study') {
-    await checkAndAwardAchievements(cappedDuration);
-}
+                if (sessionType === 'study') {
+                    await checkAndAwardAchievements(cappedDuration);
+                }
 
             } catch (error) {
-                console.error("Error saving session in transaction: ", error);
+                console.error("Error saving session: ", error);
                 showToast("Error saving session.", "error");
             }
         }
@@ -8539,3 +8488,5 @@ function bindProfileSettingsUI() {
 
 </body>
 </html>
+
+
