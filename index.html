@@ -4504,7 +4504,7 @@ if (achievementsGrid) {
             const sidebar = document.getElementById('planner-sidebar');
             if (!sidebar) return;
 
-            const inboxTasks = plannerState.tasks.filter(t => t.listId === 'inbox' && !t.completed).length;
+            const inboxTasks = plannerState.tasks.filter(t => t.listId === null && !t.completed).length;
 
             sidebar.innerHTML = `
                 <div id="planner-sidebar-header">
@@ -4546,7 +4546,12 @@ if (achievementsGrid) {
                 btn.classList.toggle('text-white', btn.dataset.view === plannerState.currentView);
             });
             
-            const tasksForCurrentList = plannerState.tasks.filter(t => t.listId === plannerState.activeListId);
+            const tasksForCurrentList = plannerState.tasks.filter(t => {
+                if (plannerState.activeListId === 'inbox') {
+                    return t.listId === null; // Inbox tasks have a null listId
+                }
+                return t.listId === plannerState.activeListId;
+            });
             const sidebar = document.getElementById('planner-sidebar');
             const detailsPanel = document.getElementById('planner-task-details');
 
@@ -4610,7 +4615,7 @@ if (achievementsGrid) {
             });
             const plannedTasks = allTasks.filter(t => t.dueDate && !t.completed);
             const completedTasks = allTasks.filter(t => t.completed);
-            const inboxTasks = allTasks.filter(t => t.listId === 'inbox' && !t.completed);
+            const inboxTasks = allTasks.filter(t => t.listId === null && !t.completed);
 
             const categories = [
                 { name: 'Today', icon: 'fa-sun', color: 'bg-yellow-500', count: todayTasks.length },
@@ -4893,228 +4898,204 @@ if (achievementsGrid) {
         function renderPlannerTaskDetails() {
             const detailsPanel = document.getElementById('planner-task-details');
             if (!detailsPanel) return;
-
+          
             const selectedTask = plannerState.tasks.find(t => t.id === plannerState.selectedTaskId);
-            
+          
             if (!selectedTask) {
-                detailsPanel.classList.add('hidden');
-                detailsPanel.innerHTML = '';
-                return;
+              detailsPanel.classList.add('hidden');
+              detailsPanel.innerHTML = '';
+              return;
             }
-
+          
             detailsPanel.classList.toggle('open', !!selectedTask);
             detailsPanel.classList.toggle('hidden', !selectedTask);
-            
-            if (!selectedTask) {
-                detailsPanel.innerHTML = '';
-                return;
-            }
-
-            const listName = selectedTask.listId === 'inbox' ? 'Tasks' : (plannerState.lists.find(l => l.id === selectedTask.listId)?.name || 'Tasks');
-            const createdDate = selectedTask.created_at ? new Date(selectedTask.created_at.seconds * 1000).toLocaleDateString(undefined, { month: 'long', day: 'numeric' }) : 'Today';
-
+          
+            const taskListId = selectedTask.list_id ?? null;
+          
+            const listName = taskListId
+              ? (plannerState.lists.find(l => l.id === taskListId)?.name || 'Tasks')
+              : 'Tasks';
+          
+            const createdDate = selectedTask.created_at
+              ? new Date(selectedTask.created_at).toLocaleDateString(undefined, { month: 'long', day: 'numeric' })
+              : 'Today';
+          
             const priorityClasses = {
-                high: 'text-red-500',
-                medium: 'text-yellow-500',
-                low: 'text-blue-500',
-                none: 'text-gray-400'
+              high: 'text-red-500',
+              medium: 'text-yellow-500',
+              low: 'text-blue-500',
+              none: 'text-gray-400'
             };
             const priority = selectedTask.priority || 'none';
             const repeatText = selectedTask.repeat ? `Repeats ${selectedTask.repeat.type}` : 'None';
             const repeatTextColor = selectedTask.repeat ? 'text-gray-300' : 'text-gray-500';
-
+          
             detailsPanel.innerHTML = `
-                <div class="p-4 h-full flex flex-col bg-gray-800 text-white">
-                    <!-- Header -->
-                    <div class="flex-shrink-0 flex items-center mb-4">
-                        <input type="checkbox" class="task-checkbox-planner w-6 h-6 bg-gray-700 rounded-full text-blue-500 focus:ring-blue-500 mr-4 flex-shrink-0" ${selectedTask.completed ? 'checked' : ''} />
-                        
-                        <button id="task-detail-start-btn" class="mr-2 text-green-400 hover:text-green-300 transition" title="Start Normal Timer"><i class="fas fa-play"></i></button>
-                        
-                        <input id="task-detail-title" class="text-xl font-semibold bg-transparent w-full border-none focus:ring-0 p-0" value="${selectedTask.title}">
-                        
-                        <div class="relative">
-                            <button id="task-detail-priority-btn" class="${priorityClasses[priority]} hover:opacity-80 transition" title="Set Priority">
-                                <i class="fas fa-flag"></i>
-                            </button>
-                            <div id="task-priority-menu" class="hidden absolute right-0 mt-2 w-32 bg-gray-700 rounded-md shadow-lg z-10">
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600" data-priority="high">High</a>
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600" data-priority="medium">Medium</a>
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600" data-priority="low">Low</a>
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600" data-priority="none">None</a>
-                            </div>
-                        </div>
-
-                        <button id="close-task-details" class="ml-2 p-1 rounded-full hover:bg-gray-700">&times;</button>
+              <div class="p-4 h-full flex flex-col bg-gray-800 text-white">
+                <!-- Header -->
+                <div class="flex-shrink-0 flex items-center mb-4">
+                  <input type="checkbox" class="task-checkbox-planner w-6 h-6 bg-gray-700 rounded-full text-blue-500 focus:ring-blue-500 mr-4 flex-shrink-0" ${selectedTask.completed ? 'checked' : ''} />
+                  <button id="task-detail-start-btn" class="mr-2 text-green-400 hover:text-green-300 transition" title="Start Normal Timer"><i class="fas fa-play"></i></button>
+                  <input id="task-detail-title" class="text-xl font-semibold bg-transparent w-full border-none focus:ring-0 p-0" value="${selectedTask.title}">
+                  <div class="relative">
+                    <button id="task-detail-priority-btn" class="${priorityClasses[priority]} hover:opacity-80 transition" title="Set Priority">
+                      <i class="fas fa-flag"></i>
+                    </button>
+                    <div id="task-priority-menu" class="hidden absolute right-0 mt-2 w-32 bg-gray-700 rounded-md shadow-lg z-10">
+                      <a href="#" class="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600" data-priority="high">High</a>
+                      <a href="#" class="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600" data-priority="medium">Medium</a>
+                      <a href="#" class="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600" data-priority="low">Low</a>
+                      <a href="#" class="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600" data-priority="none">None</a>
                     </div>
-                    
-                    <!-- Main Content -->
-                    <div class="flex-grow overflow-y-auto pr-2 text-sm">
-                        <button class="border border-gray-600 rounded-full px-3 py-1 text-gray-400 mb-4 hover:bg-gray-700">+ Tags</button>
-                        
-                        <div class="space-y-3">
-                             <div id="task-detail-pomodoro-btn" class="flex items-center cursor-pointer p-2 -ml-2 rounded-lg hover:bg-gray-700 transition" title="Start Pomodoro Timer">
-                                <i class="fas fa-stopwatch text-gray-400 w-6 text-center mr-3"></i>
-                                <span>Pomodoro</span>
-                                <div class="ml-auto text-right">
-                                    <span class="text-green-400">0 / 0</span>
-                                    <p class="text-xs text-gray-500">= 25m</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center">
-                                <i class="fas fa-calendar-day text-gray-400 w-6 text-center mr-3"></i>
-                                <span>Due Date</span>
-                                <input type="date" id="task-detail-due-date" class="ml-auto bg-transparent text-right p-0 border-none focus:ring-0" value="${selectedTask.dueDate ? new Date(selectedTask.dueDate.seconds * 1000).toISOString().split('T')[0] : ''}">
-                            </div>
-                             <div id="task-detail-project-btn" class="flex items-center cursor-pointer p-2 -ml-2 rounded-lg hover:bg-gray-700 transition">
-                                <i class="fas fa-tasks text-gray-400 w-6 text-center mr-3"></i>
-                                <span>Project</span>
-                                <span class="ml-auto text-gray-300">${listName}</span>
-                            </div>
-                            <div class="flex items-center">
-                                <i class="fas fa-bell text-gray-400 w-6 text-center mr-3"></i>
-                                <span>Reminder</span>
-                                <span class="ml-auto text-gray-500">None</span>
-                            </div>
-                            <div id="task-detail-repeat-btn" class="flex items-center cursor-pointer p-2 -ml-2 rounded-lg hover:bg-gray-700 transition">
-                                <i class="fas fa-redo text-gray-400 w-6 text-center mr-3"></i>
-                                <span>Repeat</span>
-                                <span class="ml-auto ${repeatTextColor}">${repeatText}</span>
-                            </div>
-                            <div class="flex items-center text-gray-400">
-                                <i class="fas fa-plus w-6 text-center mr-3"></i>
-                                <input class="bg-transparent w-full border-none p-0 focus:ring-0" placeholder="Add a subtask...">
-                            </div>
-                        </div>
-
-                        <textarea id="task-detail-notes" class="w-full bg-transparent p-0 mt-4 h-24 border-none focus:ring-0" placeholder="Add a note...">${selectedTask.notes || ''}</textarea>
-                    </div>
-
-                    <!-- Footer -->
-                    <div class="flex-shrink-0 pt-2 flex justify-between items-center text-xs text-gray-500">
-                        <button><i class="fas fa-arrow-left"></i></button>
-                        <span>Created on ${createdDate}</span>
-                        <button id="delete-task-btn" class="text-gray-400 hover:text-red-500 text-base"><i class="fas fa-trash-alt"></i></button>
-                    </div>
+                  </div>
+                  <button id="close-task-details" class="ml-2 p-1 rounded-full hover:bg-gray-700">&times;</button>
                 </div>
+          
+                <!-- Main Content -->
+                <div class="flex-grow overflow-y-auto pr-2 text-sm">
+                  <button class="border border-gray-600 rounded-full px-3 py-1 text-gray-400 mb-4 hover:bg-gray-700">+ Tags</button>
+          
+                  <div class="space-y-3">
+                    <div id="task-detail-pomodoro-btn" class="flex items-center cursor-pointer p-2 -ml-2 rounded-lg hover:bg-gray-700 transition" title="Start Pomodoro Timer">
+                      <i class="fas fa-stopwatch text-gray-400 w-6 text-center mr-3"></i>
+                      <span>Pomodoro</span>
+                      <div class="ml-auto text-right">
+                        <span class="text-green-400">0 / 0</span>
+                        <p class="text-xs text-gray-500">= 25m</p>
+                      </div>
+                    </div>
+          
+                    <div class="flex items-center">
+                      <i class="fas fa-calendar-day text-gray-400 w-6 text-center mr-3"></i>
+                      <span>Due Date</span>
+                      <input
+                        type="date"
+                        id="task-detail-due-date"
+                        class="ml-auto bg-transparent text-right p-0 border-none focus:ring-0"
+                        value="${selectedTask.due_date ? new Date(selectedTask.due_date).toISOString().split('T')[0] : ''}">
+                    </div>
+          
+                    <div id="task-detail-project-btn" class="flex items-center cursor-pointer p-2 -ml-2 rounded-lg hover:bg-gray-700 transition">
+                      <i class="fas fa-tasks text-gray-400 w-6 text-center mr-3"></i>
+                      <span>Project</span>
+                      <span class="ml-auto text-gray-300">${listName}</span>
+                    </div>
+          
+                    <div class="flex items-center">
+                      <i class="fas fa-bell text-gray-400 w-6 text-center mr-3"></i>
+                      <span>Reminder</span>
+                      <span class="ml-auto text-gray-500">None</span>
+                    </div>
+          
+                    <div id="task-detail-repeat-btn" class="flex items-center cursor-pointer p-2 -ml-2 rounded-lg hover:bg-gray-700 transition">
+                      <i class="fas fa-redo text-gray-400 w-6 text-center mr-3"></i>
+                      <span>Repeat</span>
+                      <span class="ml-auto ${repeatTextColor}">${repeatText}</span>
+                    </div>
+          
+                    <div class="flex items-center text-gray-400">
+                      <i class="fas fa-plus w-6 text-center mr-3"></i>
+                      <input class="bg-transparent w-full border-none p-0 focus:ring-0" placeholder="Add a subtask...">
+                    </div>
+                  </div>
+          
+                  <textarea id="task-detail-notes" class="w-full bg-transparent p-0 mt-4 h-24 border-none focus:ring-0" placeholder="Add a note...">${selectedTask.notes || ''}</textarea>
+                </div>
+          
+                <!-- Footer -->
+                <div class="flex-shrink-0 pt-2 flex justify-between items-center text-xs text-gray-500">
+                  <button><i class="fas fa-arrow-left"></i></button>
+                  <span>Created on ${createdDate}</span>
+                  <button id="delete-task-btn" class="text-gray-400 hover:text-red-500 text-base"><i class="fas fa-trash-alt"></i></button>
+                </div>
+              </div>
             `;
-        }
-
-        async function addPlannerTask(title, dueDateStr = null) {
+          }
+          
+          /** SUPABASE-ONLY IMPLEMENTATION **/
+          
+          async function addPlannerTask(title, dueDateStr = null) {
             if (!currentUser || !title.trim()) return;
-            const currentList = plannerState.lists.find(l => l.id === plannerState.activeListId) || { members: [currentUser.id] };
-            
-            try {
-                // FIX: If the active list is 'inbox', the listId in the database should be null,
-                // as 'inbox' is a client-side concept and not a real UUID in the 'lists' table.
-                const listIdForDb = plannerState.activeListId === 'inbox' ? null : plannerState.activeListId;
-
-                await addDoc(collection(db, `/artifacts/${appId}/public/data/tasks`), {
-                    title: title.trim(),
-                    completed: false,
-                    priority: 'none',
-                    listId: listIdForDb, // Use the corrected value here
-                    created_at: serverTimestamp(),
-                    createdBy: currentUser.id,
-                    members: currentList.members || [currentUser.id],
-                    notes: '',
-                    subtasks: [],
-                    tags: [],
-                    dueDate: dueDateStr ? new Date(dueDateStr + 'T00:00:00') : null,
-                });
-            } catch (error) {
-                console.error("Error adding task:", error);
-                showToast("Failed to add task.", "error");
+          
+            // 'inbox' is a UI concept; DB wants either a UUID or null
+            const listIdForDb = plannerState.activeListId === 'inbox' ? null : plannerState.activeListId;
+          
+            // Build minimal, safe payload (only columns you actually have)
+            const payload = {
+              title: title.trim(),
+              completed: false,
+              priority: 'none',
+              list_id: listIdForDb,
+              created_by: currentUser.id,
+              notes: ''
+              // add members / tags columns ONLY if your table has them
+              // members: [currentUser.id],
+              // tags: [],
+            };
+          
+            if (dueDateStr) {
+              // store as ISO timestamp (date-only at midnight UTC)
+              payload.due_date = new Date(dueDateStr + 'T00:00:00Z').toISOString();
             }
-        }
-        
-        async function updatePlannerTask(taskId, data) {
+          
+            const { data, error } = await supabase
+              .from('tasks')
+              .insert([payload])
+              .select()
+              .single();
+          
+            if (error) {
+              console.error('Error adding task:', error);
+              showToast('Failed to add task.', 'error');
+              return;
+            }
+          
+            // Update your local state (optional)
+            plannerState.tasks.push(data);
+            renderPlannerTaskDetails();
+          }
+          
+          function camelToSnake(obj) {
+            const map = { listId: 'list_id', createdAt: 'created_at', createdBy: 'created_by', dueDate: 'due_date' };
+            const out = {};
+            for (const [k, v] of Object.entries(obj || {})) out[map[k] || k] = v;
+            return out;
+          }
+          
+          async function updatePlannerTask(taskId, data) {
             if (!currentUser || !taskId) return;
-            const taskRef = doc(db, `/artifacts/${appId}/public/data/tasks`, taskId);
-            try {
-                await updateDoc(taskRef, data);
-            } catch (error) {
-                console.error("Error updating task:", error);
-                showToast("Failed to update task.", "error");
+          
+            const payload = camelToSnake(data);
+          
+            const { error } = await supabase
+              .from('tasks')
+              .update(payload)
+              .eq('id', taskId);
+          
+            if (error) {
+              console.error('Error updating task:', error);
+              showToast('Failed to update task.', 'error');
             }
-        }
-
-        async function deletePlannerTask(taskId) {
+          }
+          
+          async function deletePlannerTask(taskId) {
             if (!currentUser || !taskId) return;
-            const taskRef = doc(db, `/artifacts/${appId}/public/data/tasks`, taskId);
-            try {
-                await deleteDoc(taskRef);
-                plannerState.selectedTaskId = null;
-                renderPlannerTaskDetails(); // Hide the panel
-            } catch (error) {
-                console.error("Error deleting task:", error);
-                showToast("Failed to delete task.", "error");
+          
+            const { error } = await supabase
+              .from('tasks')
+              .delete()
+              .eq('id', taskId);
+          
+            if (error) {
+              console.error('Error deleting task:', error);
+              showToast('Failed to delete task.', 'error');
+              return;
             }
-        }
-        
-        // =================================================================================
-        // ============================= NEW PLANNER LOGIC END =============================
-        // =================================================================================
-        
-        function renderGroupStudiconView() {
-            const container = document.getElementById('group-detail-content');
-            if (!container) return;
-
-            // Use Object.entries to get member ID
-            const membersArray = Object.entries(groupRealtimeData.members).map(([uid, data]) => ({ uid, ...data })).sort((a, b) => {
-                const aIsStudying = !!a.studying;
-                const bIsStudying = !!b.studying;
-                if (aIsStudying !== bIsStudying) {
-                    return aIsStudying ? -1 : 1;
-                }
-                return (a.username || '').localeCompare(b.username || '');
-            });
-            
-            const todayStr = getCurrentDate().toISOString().split('T')[0];
-            
-            const studyingCount = membersArray.filter(m => !!m.studying).length;
-            const totalMembers = membersArray.length;
-
-            container.innerHTML = `
-                <div class="p-4">
-                    <div class="text-center mb-6 bg-gray-800 p-3 rounded-lg">
-                        <p class="text-2xl font-bold text-cyan-400">${studyingCount} / ${totalMembers}</p>
-                        <p class="text-sm text-gray-400">Members Currently Studying</p>
-                    </div>
-                    <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">
-                        ${membersArray.map(member => {
-                            const isStudying = !!member.studying;
-                            const studiconUrl = member.studicon_url || 'https://api.dicebear.com/8.x/miniavs/svg?seed=Angel';
-
-                            // --- NEW: Calculate total time today for display ---
-                            let totalTodaySeconds = 0;
-                            if (member.total_time_today && member.total_time_today.date === todayStr) {
-                                totalTodaySeconds = member.total_time_today.seconds || 0;
-                            }
-                            const currentSessionElapsed = (isStudying && member.studying.type === 'study' && member.studying.startTime) 
-                                ? (Date.now() - member.studying.startTime.toDate()) / 1000 
-                                : 0;
-                            const effectiveTotalToday = totalTodaySeconds + currentSessionElapsed;
-                            // --- END NEW ---
-
-                            return `
-                                <div class="text-center cursor-pointer studicon-member-card" data-user-id="${member.id}">
-                                    <div class="relative w-20 h-20 mx-auto">
-                                        <div class="member-avatar ${isStudying ? 'studying' : ''} w-full h-full">
-                                            <img src="${studiconUrl}" class="w-full h-full object-cover rounded-full pointer-events-none">
-                                            ${isStudying ? '<div class="member-status-icon"></div>' : ''}
-                                        </div>
-                                    </div>
-                                    <p class="mt-2 text-sm font-semibold truncate text-white pointer-events-none">${member.username || 'Anonymous'}</p>
-                                    <p class="text-lg font-bold text-cyan-400 pointer-events-none">${formatTime(effectiveTotalToday)}</p>
-                                </div>
-                            `;
-                        }).join('')}
-                    </div>
-                </div>
-            `;
-        }
-
+          
+            plannerState.selectedTaskId = null;
+            plannerState.tasks = plannerState.tasks.filter(t => t.id !== taskId);
+            renderPlannerTaskDetails();
+          }          
 
         async function renderLeaderboard(period = 'weekly', containerId = 'ranking-list') {
             const container = document.getElementById(containerId);
@@ -8522,6 +8503,7 @@ async function updateUsername(newName) {
 
 </body>
 </html>
+
 
 
 
