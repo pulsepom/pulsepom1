@@ -2156,7 +2156,7 @@
                 obj[key] = fromPgArray(value);
             } else if (typeof value === 'string' || value instanceof Date) {
                 const lower = key.toLowerCase();
-                if (lower.includes('time') || lower.includes('date')) {
+                if (lower.includes('time') || lower.includes('date') || lower.endsWith('at')) {
                     const d = new Date(value);
                     if (!isNaN(d)) {
                         obj[key] = { toDate: () => d };
@@ -4225,18 +4225,30 @@ let pauseStartTime = 0;
                 const data = userDoc.data();
                 const todayStr = getCurrentDate().toISOString().split('T')[0];
                 
-                if (data.total_time_today && data.total_time_today.date === todayStr) {
-                    totalTimeTodayInSeconds = data.total_time_today.seconds || 0;
-                } else {
-                    totalTimeTodayInSeconds = 0;
-                    // The update to Firestore for a new day's totalTimeToday will be handled by saveSession's transaction.
+                // Reset totals for the new day or if data is missing, then check for today's data.
+                totalTimeTodayInSeconds = 0;
+                totalBreakTimeTodayInSeconds = 0;
+                
+                // Check for today's study time, handling potentially converted date objects.
+                if (data.total_time_today) {
+                    const dateObj = data.total_time_today.date;
+                    const dateStrFromData = (dateObj && typeof dateObj.toDate === 'function')
+                        ? dateObj.toDate().toISOString().split('T')[0]
+                        : dateObj;
+                    if (dateStrFromData === todayStr) {
+                        totalTimeTodayInSeconds = data.total_time_today.seconds || 0;
+                    }
                 }
-
-                if (data.total_break_time_today && data.total_break_time_today.date === todayStr) {
-                    totalBreakTimeTodayInSeconds = data.total_break_time_today.seconds || 0;
-                } else {
-                    totalBreakTimeTodayInSeconds = 0;
-                    // The update to Firestore for a new day's totalBreakTimeToday will be handled by saveSession's transaction.
+                
+                // Check for today's break time, handling potentially converted date objects.
+                if (data.total_break_time_today) {
+                    const dateObj = data.total_break_time_today.date;
+                    const dateStrFromData = (dateObj && typeof dateObj.toDate === 'function')
+                        ? dateObj.toDate().toISOString().split('T')[0]
+                        : dateObj;
+                    if (dateStrFromData === todayStr) {
+                        totalBreakTimeTodayInSeconds = data.total_break_time_today.seconds || 0;
+                    }
                 }
 
             } else {
@@ -6299,11 +6311,17 @@ if (achievementsGrid) {
           
             memberIds.forEach(async (memberId) => {
               // initial user
-              const { data: u } = await supabase.from('users').select('*').eq('id', memberId).single();
+              const { data: u } = await supabase.from('profiles').select('*').eq('id', memberId).single();
               if (u) {
                 groupRealtimeData.members[memberId] = u;
-                if ((document.querySelector('#group-detail-nav .active')?.dataset.subpage || 'home') === 'home') {
-                  renderGroupMembers();
+                const activeSubPage = document.querySelector('#group-detail-nav .active')?.dataset.subpage || 'home';
+                if (activeSubPage === 'home') {
+                    const isStudiconView = document.getElementById('studicon-view-btn')?.classList.contains('active');
+                    if (isStudiconView) {
+                        renderGroupStudiconView();
+                    } else {
+                        renderGroupMembers();
+                    }
                 }
               }
           
@@ -6320,12 +6338,18 @@ if (achievementsGrid) {
           
               // realtime user
               const uChan = supabase
-                .channel(`users:${memberId}`)
-                .on('postgres_changes', { event: '*', schema: 'public', table: 'users', filter: `id=eq.${memberId}` }, (payload) => {
+                .channel(`profiles:${memberId}`)
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles', filter: `id=eq.${memberId}` }, (payload) => {
                   groupRealtimeData.members[memberId] = payload.new || payload.old;
-                  if ((document.querySelector('#group-detail-nav .active')?.dataset.subpage || 'home') === 'home') {
-                    renderGroupMembers();
-                  }
+                  const activeSubPage = document.querySelector('#group-detail-nav .active')?.dataset.subpage || 'home';
+                    if (activeSubPage === 'home') {
+                        const isStudiconView = document.getElementById('studicon-view-btn')?.classList.contains('active');
+                        if (isStudiconView) {
+                            renderGroupStudiconView();
+                        } else {
+                            renderGroupMembers();
+                        }
+                    }
                 })
                 .subscribe();
               groupDetailUnsubscribers.push(() => supabase.removeChannel(uChan));
@@ -8647,3 +8671,6 @@ async function updateUsername(newName) {
 
 </body>
 </html>
+
+
+
