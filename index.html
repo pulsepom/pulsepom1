@@ -1163,6 +1163,13 @@
             margin-bottom: 0.25rem;
         }
 
+        /* NEW STYLE for Studicon View */
+        .studicon-member-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
         /* Attendance Page Styles */
         .attendance-container {
             padding: 16px;
@@ -6070,17 +6077,47 @@ if (achievementsGrid) {
             });
           }          
 
-        async function joinGroup(groupId) {
-            if (!currentUser || !isValidUUID(groupId) || !isValidUUID(currentUser.id)) {
-                console.warn('joinGroup with invalid ids', groupId, currentUser?.id);
-                return;
+          async function joinGroup(groupId) {
+            if (!currentUser) return;
+          
+            // (optional) capacity check
+            const [{ data: capRow, error: gErr }, { data: memRows, error: mErr }] = await Promise.all([
+              supabase.from('groups').select('capacity').eq('id', groupId).single(),
+              supabase.from('group_members').select('profile_id', { count: 'exact' }).eq('group_id', groupId)
+            ]);
+            if (gErr || mErr) { console.error(gErr || mErr); showToast('Could not join group.', 'error'); return; }
+            const currentCount = (memRows || []).length;
+            if (capRow && currentCount >= capRow.capacity) {
+              showToast('This group is currently full.', 'info');
+              return;
             }
-            const userRef = doc(db, 'artifacts', appId, 'users', currentUser.id);
-            const groupRef = doc(db, 'artifacts', appId, 'public', 'data', 'groups', groupId);
-            await updateDoc(userRef, { joined_groups: arrayUnion(groupId) });
-            await updateDoc(groupRef, { members: arrayUnion(currentUser.id) });
-            showToast("Group joined successfully!", "success");
-        }
+          
+            // do the join
+            const { error } = await supabase
+              .from('group_members')
+              .insert([{ group_id: groupId, profile_id: currentUser.id }]);
+          
+            // handle "already joined"
+            if (error) {
+              // Postgres unique violation (if you set PK (group_id, profile_id))
+              if (error.code === '23505') {
+                showToast("You've already joined this group.", 'info');
+              } else {
+                console.error('joinGroup error', error);
+                showToast('Failed to join group.', 'error');
+              }
+              return;
+            }
+          
+            // keep your in-memory cache consistent for buttons/labels
+            currentUserData.joined_groups = Array.from(new Set([...(currentUserData.joined_groups || []), groupId]));
+          
+            showToast('Group joined successfully!', 'success');
+          
+            // refresh whichever UI you’re on
+            if (document.getElementById('my-groups-list')) renderJoinedGroups();
+            if (document.getElementById('all-groups-list')) renderGroupRankings();
+          }          
 
         function renderSubjectSelectionList(subjects, newlyAddedSubjectName = null) {
             const container = document.getElementById('subject-selection-list');
@@ -6224,6 +6261,34 @@ if (achievementsGrid) {
             renderGroupSubPage(activeSubPage);
           }
           
+        function renderGroupStudiconView() {
+            const container = document.getElementById('group-detail-content');
+            if (!container) return;
+
+            const membersArray = Object.values(groupRealtimeData.members || {});
+
+            container.innerHTML = `
+                <div class="p-4 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">
+                    ${membersArray.map(member => {
+                        if (!member) return ''; // Add a guard for null/undefined members
+                        const isStudying = member.studying && member.studying.type === 'study';
+                        const studiconUrl = member.studicon_url || 'https://api.dicebear.com/8.x/miniavs/svg?seed=default';
+                        const subject = isStudying ? member.studying.subject : 'Idle';
+                        return `
+                            <div class="studicon-member-card text-center cursor-pointer" data-user-id="${member.id}">
+                                <div class="relative w-24 h-24 mx-auto">
+                                    <img src="${studiconUrl}" class="w-full h-full rounded-full bg-gray-700 p-1 ${isStudying ? 'ring-4 ring-green-500' : 'ring-4 ring-gray-600'}" alt="${member.username || 'User'}">
+                                    ${isStudying ? `<div class="absolute bottom-0 right-0 w-6 h-6 bg-green-500 border-2 border-gray-900 rounded-full"></div>` : ''}
+                                </div>
+                                <p class="mt-2 font-semibold text-white truncate">${member.username || 'Anonymous'}</p>
+                                <p class="text-xs ${isStudying ? 'text-green-400' : 'text-gray-400'} truncate">${subject}</p>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        }
+
           function setupGroupMemberListeners(memberIds) {
             // clear previous
             groupDetailUnsubscribers.forEach(unsub => unsub());
@@ -7478,9 +7543,18 @@ if (achievementsGrid) {
                 const newGroupRef = await addDoc(collection(db, `artifacts/${appId}/public/data/groups`), {
                     name, password: password || null, category, time_goal, capacity, description,
                     leaderId: currentUser.id, leaderName: currentUserData.username,
-                    members: [currentUser.id], created_at: serverTimestamp(),
+                    // The 'members' array is not the correct way to add members with Supabase.
+                    // Membership is handled by the separate group_members table.
+                    created_at: serverTimestamp(),
                     avgTime: '0h 0m', attendance: 0
                 });
+
+                // FIX: Insert the leader into the group_members table to officially join them to the group.
+                const { error: joinError } = await supabase.from('group_members').insert({
+                    group_id: newGroupRef.id,
+                    profile_id: currentUser.id
+                });
+                if (joinError) throw joinError;
         
                 const userRef = doc(db, 'artifacts', appId, 'users', currentUser.id);
                 await updateDoc(userRef, { joined_groups: arrayUnion(newGroupRef.id) });
@@ -8573,9 +8647,3 @@ async function updateUsername(newName) {
 
 </body>
 </html>
-
-
-
-
-
-
