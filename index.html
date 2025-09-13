@@ -1985,12 +1985,23 @@
     <div id="confirmation-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2 id="confirmation-modal-title" class="modal-title">Are you sure?</h2><button class="close-modal">&times;</button></div><p id="confirmation-modal-message">This action cannot be undone.</p><div id="confirmation-modal-buttons"><button id="cancel-btn">Cancel</button><button id="confirm-btn">Confirm</button></div></div></div>
     
     <div id="edit-profile-modal" class="modal">
-        <div class="modal-content"><div class="modal-header"><div class="modal-title">Edit Profile</div><button class="close-modal">&times;</button></div><form id="edit-profile-form"><div class="mb-4"><label for="edit-username-input" class="block text-gray-300 mb-2">Username</label><input type="text" id="edit-username-input" class="w-full bg-gray-700 rounded-lg p-3 text-white focus:outline-none focus:ring-2 focus:ring-teal-400" required minlength="3"></div><button type="submit" class="w-full bg-gradient-to-r from-teal-500 to-sky-500 text-white font-bold py-3 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-sky-500/40 hover:scale-105">Save Changes</button></form></div></div>
-    </div>
-    
-    <div id="study-goal-modal" class="modal"><div class="modal-content"><div class="modal-header"><div class="modal-title">Set Study Goal</div><button class="close-modal">&times;</button></div><form id="study-goal-form"><div class="mb-4"><label for="study-goal-input" class="block text-gray-300 mb-2">Daily Study Goal (hours)</label><input type="number" id="study-goal-input" class="w-full bg-gray-700 rounded-lg p-3 text-white focus:outline-none focus:ring-2 focus:ring-teal-400" required min="1" max="24"></div><button type="submit" class="w-full bg-gradient-to-r from-teal-500 to-sky-500 text-white font-bold py-3 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-sky-500/40 hover:scale-105">Set Goal</button></form></div></div>
+        <div class="modal-content"><div class="modal-header"><div class="modal-title">Set Study Goal</div><button class="close-modal">&times;</button></div><form id="study-goal-form"><div class="mb-4"><label for="study-goal-input" class="block text-gray-300 mb-2">Daily Study Goal (hours)</label><input type="number" id="study-goal-input" class="w-full bg-gray-700 rounded-lg p-3 text-white focus:outline-none focus:ring-2 focus:ring-teal-400" required min="1" max="24"></div><button type="submit" class="w-full bg-gradient-to-r from-teal-500 to-sky-500 text-white font-bold py-3 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-sky-500/40 hover:scale-105">Set Goal</button></form></div></div>
 
     <div id="pomodoro-settings-modal" class="modal"><div class="modal-content no-scrollbar"><div class="modal-header"><div class="modal-title">Pomodoro Settings</div><button class="close-modal">&times;</button></div><form id="pomodoro-settings-form" class="space-y-4"><div class="grid grid-cols-1 gap-4"><div><label for="pomodoro-work-duration" class="block text-sm font-medium text-gray-300">Focus Duration (minutes)</label><input type="number" id="pomodoro-work-duration" class="w-full bg-gray-700 border-gray-600 rounded-lg p-2 mt-1 text-white" min="1" required></div><div><label for="pomodoro-short-break-duration" class="block text-sm font-medium text-gray-300">Short Break (minutes)</label><input type="number" id="pomodoro-short-break-duration" class="w-full bg-gray-700 border-gray-600 rounded-lg p-2 mt-1 text-white" min="1" required></div><div><label for="pomodoro-long-break-duration" class="block text-sm font-medium text-gray-300">Long Break (minutes)</label><input type="number" id="pomodoro-long-break-duration" class="w-full bg-gray-700 border-gray-600 rounded-lg p-2 mt-1 text-white" min="1" required></div><div><label for="pomodoro-long-break-interval" class="block text-sm font-medium text-gray-300">Long Break Interval (sessions)</label><input type="number" id="pomodoro-long-break-interval" class="w-full bg-gray-700 border-gray-600 rounded-lg p-2 mt-1 text-white" min="2" required></div></div><hr class="border-gray-600 my-2"><h3 class="text-lg font-semibold text-gray-200">Alarms</h3><div class="grid grid-cols-1 gap-4"><div><label for="pomodoro-volume" class="block text-sm font-medium text-gray-300">Volume</label><input type="range" id="pomodoro-volume" min="0" max="1" step="0.1" class="w-full mt-1"></div><div><label for="pomodoro-start-sound" class="block text-sm font-medium text-gray-300">Starting Bell</label><select id="pomodoro-start-sound" class="w-full bg-gray-700 border-gray-600 rounded-lg p-2 mt-1 text-white"></select></div><div><label for="pomodoro-focus-sound" class="block text-sm font-medium text-gray-300">Focus Alarm (End of Break)</label><select id="pomodoro-focus-sound" class="w-full bg-gray-700 border-gray-600 rounded-lg p-2 mt-1 text-white"></select></div><div><label for="pomodoro-break-sound" class="block text-sm font-medium text-gray-300">Break Alarm (End of Focus)</label><select id="pomodoro-break-sound" class="w-full bg-gray-700 border-gray-600 rounded-lg p-2 mt-1 text-white"></select></div></div><hr class="border-gray-600 my-2"><h3 class="text-lg font-semibold text-gray-200">Automation</h3><div class="space-y-3"> <div class="flex items-center justify-between"><span class="text-sm font-medium text-gray-300">Auto-start next focus session?</span><label class="toggle-switch"><input type="checkbox" id="pomodoro-auto-start-focus"><span class="slider"></span></label></div><div class="flex items-center justify-between"><span class="text-sm font-medium text-gray-300">Auto-start next break?</span><label class="toggle-switch"><input type="checkbox" id="pomodoro-auto-start-break"><span class="slider"></span></label></div></div><button type="submit" class="w-full bg-gradient-to-r from-teal-500 to-sky-500 text-white font-bold py-3 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-sky-500/40 hover:scale-105 mt-4">Save Settings</button></form></div></div>
+
+    <!-- START: Added Missing Modals -->
+    <div id="group-settings-modal" class="modal"><div class="modal-content"><div class="modal-header"><div class="modal-title">Group Settings</div><button class="close-modal">&times;</button></div><div class="space-y-2"><div class="group-settings-item" data-action="edit-info"><i class="fas fa-edit"></i><span>Edit Group Info</span></div><div class="group-settings-item" data-action="group-rules"><i class="fas fa-gavel"></i><span>Group Rules</span></div><div class="group-settings-item" data-action="wake-up-group"><i class="fas fa-bullhorn"></i><span>Wake Up Group</span></div><div class="group-settings-item" data-action="kick-member"><i class="fas fa-user-minus"></i><span>Kick Member</span></div><div class="group-settings-item" data-action="promote-member"><i class="fas fa-crown"></i><span>Promote Member</span></div><div class="group-settings-item" data-action="member-logs"><i class="fas fa-history"></i><span>Member Logs</span></div><div class="group-settings-item text-red-400" data-action="leave-group"><i class="fas fa-sign-out-alt"></i><span>Leave Group</span></div></div></div></div>
+    <div id="studicon-store-modal" class="modal"><div class="modal-content"><div class="modal-header"><div class="modal-title">Choose Your Studicon</div><button class="close-modal">&times;</button></div><div><div id="studicon-category-tabs" class="flex space-x-1 border-b border-gray-700 mb-4"></div><div id="studicon-picker" class="avatar-picker max-h-60 overflow-y-auto"></div><button id="save-studicon-btn" class="w-full mt-4 bg-gradient-to-r from-teal-500 to-sky-500 text-white font-bold py-3 rounded-lg">Save</button></div></div></div>
+    <div id="edit-group-info-modal" class="modal"><div class="modal-content"><div class="modal-header"><div class="modal-title">Edit Group Information</div><button class="close-modal">&times;</button></div><form id="edit-group-info-form" class="space-y-4"><input type="hidden" id="edit-group-id-input"><div><label class="block text-sm font-medium text-gray-300">Group Name</label><input id="edit-group-name" type="text" class="w-full bg-gray-700 rounded-lg p-2 mt-1" required></div><div><label class="block text-sm font-medium text-gray-300">Description</label><textarea id="edit-group-description" class="w-full bg-gray-700 rounded-lg p-2 mt-1 h-24" required></textarea></div><div><label class="block text-sm font-medium text-gray-300">Category</label><select id="edit-group-category" class="w-full bg-gray-700 rounded-lg p-2 mt-1"><option>General study</option><option>Language study</option><option>Secondary School</option><option>University</option></select></div><div class="grid grid-cols-2 gap-4"><div><label class="block text-sm font-medium text-gray-300">Time Goal (h)</label><input id="edit-group-goal" type="number" min="1" max="10" class="w-full bg-gray-700 rounded-lg p-2 mt-1"></div><div><label class="block text-sm font-medium text-gray-300">Capacity</label><input id="edit-group-capacity" type="number" min="2" max="100" class="w-full bg-gray-700 rounded-lg p-2 mt-1"></div></div><div><label class="block text-sm font-medium text-gray-300">Password (optional)</label><input id="edit-group-password" type="text" class="w-full bg-gray-700 rounded-lg p-2 mt-1" placeholder="Leave blank for public"></div><button type="submit" class="w-full bg-gradient-to-r from-teal-500 to-sky-500 text-white font-bold py-3 rounded-lg">Save Changes</button></form></div></div>
+    <div id="group-rules-modal" class="modal"><div class="modal-content"><div class="modal-header"><div class="modal-title">Group Rules</div><div id="group-rules-controls"></div><button class="close-modal">&times;</button></div><div id="group-rules-display" class="text-gray-300 whitespace-pre-wrap"></div><div id="group-rules-edit-container" class="hidden"><textarea id="group-rules-textarea" class="w-full bg-gray-700 rounded-lg p-3 h-48"></textarea><button id="save-group-rules-btn" class="w-full mt-2 bg-gradient-to-r from-teal-500 to-sky-500 text-white font-bold py-2 rounded-lg">Save Rules</button></div></div></div>
+    <div id="image-view-modal" class="modal"><div class="modal-content p-1 bg-transparent"><img id="fullscreen-image" src="" class="max-w-full max-h-[90vh]"><button class="close-modal absolute top-2 right-2 text-white bg-black/50 rounded-full w-8 h-8">&times;</button></div></div>
+    <div id="user-profile-modal" class="modal"><div class="modal-content"><div class="modal-header"><div class="modal-title">User Profile</div><button class="close-modal">&times;</button></div><div id="user-profile-loading"><i class="fas fa-spinner fa-spin fa-2x"></i></div><div id="user-profile-details" class="hidden"><div class="flex items-center mb-4"><div id="user-profile-avatar" class="profile-avatar bg-blue-500 mr-4"></div><div><div id="user-profile-name" class="profile-name"></div></div></div><div class="space-y-2 text-sm"><div class="flex justify-between"><span>Total Today:</span><span id="user-profile-total-today" class="font-semibold"></span></div><div class="flex justify-between"><span>Total Overall:</span><span id="user-profile-total-overall" class="font-semibold"></span></div><div class="flex justify-between"><span>Last Active:</span><span id="user-profile-last-active" class="font-semibold"></span></div></div></div></div></div>
+    <div id="quick-add-task-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2 class="modal-title">Add Task for <span id="quick-add-task-date"></span></h2><button class="close-modal">&times;</button></div><form id="quick-add-task-form"><input type="hidden" id="quick-add-task-date-input"><input id="quick-add-task-title-input" type="text" class="w-full bg-gray-700 rounded-lg p-3 text-white" placeholder="e.g., Review chapter 5" required><button type="submit" class="w-full mt-3 bg-gradient-to-r from-teal-500 to-sky-500 text-white font-bold py-2 rounded-lg">Add Task</button></form></div></div>
+    <div id="edit-session-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2 class="modal-title">Edit Session</h2><button class="close-modal">&times;</button></div><form id="edit-session-form"><input type="hidden" id="edit-session-id"><input type="hidden" id="edit-session-old-duration"><input type="hidden" id="edit-session-ended-at"><div class="mb-4"><label for="edit-session-duration" class="block text-gray-300 mb-2">Duration (minutes)</label><input type="number" id="edit-session-duration" class="w-full bg-gray-700 rounded-lg p-3" min="1" required></div><button type="submit" class="w-full bg-gradient-to-r from-teal-500 to-sky-500 text-white font-bold py-3 rounded-lg">Save Changes</button></form></div></div>
+    <div id="avatar-character-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2 class="modal-title">Choose Character</h2><button class="close-modal">&times;</button></div><div id="avatar-character-picker" class="avatar-picker max-h-60 overflow-y-auto"></div><button id="save-character-avatar-btn" class="w-full mt-4 bg-gradient-to-r from-teal-500 to-sky-500 text-white font-bold py-3 rounded-lg">Save Character</button></div></div>
+    <div id="project-select-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2 class="modal-title">Move to Project</h2><button class="close-modal">&times;</button></div><div id="project-select-list" class="space-y-1 max-h-60 overflow-y-auto"></div></div></div>
+    <div id="repeat-settings-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2 class="modal-title">Repeat Settings</h2><button class="close-modal">&times;</button></div><form id="repeat-settings-form"><div class="mb-4"><label for="repeat-type-select" class="block text-gray-300 mb-2">Repeat Frequency</label><select id="repeat-type-select" class="w-full bg-gray-700 rounded-lg p-3"><option value="none">None</option><option value="daily">Daily</option><option value="weekly">Weekly</option><option value="monthly">Monthly</option><option value="yearly">Yearly</option></select></div><button type="submit" class="w-full bg-gradient-to-r from-teal-500 to-sky-500 text-white font-bold py-3 rounded-lg">Set Repeat</button></form></div></div>
+    <!-- END: Added Missing Modals -->
 
         <script type="module">
         // Supabase SDK
@@ -2020,8 +2031,9 @@
         if (args.length === 1 && args[0]?.path) {
             const path = [...args[0].path];
             const id = (typeof crypto !== 'undefined' && crypto.randomUUID)
-                ? crypto.randomUUID().replace(/-/g, '')
-                : Math.random().toString(36).slice(2);
+                ? crypto.randomUUID()
+                : ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+                    (c ^ Math.random() * 16 >> c / 4).toString(16));
             path.push(id);
             return { path };
         }
@@ -2096,11 +2108,45 @@
         return { [`${parent.table.slice(0, -1)}_id`]: parent.id };
     }
 
+    const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    function isValidUUID(str) {
+        return typeof str === 'string' && UUID_REGEX.test(str);
+    }
+
+    // NEW HELPER FUNCTION TO PARSE POSTGRES ARRAY STRINGS
+    function fromPgArray(pgString) {
+        if (!pgString) return [];
+        if (Array.isArray(pgString)) return pgString;
+        if (typeof pgString !== 'string') return [];
+        if (pgString === '{}' || pgString === '[]') return [];
+        // Handle JSON-style arrays (e.g. "[\"id1\",\"id2\"]")
+        if (pgString.trim().startsWith('[')) {
+            try {
+                return JSON.parse(pgString).map(v => String(v)).filter(isValidUUID);
+            } catch {
+                return [];
+            }
+        }
+        // Handle Postgres array string format ("{id1,id2}")
+        return pgString
+            .slice(1, -1)
+            .split(',')
+            .map(v => v.replace(/^"|"$/g, ''))
+            .filter(isValidUUID);
+    }
+
     function convertTimestamps(obj) {
         if (!obj || typeof obj !== 'object') return obj;
         for (const [key, value] of Object.entries(obj)) {
             if (value && typeof value === 'object' && !('toDate' in value)) {
                 convertTimestamps(value);
+            } else if (
+                typeof value === 'string' &&
+                ((value.startsWith('{') && value.endsWith('}')) ||
+                 (value.startsWith('[') && value.endsWith(']')))
+            ) {
+                // Parse Postgres or JSON array strings into JavaScript arrays
+                obj[key] = fromPgArray(value);
             } else if (typeof value === 'string' || value instanceof Date) {
                 const lower = key.toLowerCase();
                 if (lower.includes('time') || lower.includes('date')) {
@@ -2116,6 +2162,10 @@
 
     async function getDoc(ref) {
         const { table, id } = parseDocPath(ref);
+        if (!isValidUUID(id)) {
+            console.warn('getDoc called with invalid uuid', id);
+            return { exists: () => false, data: () => null };
+        }
         const { data, error } = await supabase.from(table).select('*').eq('id', id).single();
         if (error) throw error;
         return { exists: () => !!data, data: () => convertTimestamps(data) };
@@ -2130,16 +2180,24 @@
 
     async function updateDoc(ref, data) {
         const { table, id } = parseDocPath(ref);
-        const { data: existing } = await supabase.from(table).select('*').eq('id', id).single();
+        if (!isValidUUID(id)) {
+            console.warn('updateDoc called with invalid uuid', id);
+            return;
+        }
+        const { data: existingData } = await supabase.from(table).select('*').eq('id', id).single();
+        const existing = convertTimestamps(existingData);
         const payload = {};
         for (const [k, v] of Object.entries(data)) {
             if (v && v.__op === 'increment') {
                 payload[k] = (existing?.[k] || 0) + v.value;
             } else if (v && v.__op === 'arrayUnion') {
-                const arr = new Set([...(existing?.[k] || []), v.value]);
-                payload[k] = Array.from(arr);
+                const existingArr = Array.isArray(existing?.[k]) ? existing[k] : fromPgArray(existing?.[k]);
+                const arr = new Set([...(existingArr || []), v.value]);
+                payload[k] = `{${Array.from(arr).join(',')}}`;
             } else if (v && v.__op === 'arrayRemove') {
-                payload[k] = (existing?.[k] || []).filter(item => item !== v.value);
+                const existingArr = Array.isArray(existing?.[k]) ? existing[k] : fromPgArray(existing?.[k]);
+                const filteredArr = (existingArr || []).filter(item => item !== v.value);
+                payload[k] = `{${filteredArr.join(',')}}`;
             } else {
                 payload[k] = v;
             }
@@ -2151,6 +2209,13 @@
     async function addDoc(collRef, data) {
         const { table, parent } = parseCollectionPath(collRef);
         const payload = { ...buildForeignKey(parent), ...data };
+        // Fix for UUID error: Manually format arrays into Postgres literal strings,
+        // as the Supabase client seems to be incorrectly stringifying them as JSON.
+        for (const key in payload) {
+            if (Array.isArray(payload[key])) {
+                payload[key] = `{${payload[key].join(',')}}`;
+            }
+        }
         const { data: inserted, error } = await supabase.from(table).insert(payload).select().single();
         if (error) throw error;
         return { id: inserted.id };
@@ -2173,11 +2238,10 @@
     }
 
     async function getDocs(q) {
-        const { collectionRef, mods } = q;
+        const collectionRef = q && q.collectionRef ? q.collectionRef : q;
+        const mods = q && Array.isArray(q.mods) ? q.mods : [];
         const { table, parent } = parseCollectionPath(collectionRef);
-        let req = supabase.from(table).select('*');
-        if (parent) req = req.eq(`${parent.table.slice(0, -1)}_id`, parent.id);
-        
+
         const operatorMap = {
             '==': 'eq',
             '<': 'lt',
@@ -2190,33 +2254,53 @@
             'array-contains-any': 'cs', // Supabase `cs` (contains) is the closest for arrays of strings/numbers
         };
 
-        for (const mod of mods) {
-            if (mod.type === 'orderBy') {
-                req = req.order(mod.field, { ascending: mod.dir !== 'desc' });
-            } else if (mod.type === 'where') {
-                const supabaseOp = operatorMap[mod.op] || mod.op;
-                let value = mod.value;
-                if (value instanceof Date) {
-                    value = value.toISOString(); // Convert Date objects to ISO string
-                }
-                
-                // Special handling for 'in' operator which expects a string like '(val1, val2)'
-                if (supabaseOp === 'in' && Array.isArray(value)) {
-                    value = `(${value.map(v => typeof v === 'string' ? `"${v}"` : v).join(',')})`;
-                }
+        const buildRequest = (useFallback = false) => {
+            let req = supabase.from(table).select('*');
+            if (parent) req = req.eq(`${parent.table.slice(0, -1)}_id`, parent.id);
 
-                // FIX: Special handling for 'array-contains' on native array columns (like uuid[]).
-                // The format '{value}' is the correct literal syntax for a single-element array.
-                if ((supabaseOp === 'cs' || supabaseOp === 'cd') && !Array.isArray(value)) {
-                    value = `{${value}}`;
-                }
+            for (const mod of mods) {
+                if (mod.type === 'orderBy') {
+                    req = req.order(mod.field, { ascending: mod.dir !== 'desc' });
+                } else if (mod.type === 'where') {
+                    if (useFallback && (mod.op === 'array-contains' || mod.op === 'array-contains-any')) {
+                        req = req.filter(mod.field, 'ilike', `%${mod.value}%`);
+                        continue;
+                    }
 
-                req = req.filter(mod.field, supabaseOp, value);
-            } else if (mod.type === 'limit') {
-                req = req.limit(mod.count);
+                    const supabaseOp = operatorMap[mod.op] || mod.op;
+                    let value = mod.value;
+                    if (value instanceof Date) {
+                        value = value.toISOString(); // Convert Date objects to ISO string
+                    }
+
+                    // Special handling for 'in' operator which expects a string like '(val1, val2)'
+                    if (supabaseOp === 'in' && Array.isArray(value)) {
+                        value = `(${value.map(v => typeof v === 'string' ? `"${v}"` : v).join(',')})`;
+                    }
+
+                    // FINAL FIX: Correctly format the value for array columns.
+                    // For uuid[] columns, the value should be in the format '{uuid-string}', without quotes inside.
+                    if ((supabaseOp === 'cs' || supabaseOp === 'cd') && !Array.isArray(value)) {
+                        value = `{${value}}`;
+                    }
+
+                    req = req.filter(mod.field, supabaseOp, value);
+                } else if (mod.type === 'limit') {
+                    req = req.limit(mod.count);
+                }
             }
+            return req;
+        };
+
+        let { data, error } = await buildRequest(false);
+
+        // Fallback for text columns when using array operators (@>)
+        if (error && error.code === '42883' &&
+            mods.some(m => m.type === 'where' && (m.op === 'array-contains' || m.op === 'array-contains-any'))
+        ) {
+            ({ data, error } = await buildRequest(true));
         }
-        const { data, error } = await req;
+
         if (error) throw error;
         return { docs: data.map(d => ({ id: d.id, data: () => convertTimestamps(d) })), empty: data.length === 0 };
     }
@@ -2313,7 +2397,7 @@
     // ensure profile row exists (call after sign up / first login)
     async function ensureProfileRow() {
         const { data: { user } } = await auth.getUser();
-        if (!user) return;
+        if (!user || !isValidUUID(user.id)) return;
 
         const local = (user.email || 'user').split('@')[0]
                        .toLowerCase().replace(/[^a-z0-9_]+/g, '_');
@@ -2335,8 +2419,8 @@
         const { data: { user } } = await auth.getUser();
         currentUser = user ?? null;
 
-        // Not logged in → stay on auth screen
-        if (!currentUser) {
+        // Not logged in or malformed ID → stay on auth screen
+        if (!currentUser || !isValidUUID(currentUser.id)) {
             showPage('auth-screen');
             return;
         }
@@ -2370,7 +2454,9 @@
         } else {
             await loadMyProfile();
             // This is the critical fix: Attach all real-time listeners after the user is verified.
-            setupRealtimeListeners(); 
+            setupRealtimeListeners();
+            // Ensure daily totals persist across refreshes
+            await loadDailyTotal();
             showPage('page-timer');
         }
     }
@@ -3669,14 +3755,14 @@ let pauseStartTime = 0;
                 // Calculate total time today
                 const todayStr = getCurrentDate().toISOString().split('T')[0];
                 let totalTodaySeconds = 0;
-                if (privateData.totalTimeToday && privateData.totalTimeToday.date === todayStr) {
-                    totalTodaySeconds = privateData.totalTimeToday.seconds || 0;
+                if (privateData.total_time_today && privateData.total_time_today.date === todayStr) {
+                    totalTodaySeconds = privateData.total_time_today.seconds || 0;
                 }
 
                 // Update UI
                 const avatarEl = document.getElementById('user-profile-avatar');
-                if (publicData.photoURL) {
-                    avatarEl.innerHTML = `<img src="${publicData.photoURL}" alt="${publicData.username}" class="w-full h-full object-cover">`;
+                if (publicData.photo_url) {
+                    avatarEl.innerHTML = `<img src="${publicData.photo_url}" alt="${publicData.username}" class="w-full h-full object-cover">`;
                 } else {
                     const initial = publicData.username ? publicData.username.charAt(0).toUpperCase() : 'U';
                     avatarEl.innerHTML = `<span>${initial}</span>`;
@@ -3684,7 +3770,7 @@ let pauseStartTime = 0;
                 
                 document.getElementById('user-profile-name').textContent = publicData.username || 'Anonymous';
                 document.getElementById('user-profile-total-today').textContent = formatTime(totalTodaySeconds);
-                document.getElementById('user-profile-total-overall').textContent = formatTime(publicData.totalStudySeconds || 0, false);
+                document.getElementById('user-profile-total-overall').textContent = formatTime(publicData.total_study_seconds || 0, false);
                 document.getElementById('user-profile-last-active').textContent = lastActiveText;
 
                 loadingEl.classList.add('hidden');
@@ -4021,58 +4107,54 @@ let pauseStartTime = 0;
             const cappedDuration = (sessionType === 'break' && durationSeconds > MAX_BREAK_SECONDS) ? MAX_BREAK_SECONDS : durationSeconds;
 
             try {
-                // Get references to documents
-                const userDocRef = doc(db, 'artifacts', appId, 'users', currentUser.id);
-                const publicUserDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', currentUser.id);
-                const sessionsCollectionRef = collection(userDocRef, 'sessions');
+                // Fetch current profile
+                const { data: userData, error: fetchErr } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', currentUser.id)
+                    .single();
+                if (fetchErr) throw fetchErr;
 
-                // 1. Get current user data to perform calculations
-                const userDoc = await getDoc(userDocRef);
-                if (!userDoc.exists()) throw new Error("User document not found.");
-                
-                const userData = userDoc.data();
                 const todayStr = new Date().toISOString().split('T')[0];
-
-                // 2. Prepare updates for the user's profile
                 const profileUpdate = {};
-                const publicProfileUpdate = {};
 
                 if (sessionType === 'study') {
                     const yesterdayStr = new Date(Date.now() - 86400000).toISOString().split('T')[0];
-                    const lastStudyDay = userData.lastStudyDay || '';
-                    let currentStreak = userData.currentStreak || 0;
+                    const lastStudyDay = userData.last_study_day || '';
+                    let currentStreak = userData.current_streak || 0;
                     if (lastStudyDay !== todayStr) {
                         currentStreak = (lastStudyDay === yesterdayStr) ? currentStreak + 1 : 1;
-                        profileUpdate.currentStreak = currentStreak;
-                        profileUpdate.lastStudyDay = todayStr;
+                        profileUpdate.current_streak = currentStreak;
+                        profileUpdate.last_study_day = todayStr;
                     }
 
-                    const currentDailyStudy = (userData.totalTimeToday?.date === todayStr) ? userData.totalTimeToday.seconds : 0;
-                    profileUpdate.totalStudySeconds = increment(cappedDuration);
-                    profileUpdate.totalTimeToday = { date: todayStr, seconds: currentDailyStudy + cappedDuration };
-                    publicProfileUpdate.totalStudySeconds = increment(cappedDuration);
+                    const currentDailyStudy = (userData.total_time_today?.date === todayStr) ? userData.total_time_today.seconds : 0;
+                    profileUpdate.total_study_seconds = (userData.total_study_seconds || 0) + cappedDuration;
+                    profileUpdate.total_time_today = { date: todayStr, seconds: currentDailyStudy + cappedDuration };
                     totalTimeTodayInSeconds = currentDailyStudy + cappedDuration;
                 } else { // 'break'
-                    const currentDailyBreak = (userData.totalBreakTimeToday?.date === todayStr) ? userData.totalBreakTimeToday.seconds : 0;
-                    profileUpdate.totalBreakSeconds = increment(cappedDuration);
-                    profileUpdate.totalBreakTimeToday = { date: todayStr, seconds: currentDailyBreak + cappedDuration };
-                    publicProfileUpdate.totalBreakSeconds = increment(cappedDuration);
+                    const currentDailyBreak = (userData.total_break_time_today?.date === todayStr) ? userData.total_break_time_today.seconds : 0;
+                    profileUpdate.total_break_seconds = (userData.total_break_seconds || 0) + cappedDuration;
+                    profileUpdate.total_break_time_today = { date: todayStr, seconds: currentDailyBreak + cappedDuration };
                     totalBreakTimeTodayInSeconds = currentDailyBreak + cappedDuration;
                 }
 
-                // 3. Execute all database operations
-                await Promise.all([
-                    updateDoc(userDocRef, profileUpdate),
-                    updateDoc(publicUserDocRef, publicProfileUpdate),
-                    addDoc(sessionsCollectionRef, {
-                        subject: subject,
-                        durationSeconds: cappedDuration,
-                        endedAt: serverTimestamp(),
-                        type: sessionType
-                    })
-                ]);
+                // Update profile totals
+                await supabase
+                    .from('profiles')
+                    .update(profileUpdate)
+                    .eq('id', currentUser.id);
 
-                // 4. Update UI and check for achievements
+                // Log session
+                await supabase.from('sessions').insert({
+                    profile_id: currentUser.id,
+                    subject: subject,
+                    durationSec: cappedDuration,
+                    endedAt: new Date().toISOString(),
+                    type: sessionType
+                });
+
+                // Update UI and check for achievements
                 updateTotalTimeDisplay();
                 showToast(`Session of ${formatTime(cappedDuration, false)} saved!`, "success");
                 if (sessionType === 'study') {
@@ -4093,15 +4175,15 @@ let pauseStartTime = 0;
         if (!userDoc.exists()) return;
 
         const userData = userDoc.data();
-        const unlocked = userData.unlockedAchievements || [];
+        const unlocked = userData.unlocked_achievements || [];
         let newlyUnlocked = [];
 
         // Rule 1: Study for a total of 1 hour
-        if (!unlocked.includes('novice_scholar') && userData.totalStudySeconds >= 3600) {
+        if (!unlocked.includes('novice_scholar') && userData.total_study_seconds >= 3600) {
             newlyUnlocked.push('novice_scholar');
         }
         // Rule 2: Study for a total of 10 hours
-        if (!unlocked.includes('dedicated_learner') && userData.totalStudySeconds >= 36000) {
+        if (!unlocked.includes('dedicated_learner') && userData.total_study_seconds >= 36000) {
             newlyUnlocked.push('dedicated_learner');
         }
         // Rule 3: Complete a single session over 2 hours
@@ -4109,13 +4191,13 @@ let pauseStartTime = 0;
             newlyUnlocked.push('marathoner');
         }
         // Rule 4: Maintain a 7-day study streak
-        if (!unlocked.includes('consistent_coder') && userData.currentStreak >= 7) {
+        if (!unlocked.includes('consistent_coder') && userData.current_streak >= 7) {
             newlyUnlocked.push('consistent_coder');
         }
 
         if (newlyUnlocked.length > 0) {
             await updateDoc(userDocRef, { 
-                unlockedAchievements: arrayUnion(...newlyUnlocked) 
+                unlocked_achievements: arrayUnion(...newlyUnlocked) 
             });
             
             const achievement = ACHIEVEMENTS[newlyUnlocked[0]];
@@ -4145,15 +4227,15 @@ let pauseStartTime = 0;
                 const data = userDoc.data();
                 const todayStr = getCurrentDate().toISOString().split('T')[0];
                 
-                if (data.totalTimeToday && data.totalTimeToday.date === todayStr) {
-                    totalTimeTodayInSeconds = data.totalTimeToday.seconds || 0;
+                if (data.total_time_today && data.total_time_today.date === todayStr) {
+                    totalTimeTodayInSeconds = data.total_time_today.seconds || 0;
                 } else {
                     totalTimeTodayInSeconds = 0;
                     // The update to Firestore for a new day's totalTimeToday will be handled by saveSession's transaction.
                 }
 
-                if (data.totalBreakTimeToday && data.totalBreakTimeToday.date === todayStr) {
-                    totalBreakTimeTodayInSeconds = data.totalBreakTimeToday.seconds || 0;
+                if (data.total_break_time_today && data.total_break_time_today.date === todayStr) {
+                    totalBreakTimeTodayInSeconds = data.total_break_time_today.seconds || 0;
                 } else {
                     totalBreakTimeTodayInSeconds = 0;
                     // The update to Firestore for a new day's totalBreakTimeToday will be handled by saveSession's transaction.
@@ -4176,18 +4258,18 @@ let pauseStartTime = 0;
                 const initialData = {
                     email: user.email,
                     username: user.displayName,
-                    photoURL: PRESET_AVATARS[0], // Default avatar
-                    studiconURL: 'https://api.dicebear.com/8.x/miniavs/svg?seed=Angel', // Default studicon
-                    joinedGroups: [],
-                    createdAt: serverTimestamp(),
-                    totalStudySeconds: 0,
-                    totalBreakSeconds: 0, // New field
-                    currentStreak: 0,
-                    lastStudyDay: '',
-                    unlockedAchievements: [],
+                    photo_url: PRESET_AVATARS[0], // Default avatar
+                    studicon_url: 'https://api.dicebear.com/8.x/miniavs/svg?seed=Angel', // Default studicon
+                    joined_groups: [],
+                    created_at: serverTimestamp(),
+                    total_study_seconds: 0,
+                    total_break_seconds: 0, // New field
+                    current_streak: 0,
+                    last_study_day: '',
+                    unlocked_achievements: [],
                     studying: null,
-                    studyGoalHours: 4,
-                    pomodoroSettings: {
+                    study_goal_hours: 4,
+                    pomodoro_settings: {
                         work: 25,
                         short_break: 5,
                         long_break: 15,
@@ -4195,17 +4277,17 @@ let pauseStartTime = 0;
                         autoStartBreak: true,
                         autoStartFocus: true
                     },
-                    pomodoroSounds: {
+                    pomodoro_sounds: {
                         start: "tone_simple_beep",
                         focus: "tone_chime_chord",
                         break: "tone_metal_bell",
                         volume: 1.0
                     },
-                    totalTimeToday: { 
+                    total_time_today: { 
                         date: getCurrentDate().toISOString().split('T')[0],
                         seconds: 0
                     },
-                    totalBreakTimeToday: { // New field
+                    total_break_time_today: { // New field
                         date: getCurrentDate().toISOString().split('T')[0],
                         seconds: 0
                     }
@@ -4214,10 +4296,10 @@ let pauseStartTime = 0;
                 await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', user.id), {
                     username: user.displayName,
                     email: user.email,
-                    totalStudySeconds: 0,
-                    totalBreakSeconds: 0, // Initialize for public too
-                    photoURL: PRESET_AVATARS[0], // Public profile needs it too
-                    studiconURL: 'https://api.dicebear.com/8.x/miniavs/svg?seed=Angel',
+                    total_study_seconds: 0,
+                    total_break_seconds: 0, // Initialize for public too
+                    photo_url: PRESET_AVATARS[0], // Public profile needs it too
+                    studicon_url: 'https://api.dicebear.com/8.x/miniavs/svg?seed=Angel',
                 });
                 userDoc = await getDoc(userDocRef);
             }
@@ -4246,8 +4328,8 @@ let pauseStartTime = 0;
             currentUserData = userData; 
             const username = userData.username || 'Anonymous';
             const email = userData.email || '';
-            const photoURL = userData.photoURL;
-            const studyGoal = userData.studyGoalHours;
+            const photoURL = userData.photo_url;
+            const studyGoal = userData.study_goal_hours;
 
             document.getElementById('profile-page-name').textContent = username;
             document.getElementById('profile-page-email').textContent = email;
@@ -4272,13 +4354,13 @@ let pauseStartTime = 0;
             }
             const streakDisplay = document.getElementById('profile-streak-display');
 if (streakDisplay) {
-    const streak = userData.currentStreak || 0;
+    const streak = userData.current_streak || 0;
     streakDisplay.textContent = `${streak} day${streak === 1 ? '' : 's'}`;
 }
 
 const achievementsGrid = document.getElementById('achievements-grid');
 if (achievementsGrid) {
-    const unlocked = userData.unlockedAchievements || [];
+    const unlocked = userData.unlocked_achievements || [];
     achievementsGrid.innerHTML = Object.keys(ACHIEVEMENTS).map(key => {
         const hasUnlocked = unlocked.includes(key);
         const achievement = ACHIEVEMENTS[key];
@@ -4294,85 +4376,82 @@ if (achievementsGrid) {
 
         function setupRealtimeListeners() {
             if (!currentUser) return;
-            const groupsCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'groups');
-            const usersCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'users');
-            const userDocRef = doc(db, 'artifacts', appId, 'users', currentUser.id);
-            // Fetch subjects ordered by 'order' field
-            const subjectsCollectionRef = query(collection(userDocRef, 'subjects'), orderBy('order', 'asc'));
-            const sessionsCollectionRef = collection(userDocRef, 'sessions');
-            
-            onSnapshot(userDocRef, (doc) => {
-                if (doc.exists()) {
-                    const data = doc.data();
-                    currentUserData = data;
-                    const todayStr = getCurrentDate().toISOString().split('T')[0];
-                    if (!data.totalTimeToday || data.totalTimeToday.date !== todayStr || !data.totalBreakTimeToday || data.totalBreakTimeToday.date !== todayStr) {
-                        loadDailyTotal(); 
-                    } else {
-                        totalTimeTodayInSeconds = data.totalTimeToday.seconds;
-                        totalBreakTimeTodayInSeconds = data.totalBreakTimeToday.seconds;
-                        updateTotalTimeDisplay();
-                    }
 
-                    if (data.pomodoroSettings) {
-                        pomodoroSettings = {...pomodoroSettings, ...data.pomodoroSettings};
-                        pomodoroWorker.postMessage({ command: 'updateSettings', newSettings: pomodoroSettings });
-                    }
-                    if (data.pomodoroSounds) {
-                        pomodoroSounds = {...pomodoroSounds, ...data.pomodoroSounds};
-                    }
-                    updateProfileUI(data);
-                    // This listener updates joinedGroups, so we call the render function
-                    if (document.getElementById('page-my-groups').classList.contains('active')) {
-                        renderJoinedGroups();
-                    }
-                }
-            });
-            
-            onSnapshot(query(groupsCollectionRef), () => {
-                if (document.getElementById('page-find-groups').classList.contains('active')) {
-                   renderGroupRankings();
-                }
-                if (document.getElementById('page-my-groups').classList.contains('active')) {
-                    renderJoinedGroups();
-                }
-            });
-            
-            onSnapshot(subjectsCollectionRef, (snapshot) => {
-                const subjects = [];
-                snapshot.forEach(doc => subjects.push({ id: doc.id, ...doc.data() }));
-                // When subjects change, re-render the list in the start session modal
-                renderSubjectSelectionList(subjects);
-            });
-            
-            onSnapshot(query(usersCollectionRef), () => {
-                if (document.getElementById('page-ranking').classList.contains('active')) {
-                    const activeTab = document.querySelector('#ranking-period-tabs .ranking-tab-btn.active');
-                    renderLeaderboard(activeTab ? activeTab.dataset.period : 'weekly');
-                }
-            });
+            // Profile updates
+            supabase.channel('profiles-changes')
+                .on('postgres_changes', {
+                    event: '*',
+                    schema: 'public',
+                    table: 'profiles',
+                    filter: `id=eq.${currentUser.id}`
+                }, () => loadMyProfile())
+                .subscribe();
 
-            onSnapshot(query(sessionsCollectionRef, orderBy("endedAt", "desc")), (snapshot) => {
-                userSessions = snapshot.docs.map(doc => {
-                    const data = doc.data();
-                    return {
-                        id: doc.id,
-                        ...data,
-                        endedAt: data.endedAt && typeof data.endedAt.toDate === 'function' ? data.endedAt.toDate() : null, // Ensure endedAt is converted only if it's a Timestamp
-                        type: data.type || 'study' // Ensure type is present, default to 'study'
-                    };
-                });
-                if (document.getElementById('page-stats').classList.contains('active')) {
-                    renderStatsPage(userSessions);
-                }
-                 if (document.getElementById('page-ranking').classList.contains('active')) {
-                    const activeTab = document.querySelector('#ranking-period-tabs .ranking-tab-btn.active');
-                    renderLeaderboard(activeTab ? activeTab.dataset.period : 'weekly');
-                }
-            });
+            // Subjects
+            supabase.channel('subjects-changes')
+                .on('postgres_changes', {
+                    event: '*',
+                    schema: 'public',
+                    table: 'subjects',
+                    filter: `profile_id=eq.${currentUser.id}`
+                }, () => loadSubjects())
+                .subscribe();
+            loadSubjects();
+
+            // Sessions
+            supabase.channel('sessions-changes')
+                .on('postgres_changes', {
+                    event: '*',
+                    schema: 'public',
+                    table: 'sessions',
+                    filter: `profile_id=eq.${currentUser.id}`
+                }, () => loadSessions())
+                .subscribe();
+            loadSessions();
 
             // --- NEW PLANNER LISTENERS ---
             setupPlannerListeners();
+        }
+
+        async function loadSubjects() {
+            if (!currentUser) return;
+            const { data, error } = await supabase
+                .from('subjects')
+                .select('*')
+                .eq('profile_id', currentUser.id)
+                .order('order');
+            if (error) {
+                console.error('Failed to load subjects', error);
+                return;
+            }
+            renderSubjectSelectionList(data || []);
+        }
+
+        async function loadSessions() {
+            if (!currentUser) return;
+            const { data, error } = await supabase
+                .from('sessions')
+                .select('*')
+                .eq('profile_id', currentUser.id)
+                .order('endedAt', { ascending: false });
+            if (error) {
+                console.error('Failed to load sessions', error);
+                return;
+            }
+            userSessions = (data || []).map(s => ({
+                id: s.id,
+                subject: s.subject,
+                durationSeconds: s.durationSec,
+                endedAt: s.endedAt ? new Date(s.endedAt) : null,
+                type: s.type || 'study'
+            }));
+            if (document.getElementById('page-stats').classList.contains('active')) {
+                renderStatsPage(userSessions);
+            }
+            if (document.getElementById('page-ranking').classList.contains('active')) {
+                const activeTab = document.querySelector('#ranking-period-tabs .ranking-tab-btn.active');
+                renderLeaderboard(activeTab ? activeTab.dataset.period : 'weekly');
+            }
         }
         
         // =================================================================================
@@ -4392,7 +4471,7 @@ if (achievementsGrid) {
             calendarMonth: new Date().getMonth(),
         };
         function setupPlannerListeners() {
-            if (!currentUser) return;
+            if (!currentUser || !isValidUUID(currentUser.id)) return;
 
             // Clean up old listeners before setting new ones
             plannerState.plannerUnsubscribers.forEach(unsub => unsub());
@@ -4840,7 +4919,7 @@ if (achievementsGrid) {
             }
 
             const listName = selectedTask.listId === 'inbox' ? 'Tasks' : (plannerState.lists.find(l => l.id === selectedTask.listId)?.name || 'Tasks');
-            const createdDate = selectedTask.createdAt ? new Date(selectedTask.createdAt.seconds * 1000).toLocaleDateString(undefined, { month: 'long', day: 'numeric' }) : 'Today';
+            const createdDate = selectedTask.created_at ? new Date(selectedTask.created_at.seconds * 1000).toLocaleDateString(undefined, { month: 'long', day: 'numeric' }) : 'Today';
 
             const priorityClasses = {
                 high: 'text-red-500',
@@ -4939,7 +5018,7 @@ if (achievementsGrid) {
                     completed: false,
                     priority: 'none',
                     listId: plannerState.activeListId,
-                    createdAt: serverTimestamp(),
+                    created_at: serverTimestamp(),
                     createdBy: currentUser.id,
                     members: currentList.members || [currentUser.id],
                     notes: '',
@@ -5009,12 +5088,12 @@ if (achievementsGrid) {
                     <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">
                         ${membersArray.map(member => {
                             const isStudying = !!member.studying;
-                            const studiconUrl = member.studiconURL || 'https://api.dicebear.com/8.x/miniavs/svg?seed=Angel';
+                            const studiconUrl = member.studicon_url || 'https://api.dicebear.com/8.x/miniavs/svg?seed=Angel';
 
                             // --- NEW: Calculate total time today for display ---
                             let totalTodaySeconds = 0;
-                            if (member.totalTimeToday && member.totalTimeToday.date === todayStr) {
-                                totalTodaySeconds = member.totalTimeToday.seconds || 0;
+                            if (member.total_time_today && member.total_time_today.date === todayStr) {
+                                totalTodaySeconds = member.total_time_today.seconds || 0;
                             }
                             const currentSessionElapsed = (isStudying && member.studying.type === 'study' && member.studying.startTime) 
                                 ? (Date.now() - member.studying.startTime.toDate()) / 1000 
@@ -5098,13 +5177,13 @@ if (achievementsGrid) {
                 return {
                     id: userDoc.id,
                     username: userData.username || 'Anonymous',
-                    photoURL: userData.photoURL,
-                    totalStudySeconds: totalSeconds
+                    photo_url: userData.photo_url,
+                    total_study_seconds: totalSeconds
                 };
             });
 
             const userScores = await Promise.all(userPromises);
-            userScores.sort((a, b) => b.totalStudySeconds - a.totalStudySeconds);
+            userScores.sort((a, b) => b.total_study_seconds - a.total_study_seconds);
 
             const periodText = period === 'daily' ? 'today' : period === 'weekly' ? 'in the last 7 days' : 'in the last 30 days';
 
@@ -5115,8 +5194,8 @@ if (achievementsGrid) {
                 if (rank === 2) rankClass = 'rank-2';
                 if (rank === 3) rankClass = 'rank-3';
 
-                const avatarHTML = user.photoURL 
-                    ? `<img src="${user.photoURL}" class="w-full h-full object-cover">`
+                const avatarHTML = user.photo_url 
+                    ? `<img src="${user.photo_url}" class="w-full h-full object-cover">`
                     : `<span>${(user.username || 'U').charAt(0).toUpperCase()}</span>`;
 
                 return `
@@ -5125,7 +5204,7 @@ if (achievementsGrid) {
                         <div class="user-avatar bg-gray-600 overflow-hidden">${avatarHTML}</div>
                         <div class="user-info">
                             <div class="user-name">${user.username}</div>
-                            <div class="user-time">${formatTime(user.totalStudySeconds, false)} ${periodText}</div>
+                            <div class="user-time">${formatTime(user.total_study_seconds, false)} ${periodText}</div>
                         </div>
                     </div>
                 `;
@@ -5645,11 +5724,11 @@ if (achievementsGrid) {
                 await deleteDoc(sessionRef);
 
                 if (sessionType === 'study') {
-                    await updateDoc(userRef, { totalStudySeconds: increment(-durationSeconds) });
-                    await updateDoc(publicUserRef, { totalStudySeconds: increment(-durationSeconds) });
+                    await updateDoc(userRef, { total_study_seconds: increment(-durationSeconds) });
+                    await updateDoc(publicUserRef, { total_study_seconds: increment(-durationSeconds) });
                 } else { // 'break'
-                    await updateDoc(userRef, { totalBreakSeconds: increment(-durationSeconds) });
-                    await updateDoc(publicUserRef, { totalBreakSeconds: increment(-durationSeconds) });
+                    await updateDoc(userRef, { total_break_seconds: increment(-durationSeconds) });
+                    await updateDoc(publicUserRef, { total_break_seconds: increment(-durationSeconds) });
                 }
 
                 const sessionDateStr = endedAt.toISOString().split('T')[0];
@@ -5659,7 +5738,7 @@ if (achievementsGrid) {
                         totalTimeTodayInSeconds -= durationSeconds;
                         if (totalTimeTodayInSeconds < 0) totalTimeTodayInSeconds = 0;
                         await updateDoc(userRef, {
-                            totalTimeToday: {
+                            total_time_today: {
                                 date: todayStr,
                                 seconds: totalTimeTodayInSeconds
                             }
@@ -5668,7 +5747,7 @@ if (achievementsGrid) {
                         totalBreakTimeTodayInSeconds -= durationSeconds;
                         if (totalBreakTimeTodayInSeconds < 0) totalBreakTimeTodayInSeconds = 0;
                         await updateDoc(userRef, {
-                            totalBreakTimeToday: {
+                            total_break_time_today: {
                                 date: todayStr,
                                 seconds: totalBreakTimeTodayInSeconds
                             }
@@ -5690,7 +5769,7 @@ if (achievementsGrid) {
             
             container.innerHTML = '<div class="text-center text-gray-500 py-8"><i class="fas fa-spinner fa-spin fa-2x"></i></div>';
 
-            const joinedGroupIds = currentUserData.joinedGroups || [];
+            const joinedGroupIds = currentUserData.joined_groups || [];
             
             if (joinedGroupIds.length === 0) {
                 container.innerHTML = `<div class="empty-group"><i class="fas fa-users-slash"></i><h3>No Groups Joined Yet</h3><p>You haven't joined any study groups. Join a group or create your own to get started!</p><button class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition mt-4" id="explore-groups-btn">Explore Groups</button></div>`;
@@ -5699,13 +5778,14 @@ if (achievementsGrid) {
             
             const todayStr = getCurrentDate().toISOString().split('T')[0];
 
-            const groupsQuery = query(collection(db, 'artifacts', appId, 'public', 'data', 'groups'), where('__name__', 'in', joinedGroupIds));
+            // FIX: Use 'id' instead of Firestore's '__name__' for Supabase primary key lookup.
+            const groupsQuery = query(collection(db, 'artifacts', appId, 'public', 'data', 'groups'), where('id', 'in', joinedGroupIds));
             const snapshot = await getDocs(groupsQuery);
             
             const groupPromises = snapshot.docs.map(async (groupDoc) => {
                 const group = { id: groupDoc.id, ...groupDoc.data() };
-                const members = group.members || [];
-                if (members.length === 0) {
+                const members = Array.isArray(group.members) ? group.members : fromPgArray(group.members);
+                if (!members || members.length === 0) {
                     return { ...group, attendance: 0, avgTime: 0, newMessages: 0 };
                 }
 
@@ -5717,8 +5797,8 @@ if (achievementsGrid) {
                     const userSnap = await getDoc(userDocRef);
                     if (userSnap.exists()) {
                         const userData = userSnap.data();
-                        if (userData.totalTimeToday && userData.totalTimeToday.date === todayStr) {
-                            const memberSeconds = userData.totalTimeToday.seconds || 0;
+                        if (userData.total_time_today && userData.total_time_today.date === todayStr) {
+                            const memberSeconds = userData.total_time_today.seconds || 0;
                             if (memberSeconds > 0) {
                                 membersStudiedToday++;
                             }
@@ -5736,8 +5816,8 @@ if (achievementsGrid) {
 
                 const attendance = members.length > 0 ? Math.round((membersStudiedToday / members.length) * 100) : 0;
                 const avgTime = members.length > 0 ? totalSecondsToday / members.length : 0;
-                
-                return { ...group, attendance, avgTime, newMessages: newMessagesSnap.size };
+
+                return { ...group, members, attendance, avgTime, newMessages: newMessagesSnap.size };
             });
 
             const groupsWithRealtimeData = await Promise.all(groupPromises);
@@ -5773,7 +5853,7 @@ if (achievementsGrid) {
                         </div>
                     </div>
                     <div class="bg-gray-700/50 px-5 py-3 flex justify-between items-center text-sm">
-                        <span class="text-gray-400">Started: ${group.createdAt?.toDate().toLocaleDateString()}</span>
+                        <span class="text-gray-400">Started: ${(group.created_at?.toDate ? group.created_at.toDate() : new Date(group.created_at)).toLocaleDateString()}</span>
                         ${group.newMessages > 0 ? `
                             <span class="flex items-center gap-2 text-blue-400 animate-pulse">
                                 <i class="fas fa-comment-dots"></i> ${group.newMessages} new
@@ -5822,16 +5902,17 @@ if (achievementsGrid) {
             
             const groupDataPromises = groupsSnapshot.docs.map(async (groupDoc) => {
                 const group = { id: groupDoc.id, ...groupDoc.data() };
-                if (!group.members || group.members.length === 0) {
+                const members = Array.isArray(group.members) ? group.members : fromPgArray(group.members);
+                if (!members || members.length === 0) {
                     return { ...group, totalStudyTime: 0, attendance: 0 };
                 }
 
                 let totalStudyTime = 0;
-                const memberTimePromises = group.members.map(async (memberId) => {
+                const memberTimePromises = members.map(async (memberId) => {
                     const publicUserRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', memberId);
                     const publicUserSnap = await getDoc(publicUserRef);
                     if (publicUserSnap.exists()) {
-                        return publicUserSnap.data().totalStudySeconds || 0;
+                        return publicUserSnap.data().total_study_seconds || 0;
                     }
                     return 0;
                 });
@@ -5840,7 +5921,7 @@ if (achievementsGrid) {
 
                 const mockAttendance = Math.floor(Math.random() * (100 - 70 + 1) + 70);
 
-                return { ...group, totalStudyTime, attendance: mockAttendance };
+                return { ...group, members, totalStudyTime, attendance: mockAttendance };
             });
 
             let allGroups = await Promise.all(groupDataPromises);
@@ -5858,7 +5939,9 @@ if (achievementsGrid) {
                         if (b.attendance !== a.attendance) return b.attendance - a.attendance;
                         return (b.members?.length || 0) - (a.members?.length || 0);
                     case 'new':
-                        return (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0);
+                        const dateA = a.created_at?.toDate ? a.created_at.toDate() : new Date(a.created_at);
+                        const dateB = b.created_at?.toDate ? b.created_at.toDate() : new Date(b.created_at);
+                        return dateB.getTime() - dateA.getTime();
                     case 'studytime':
                     default:
                         const avgA = a.totalStudyTime / (a.members?.length || 1);
@@ -5878,7 +5961,7 @@ if (achievementsGrid) {
                 const memberCount = group.members ? group.members.length : 0;
                 const avgStudyTimePerMember = group.totalStudyTime / (memberCount || 1);
                 const isFull = memberCount >= group.capacity;
-                const isJoined = (currentUserData.joinedGroups || []).includes(group.id);
+                const isJoined = (currentUserData.joined_groups || []).includes(group.id);
 
                 return `
                 <div class="group-card ranking bg-gray-800 rounded-xl overflow-hidden shadow-lg" data-group-id="${group.id}">
@@ -5889,7 +5972,7 @@ if (achievementsGrid) {
                             </span>
                             <span class="flex items-center gap-2">
                                 ${Math.random() > 0.8 ? '<span class="bg-purple-500 text-white px-2 py-0.5 rounded-full text-xs font-bold">Promoted</span>' : ''}
-                                <span>${timeSince(group.createdAt?.toDate())} ago</span>
+                                <span>${timeSince((group.created_at?.toDate ? group.created_at.toDate() : new Date(group.created_at)))} ago</span>
                             </span>
                         </div>
                         <h3 class="text-lg font-bold truncate mb-2 text-white">${group.name}</h3>
@@ -5899,7 +5982,7 @@ if (achievementsGrid) {
                             <span class="text-gray-400 col-span-3">Leader <b class="text-white">${group.leaderName}</b></span>
                             <span class="text-gray-400">Attendance <b class="text-white">${group.attendance}%</b></span>
                             <span class="text-gray-400 col-span-2">Time <b class="text-white">${formatTime(avgStudyTimePerMember, false)}</b></span>
-                            <span class="text-gray-400 col-span-3">Started <b class="text-white">${group.createdAt?.toDate().toLocaleDateString()}</b></span>
+                            <span class="text-gray-400 col-span-3">Started <b class="text-white">${(group.created_at?.toDate ? group.created_at.toDate() : new Date(group.created_at)).toLocaleDateString()}</b></span>
                         </div>
                         <p class="text-gray-400 text-sm mb-3 h-8 overflow-hidden">${group.description}</p>
                         
@@ -5912,7 +5995,7 @@ if (achievementsGrid) {
 
             document.querySelectorAll('.join-btn').forEach(button => {
                 button.addEventListener('click', async function() {
-                    if ((currentUserData.joinedGroups || []).includes(this.dataset.id)) {
+                    if ((currentUserData.joined_groups || []).includes(this.dataset.id)) {
                         showToast("You've already joined this group.", 'info');
                         return;
                     }
@@ -5949,7 +6032,7 @@ if (achievementsGrid) {
                 card.addEventListener('click', (e) => {
                     if(e.target.classList.contains('join-btn')) return;
                     const groupId = card.dataset.groupId;
-                    if ((currentUserData.joinedGroups || []).includes(groupId)) {
+                    if ((currentUserData.joined_groups || []).includes(groupId)) {
                          renderGroupDetail(groupId);
                          showPage('page-group-detail');
                     } else {
@@ -5960,10 +6043,13 @@ if (achievementsGrid) {
         }
 
         async function joinGroup(groupId) {
-            if (!currentUser) return;
+            if (!currentUser || !isValidUUID(groupId) || !isValidUUID(currentUser.id)) {
+                console.warn('joinGroup with invalid ids', groupId, currentUser?.id);
+                return;
+            }
             const userRef = doc(db, 'artifacts', appId, 'users', currentUser.id);
             const groupRef = doc(db, 'artifacts', appId, 'public', 'data', 'groups', groupId);
-            await setDoc(userRef, { joinedGroups: arrayUnion(groupId) }, { merge: true });
+            await updateDoc(userRef, { joined_groups: arrayUnion(groupId) });
             await updateDoc(groupRef, { members: arrayUnion(currentUser.id) });
             showToast("Group joined successfully!", "success");
         }
@@ -6056,9 +6142,9 @@ if (achievementsGrid) {
                 groupSelector.innerHTML = ''; // Clear previous options
                 const allGroupsSnapshot = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'groups'));
                 const allGroups = {};
-                allGroupsSnapshot.forEach(doc => allGroups[doc.id] = { id: doc.id, ...doc.data() });
+                allGroupsSnapshot.docs.forEach(doc => allGroups[doc.id] = { id: doc.id, ...doc.data() });
 
-                (currentUserData.joinedGroups || []).forEach(joinedGroupId => {
+                (currentUserData.joined_groups || []).forEach(joinedGroupId => {
                     const group = allGroups[joinedGroupId];
                     if (group) {
                         const option = document.createElement('option');
@@ -6083,6 +6169,7 @@ if (achievementsGrid) {
                     return;
                 }
                 const groupData = groupDoc.data();
+                const memberIds = fromPgArray(groupData.members);
 
                 // --- NEW: Render Settings Button for ALL members ---
                 const settingsBtnContainer = document.getElementById('group-settings-btn-container');
@@ -6103,7 +6190,7 @@ if (achievementsGrid) {
                     `;
                 }
                 
-                setupGroupMemberListeners(groupData.members || []);
+                setupGroupMemberListeners(memberIds || []);
 
                 const activeSubPage = document.querySelector('#group-detail-nav .active')?.dataset.subpage || 'home';
                 renderGroupSubPage(activeSubPage);
@@ -6296,8 +6383,8 @@ if (achievementsGrid) {
                 const memberData = groupRealtimeData.members[memberId];
                 let totalTodaySeconds = 0;
                 // Only count study time for the member list display
-                if (memberData.totalTimeToday && memberData.totalTimeToday.date === todayStr) {
-                    totalTodaySeconds = memberData.totalTimeToday.seconds;
+                if (memberData.total_time_today && memberData.total_time_today.date === todayStr) {
+                    totalTodaySeconds = memberData.total_time_today.seconds;
                 }
                 const isStudying = memberData.studying;
                 // If currently studying, add current session elapsed time to total today
@@ -6329,8 +6416,8 @@ if (achievementsGrid) {
                 const isStudying = member.isStudying;
                 const totalTodaySeconds = member.effectiveTotalToday; // Use the calculated effective total
 
-                const avatarHTML = memberData.photoURL
-                    ? `<img src="${memberData.photoURL}" class="w-full h-full object-cover">`
+                const avatarHTML = memberData.photo_url
+                    ? `<img src="${memberData.photo_url}" class="w-full h-full object-cover">`
                     : `<span>${(memberData.username || 'U').charAt(0).toUpperCase()}</span>`;
                 
                 const wakeUpButtonHTML = memberId !== currentUser.id
@@ -6358,7 +6445,7 @@ if (achievementsGrid) {
                             </div>
                         </div>
                         <div class="text-right flex-shrink-0 ml-4">
-                            <div class="text-xl font-semibold text-white" id="member-time-${memberId}" data-base-time="${member.data.totalTimeToday && member.data.totalTimeToday.date === todayStr ? member.data.totalTimeToday.seconds : 0}" data-start-time="${isStudying && memberData.studying.startTime ? memberData.studying.startTime.toDate().getTime() : 0}">
+                            <div class="text-xl font-semibold text-white" id="member-time-${memberId}" data-base-time="${member.data.total_time_today && member.data.total_time_today.date === todayStr ? member.data.total_time_today.seconds : 0}" data-start-time="${isStudying && memberData.studying.startTime ? memberData.studying.startTime.toDate().getTime() : 0}">
                                 ${formatTime(totalTodaySeconds)}
                             </div>
                             <div class="text-xs text-gray-500 mb-2">Total Today</div>
@@ -6428,12 +6515,12 @@ if (achievementsGrid) {
                 return {
                     id: memberId,
                     username: memberData.username || 'Anonymous',
-                    photoURL: memberData.photoURL,
-                    totalStudySeconds: totalSeconds
+                    photo_url: memberData.photo_url,
+                    total_study_seconds: totalSeconds
                 };
             });
 
-            userScores.sort((a, b) => b.totalStudySeconds - a.totalStudySeconds);
+            userScores.sort((a, b) => b.total_study_seconds - a.total_study_seconds);
             const periodText = period === 'daily' ? 'today' : period === 'weekly' ? 'in the last 7 days' : 'in the last 30 days';
 
             container.innerHTML = userScores.map((user, index) => {
@@ -6443,8 +6530,8 @@ if (achievementsGrid) {
                 if (rank === 2) rankClass = 'rank-2';
                 if (rank === 3) rankClass = 'rank-3';
 
-                const avatarHTML = user.photoURL
-                    ? `<img src="${user.photoURL}" class="w-full h-full object-cover">`
+                const avatarHTML = user.photo_url
+                    ? `<img src="${user.photo_url}" class="w-full h-full object-cover">`
                     : `<span>${(user.username || 'U').charAt(0).toUpperCase()}</span>`;
 
                 return `
@@ -6453,7 +6540,7 @@ if (achievementsGrid) {
                         <div class="user-avatar bg-gray-600 overflow-hidden">${avatarHTML}</div>
                         <div class="user-info">
                             <div class="user-name">${user.username}</div>
-                            <div class="user-time">${formatTime(user.totalStudySeconds, false)} ${periodText}</div>
+                            <div class="user-time">${formatTime(user.total_study_seconds, false)} ${periodText}</div>
                         </div>
                     </div>
                 `;
@@ -6533,8 +6620,8 @@ if (achievementsGrid) {
                     const memberStats = memberAttendanceData[memberId] || { totalTime: 0, daysStudied: new Set() };
                     const memberAttendanceRate = Math.round((memberStats.daysStudied.size / daysInMonth) * 100);
                     
-                    const avatarHTML = userData.photoURL
-                        ? `<img src="${userData.photoURL}" class="w-full h-full object-cover">`
+                    const avatarHTML = userData.photo_url
+                        ? `<img src="${userData.photo_url}" class="w-full h-full object-cover">`
                         : `<span>${(userData.username || 'U').charAt(0).toUpperCase()}</span>`;
 
                     return `
@@ -7243,13 +7330,21 @@ if (achievementsGrid) {
             }
             const color = colorEl.dataset.color;
 
-            const userRef = doc(db, 'artifacts', appId, 'users', currentUser.id);
-            const subjectsRef = collection(userRef, 'subjects');
-            const q = query(subjectsRef, orderBy('order', 'desc'), limit(1));
-            const lastSubjectSnap = await getDocs(q);
-            const lastOrder = lastSubjectSnap.empty ? -1 : lastSubjectSnap.docs[0].data().order;
+            const { data: lastSubject } = await supabase
+                .from('subjects')
+                .select('order')
+                .eq('profile_id', currentUser.id)
+                .order('order', { ascending: false })
+                .limit(1)
+                .maybeSingle();
+            const lastOrder = lastSubject?.order ?? -1;
 
-            await addDoc(subjectsRef, { name: subjectName, color: color, order: lastOrder + 1 });
+            await supabase.from('subjects').insert({
+                profile_id: currentUser.id,
+                name: subjectName,
+                color,
+                order: lastOrder + 1
+            });
             
             // The onSnapshot listener now handles the UI update automatically.
             // The redundant manual refresh code that was here has been removed.
@@ -7329,12 +7424,12 @@ if (achievementsGrid) {
                 const newGroupRef = await addDoc(collection(db, `artifacts/${appId}/public/data/groups`), {
                     name, password: password || null, category, timeGoal, capacity, description,
                     leaderId: currentUser.id, leaderName: currentUserData.username,
-                    members: [currentUser.id], createdAt: serverTimestamp(),
+                    members: [currentUser.id], created_at: serverTimestamp(),
                     avgTime: '0h 0m', attendance: 0
                 });
         
                 const userRef = doc(db, 'artifacts', appId, 'users', currentUser.id);
-                await updateDoc(userRef, { joinedGroups: arrayUnion(newGroupRef.id) });
+                await updateDoc(userRef, { joined_groups: arrayUnion(newGroupRef.id) });
         
                 showToast('Group created successfully!', 'success');
                 renderGroupRankings();
@@ -7404,7 +7499,7 @@ if (achievementsGrid) {
         
         const studyGoalModal = document.getElementById('study-goal-modal');
         ael('settings-study-goal', 'click', () => {
-            document.getElementById('study-goal-input').value = currentUserData.studyGoalHours || '';
+            document.getElementById('study-goal-input').value = currentUserData.study_goal_hours || '';
             studyGoalModal.classList.add('active');
         });
 
@@ -7470,13 +7565,13 @@ if (achievementsGrid) {
             }
             const { error: upErr } = await supabase
                 .from('profiles')
-                .update({ studyGoalHours: goal })
+                .update({ study_goal_hours: goal })
                 .eq('id', currentUser.id);
             if (upErr) {
                 showToast('Failed to update study goal.', 'error');
                 return;
             }
-            currentUserData.studyGoalHours = goal;
+            currentUserData.study_goal_hours = goal;
             studyGoalModal.classList.remove('active');
             showToast('Study goal updated!', 'success');
         });
@@ -7719,8 +7814,8 @@ if (achievementsGrid) {
             
             const userRef = doc(db, 'artifacts', appId, 'users', currentUser.id);
             await updateDoc(userRef, { 
-                pomodoroSettings: newSettings,
-                pomodoroSounds: newSounds
+                pomodoro_settings: newSettings,
+                pomodoro_sounds: newSounds
             });
 
             pomodoroSettings = newSettings;
@@ -7740,7 +7835,7 @@ if (achievementsGrid) {
                 </div>
             `).join('');
             
-            const currentStudicon = (currentUserData && groupRealtimeData.members[currentUser.id]) ? groupRealtimeData.members[currentUser.id].studiconURL : null;
+            const currentStudicon = (currentUserData && groupRealtimeData.members[currentUser.id]) ? groupRealtimeData.members[currentUser.id].studicon_url : null;
 
             if (currentStudicon) {
                 const selectedOption = pickerContainer.querySelector(`.avatar-option[data-url="${currentStudicon}"]`);
@@ -7786,7 +7881,7 @@ if (achievementsGrid) {
                     try {
                         const { error } = await supabase
                             .from('profiles')
-                            .update({ studiconURL: selectedStudicon })
+                            .update({ studicon_url: selectedStudicon })
                             .eq('id', currentUser.id);
                         if (error) throw error;
                         document.getElementById('studicon-store-modal').classList.remove('active');
@@ -7877,11 +7972,11 @@ if (achievementsGrid) {
                 await updateDoc(sessionRef, { durationSeconds: newDurationSeconds });
                 
                 if (sessionType === 'study') {
-                    await updateDoc(userRef, { totalStudySeconds: increment(durationDifference) });
-                    await updateDoc(publicUserRef, { totalStudySeconds: increment(durationDifference) });
+                    await updateDoc(userRef, { total_study_seconds: increment(durationDifference) });
+                    await updateDoc(publicUserRef, { total_study_seconds: increment(durationDifference) });
                 } else { // 'break'
-                    await updateDoc(userRef, { totalBreakSeconds: increment(durationDifference) });
-                    await updateDoc(publicUserRef, { totalBreakSeconds: increment(durationDifference) });
+                    await updateDoc(userRef, { total_break_seconds: increment(durationDifference) });
+                    await updateDoc(publicUserRef, { total_break_seconds: increment(durationDifference) });
                 }
 
                 const sessionDateStr = endedAt.toISOString().split('T')[0];
@@ -7891,7 +7986,7 @@ if (achievementsGrid) {
                         totalTimeTodayInSeconds += durationDifference;
                         if (totalTimeTodayInSeconds < 0) totalTimeTodayInSeconds = 0;
                         await updateDoc(userRef, {
-                            totalTimeToday: {
+                            total_time_today: {
                                 date: todayStr,
                                 seconds: totalTimeTodayInSeconds
                             }
@@ -7900,7 +7995,7 @@ if (achievementsGrid) {
                         totalBreakTimeTodayInSeconds += durationDifference;
                         if (totalBreakTimeTodayInSeconds < 0) totalBreakTimeTodayInSeconds = 0;
                         await updateDoc(userRef, {
-                            totalBreakTimeToday: {
+                            total_break_time_today: {
                                 date: todayStr,
                                 seconds: totalBreakTimeTodayInSeconds
                             }
@@ -7926,13 +8021,13 @@ if (achievementsGrid) {
             }
             const { error: upErr } = await supabase
                 .from('profiles')
-                .update({ studyGoalHours: goal })
+                .update({ study_goal_hours: goal })
                 .eq('id', currentUser.id);
             if (upErr) {
                 showToast('Failed to update study goal.', 'error');
                 return;
             }
-            currentUserData.studyGoalHours = goal;
+            currentUserData.study_goal_hours = goal;
             studyGoalModal.classList.remove('active');
             showToast('Study goal updated!', 'success');
         });
@@ -7994,7 +8089,7 @@ if (achievementsGrid) {
 
                             const { data: userData, error: userErr } = await supabase
                                 .from('profiles')
-                                .select('joinedGroups')
+                                .select('joined_groups')
                                 .eq('id', currentUser.id)
                                 .single();
                             if (userErr) {
@@ -8003,12 +8098,12 @@ if (achievementsGrid) {
                                 return;
                             }
 
-                            const updatedJoinedGroups = (userData.joinedGroups || []).filter(id => id !== currentGroupId);
+                            const updatedJoinedGroups = (userData.joined_groups || []).filter(id => id !== currentGroupId);
                             const updatedMembers = (groupData.members || []).filter(id => id !== currentUser.id);
 
                             const { error: upUserErr } = await supabase
                                 .from('profiles')
-                                .update({ joinedGroups: updatedJoinedGroups })
+                                .update({ joined_groups: updatedJoinedGroups })
                                 .eq('id', currentUser.id);
                             const { error: upGroupErr } = await supabase
                                 .from('groups')
@@ -8112,8 +8207,8 @@ if (achievementsGrid) {
             }
 
             ael('group-study-timer-btn', 'click', async () => {
-                if (currentUserData.joinedGroups && currentUserData.joinedGroups.length > 0) {
-                    const targetGroupId = currentGroupId && currentUserData.joinedGroups.includes(currentGroupId) ? currentGroupId : currentUserData.joinedGroups[0];
+                if (currentUserData.joined_groups && currentUserData.joined_groups.length > 0) {
+                    const targetGroupId = currentGroupId && currentUserData.joined_groups.includes(currentGroupId) ? currentGroupId : currentUserData.joined_groups[0];
                     currentGroupId = targetGroupId;
                     showPage('page-group-detail');
                     renderGroupDetail(targetGroupId);
@@ -8160,14 +8255,21 @@ if (achievementsGrid) {
                 }
                 const color = colorEl.dataset.color;
 
-                const userRef = doc(db, 'artifacts', appId, 'users', currentUser.id);
-                const subjectsRef = collection(userRef, 'subjects');
-                // Get the highest current order value to append the new subject at the end
-                const q = query(subjectsRef, orderBy('order', 'desc'), limit(1));
-                const lastSubjectSnap = await getDocs(q);
-                const lastOrder = lastSubjectSnap.empty ? -1 : lastSubjectSnap.docs[0].data().order;
+                const { data: lastSubject } = await supabase
+                    .from('subjects')
+                    .select('order')
+                    .eq('profile_id', currentUser.id)
+                    .order('order', { ascending: false })
+                    .limit(1)
+                    .maybeSingle();
+                const lastOrder = lastSubject?.order ?? -1;
 
-                await addDoc(subjectsRef, { name: subjectName, color: color, order: lastOrder + 1 });
+                await supabase.from('subjects').insert({
+                    profile_id: currentUser.id,
+                    name: subjectName,
+                    color,
+                    order: lastOrder + 1
+                });
                 modal.classList.remove('active');
                 showToast(`Subject "${subjectName}" added!`, 'success');
             });
@@ -8303,7 +8405,7 @@ if (achievementsGrid) {
                             const characterPickerModal = document.getElementById('avatar-character-modal');
                             const picker = document.getElementById('avatar-character-picker');
                             picker.innerHTML = PRESET_AVATARS.map(url => {
-                                const isSelected = currentUserData.photoURL === url;
+                                const isSelected = currentUserData.photo_url === url;
                                 return `<div class="avatar-option ${isSelected ? 'selected' : ''}"><img src="${url}" alt="Character"></div>`
                             }).join('');
                             characterPickerModal.classList.add('active');
@@ -8412,133 +8514,8 @@ async function updateUsername(newName) {
   console.error('updateUsername crashed:', e);
   }
 }
-async function loadProfile() {
-  const { data: { user }, error: authErr } = await supabase.auth.getUser();
-  if (authErr || !user) {
-    console.warn('Not signed in:', authErr);
-    return;
-  }
 
-  document.getElementById('profileEmail').textContent = user.email ?? '';
-
-  const { data: profile, error } = await supabase
-    .from('users')
-    .select('username, avatar_url')
-    .eq('id', user.id)
-    .maybeSingle();
-
-  if (error) {
-    console.error('Profile fetch error:', error);
-    return;
-  }
-
-  const name = profile?.username || 'Anonymous';
-  const avatar = profile?.avatar_url || '';
-
-  document.getElementById('profileName').textContent = name;
-
-  const imgEl = document.getElementById('profileAvatar');
-  if (avatar) {
-    imgEl.src = avatar;
-  } else {
-    imgEl.removeAttribute('src');
-  }
-}
-
-loadProfile();
-
-document.getElementById('profileForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return;
-
-  const username = document.getElementById('usernameInput').value.trim();
-  const file = document.getElementById('avatarInput').files[0];
-
-  let avatarUrl = null;
-
-  if (file) {
-    const fileExt = file.name.split('.').pop();
-    const filePath = `${user.id}/${Date.now()}.${fileExt}`;
-
-    const { error: uploadErr } = await supabase.storage
-      .from('avatars')
-      .upload(filePath, file, { upsert: true });
-
-    if (uploadErr) {
-      console.error('Avatar upload error:', uploadErr);
-      } else {
-        const { data: signed } = await supabase
-          .storage.from('avatars')
-          .createSignedUrl(filePath, 60 * 60);
-        avatarUrl = signed?.signedUrl ?? null;
-      }
-  }
-
-  const update = {};
-  if (username) update.username = username;
-  if (avatarUrl) update.avatar_url = avatarUrl;
-
-  const { data, error } = await supabase
-    .from('users')
-    .update(update)
-    .eq('id', user.id)
-    .select()
-    .maybeSingle();
-
-  if (error) {
-    console.error('Error updating profile:', error);
-    return;
-  }
-
-  await loadProfile();
-
-  const msg = document.getElementById('saveMsg');
-  msg.hidden = false;
-  setTimeout(() => (msg.hidden = true), 2000);
-});
-
-// --- Bind UI events for profile settings (username + avatar) ---
-function bindProfileSettingsUI() {
-  const unameInput = document.getElementById('username-input');
-  const unameBtn = document.getElementById('save-username-btn');
-  const avatarInput = document.getElementById('avatar-input');
-  const avatarBtn = document.getElementById('upload-avatar-btn');
-
-  if (unameBtn && unameInput) {
-    unameBtn.addEventListener('click', () => updateUsername(unameInput.value));
-  }
-  if (avatarBtn && avatarInput) {
-    avatarBtn.addEventListener('click', () => {
-      const f = avatarInput.files && avatarInput.files[0];
-      if (!f) { if (typeof showToast==='function') showToast('Choose an image first.', 'info'); return; }
-      if (typeof uploadProfilePicture === 'function') uploadProfilePicture(f);
-    });
-  }
-}
-
-// Call binder after DOMContentLoaded
-(function() {
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', bindProfileSettingsUI);
-  } else {
-    bindProfileSettingsUI();
-  }
-})();
 </script>
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
