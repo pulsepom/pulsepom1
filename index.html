@@ -6360,6 +6360,59 @@ if (achievementsGrid) {
                         }
                     });
                     renderGroupLeaderboard('weekly');
+                    break;
+                case 'invite':
+                    container.innerHTML = `
+                        <div class="p-4 md:p-6 text-center flex flex-col items-center justify-center h-full">
+                            <div>
+                                <i class="fas fa-share-alt text-5xl text-sky-400 mb-6"></i>
+                                <h2 class="text-2xl font-bold mb-4">Invite Members</h2>
+                                <p class="text-gray-400 mb-6 max-w-md mx-auto">Share the group name with friends and tell them to search for it on the 'Group Rankings' page.</p>
+                                <div class="bg-gray-800 p-4 rounded-lg flex items-center justify-between w-full max-w-sm mx-auto">
+                                    <span id="invite-group-name" class="font-mono text-lg text-white truncate">Loading...</span>
+                                    <button id="copy-group-name-btn" class="px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition flex items-center gap-2">
+                                        <i class="fas fa-copy"></i> Copy
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    fetchGroup(currentGroupId).then(group => {
+                        if (group) {
+                            document.getElementById('invite-group-name').textContent = group.name;
+                        }
+                    });
+                    break;
+                case 'chat':
+                    container.innerHTML = `
+                        <div class="flex flex-col h-full">
+                            <div id="chat-messages" class="flex-grow p-4 overflow-y-auto space-y-4 no-scrollbar">
+                                <div class="text-center text-gray-500 py-8"><i class="fas fa-spinner fa-spin fa-2x"></i></div>
+                            </div>
+                            <div class="p-4 bg-gray-900 border-t border-gray-800">
+                                <form id="chat-form" class="flex items-center gap-2">
+                                     <div id="chat-attach-btn" class="relative">
+                                         <button type="button" class="w-10 h-10 flex-shrink-0 bg-gray-700 rounded-full flex items-center justify-center hover:bg-gray-600">
+                                            <i class="fas fa-paperclip"></i>
+                                         </button>
+                                         <div id="chat-attachment-menu" class="hidden absolute bottom-full left-0 mb-2 w-40 bg-gray-700 rounded-lg shadow-lg overflow-hidden">
+                                             <div class="p-1">
+                                                <button type="button" data-chat-action="album" class="w-full text-left px-3 py-2 text-sm text-gray-200 hover:bg-gray-600 rounded-md flex items-center gap-2"><i class="fas fa-images"></i> Album</button>
+                                                <button type="button" data-chat-action="camera" class="w-full text-left px-3 py-2 text-sm text-gray-200 hover:bg-gray-600 rounded-md flex items-center gap-2"><i class="fas fa-camera"></i> Camera</button>
+                                                <button type="button" data-chat-action="file" class="w-full text-left px-3 py-2 text-sm text-gray-200 hover:bg-gray-600 rounded-md flex items-center gap-2"><i class="fas fa-file"></i> File</button>
+                                             </div>
+                                         </div>
+                                     </div>
+                                    <input type="text" id="chat-input" class="w-full bg-gray-800 rounded-full p-3 px-5 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Type a message..." autocomplete="off">
+                                    <button type="submit" class="w-12 h-12 flex-shrink-0 bg-blue-600 rounded-full flex items-center justify-center text-white text-xl hover:bg-blue-700 transition transform hover:scale-110">
+                                        <i class="fas fa-paper-plane"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    `;
+                    setupGroupChat(currentGroupId);
+                    break;
             }
         }
 
@@ -7789,6 +7842,19 @@ if (achievementsGrid) {
                 return;
             }
 
+            const copyBtn = e.target.closest('#copy-group-name-btn');
+            if (copyBtn) {
+                const groupName = document.getElementById('invite-group-name').textContent;
+                const tempInput = document.createElement('input');
+                document.body.appendChild(tempInput);
+                tempInput.value = groupName;
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+                showToast('Group name copied!', 'success');
+                return;
+            }
+
             const rulesBtn = e.target.closest('#group-rules-header-btn');
             if (rulesBtn) {
                 openGroupRulesModal();
@@ -8707,6 +8773,7 @@ async function updateUsername(newName) {
 
 </body>
 </html>
+
 
 
 
