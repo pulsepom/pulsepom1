@@ -2710,54 +2710,31 @@ let pauseStartTime = 0;
         const BUCKET_IS_PRIVATE = false; // <-- set to true if your bucket is private
 
         async function uploadProfilePicture(file) {
-        try {
-            if (!currentUser) { showToast('Please sign in first.', 'info'); return; }
-            if (!file || !file.type?.startsWith('image/')) { showToast('Pick a valid image.', 'error'); return; }
-            if (file.size > 10 * 1024 * 1024) { showToast('Max size 10MB.', 'error'); return; }
+            try {
+                if (!currentUser) { showToast('Please sign in first.', 'info'); return; }
+                if (!file || !file.type?.startsWith('image/')) { showToast('Pick a valid image.', 'error'); return; }
+                if (file.size > 10 * 1024 * 1024) { showToast('Max size 10MB.', 'error'); return; }
 
-            showToast('Compressing photo...', 'info');
-            // Compress the image before uploading
-            const compressedFile = await compressImage(file, { maxWidth: 800, quality: 0.8 });
+                showToast('Compressing photo...', 'info');
+                // Compress the image before uploading
+                const compressedFile = await compressImage(file, { maxWidth: 800, quality: 0.8 });
 
-            const ext = file.name.split('.').pop();
-            const newFilePath = `${currentUser.id}/profile.${ext}`;
+                const ext = file.name.split('.').pop();
+                const filePath = `${currentUser.id}/profile.${ext}`;
 
-            // --- FIX START: Clean up old profile pictures with different extensions ---
-            const { data: fileList, error: listError } = await storage
-                .from(PROFILE_BUCKET)
-                .list(currentUser.id, { search: 'profile.' });
+                // upload with contentType + upsert
+                const { error: upErr } = await storage
+                    .from(PROFILE_BUCKET)
+                    .upload(filePath, compressedFile, { upsert: true, contentType: compressedFile.type });
+                if (upErr) throw upErr;
 
-            if (listError) {
-                console.warn("Could not list old profile pictures, proceeding with upload anyway.", listError);
-            } else if (fileList && fileList.length > 0) {
-                const filesToRemove = fileList
-                    .map(x => `${currentUser.id}/${x.name}`)
-                    .filter(path => path !== newFilePath); // Important: don't remove the file if the name is the same
-
-                if (filesToRemove.length > 0) {
-                    await storage.from(PROFILE_BUCKET).remove(filesToRemove);
-                }
-            }
-            // --- END FIX ---
-
-
-            // upload with contentType + upsert
-            const { error: upErr } = await storage
-                .from(PROFILE_BUCKET)
-                .upload(newFilePath, compressedFile, { 
-                    upsert: true, 
-                    contentType: compressedFile.type,
-                    cacheControl: '0' // --- FIX: Tell CDN to not cache the image ---
-                });
-            if (upErr) throw upErr;
-
-            // public or signed URL
-            let publicUrl = '';
-            if (!BUCKET_IS_PRIVATE) {
-                const { data } = storage.from(PROFILE_BUCKET).getPublicUrl(newFilePath);
-                // FIX: Store the clean base URL without any cache-busting parameters.
-                publicUrl = data?.publicUrl || '';
-            } else {
+                // public or signed URL
+                let publicUrl = '';
+                if (!BUCKET_IS_PRIVATE) {
+                    const { data } = storage.from(PROFILE_BUCKET).getPublicUrl(filePath);
+                    // FIX: Store the clean base URL without any cache-busting parameters.
+                    publicUrl = data?.publicUrl || '';
+                } else {
                     const { data, error: sErr } = await storage
                         .from(PROFILE_BUCKET)
                         .createSignedUrl(filePath, 60 * 60 * 24); // 24h
@@ -3655,7 +3632,8 @@ let pauseStartTime = 0;
 
                 const avatarEl = document.getElementById('user-profile-avatar');
                 if (profileData.photo_url) {
-                    avatarEl.innerHTML = `<img src="${profileData.photo_url}" alt="${profileData.username}" class="w-full h-full object-cover">`;
+                    const cacheBustedUrl = `${profileData.photo_url.split('?')[0]}?t=${new Date().getTime()}`;
+                    avatarEl.innerHTML = `<img src="${cacheBustedUrl}" alt="${profileData.username}" class="w-full h-full object-cover">`;
                 } else {
                     const initial = profileData.username ? profileData.username.charAt(0).toUpperCase() : 'U';
                     avatarEl.innerHTML = `<span>${initial}</span>`;
@@ -5041,7 +5019,7 @@ if (achievementsGrid) {
                     if (rank === 3) rankClass = 'rank-3';
 
                     const avatarHTML = user.photo_url 
-                        ? `<img src="${user.photo_url}" class="w-full h-full object-cover">`
+                        ? `<img src="${user.photo_url.split('?')[0]}?t=${new Date().getTime()}" class="w-full h-full object-cover">`
                         : `<span>${(user.username || 'U').charAt(0).toUpperCase()}</span>`;
 
                     return `
@@ -6214,7 +6192,7 @@ if (achievementsGrid) {
                         if (!member) return '';
                         const isStudying = member.studying && member.studying.type === 'study';
                         const avatarHTML = member.photo_url
-                            ? `<img src="${member.photo_url}" class="w-full h-full object-cover">`
+                            ? `<img src="${member.photo_url.split('?')[0]}?t=${new Date().getTime()}" class="w-full h-full object-cover">`
                             : `<span>${(member.username || 'U').charAt(0).toUpperCase()}</span>`;
 
                         const lastSession = (groupRealtimeData.sessions[member.id] || [])[0];
@@ -6680,7 +6658,7 @@ if (achievementsGrid) {
                     if (rank === 3) rankClass = 'rank-3';
 
                     const avatarHTML = user.photo_url
-                        ? `<img src="${user.photo_url}" class="w-full h-full object-cover">`
+                        ? `<img src="${user.photo_url.split('?')[0]}?t=${new Date().getTime()}" class="w-full h-full object-cover">`
                         : `<span>${(user.username || 'U').charAt(0).toUpperCase()}</span>`;
 
                     return `
@@ -6824,7 +6802,7 @@ if (achievementsGrid) {
                     const memberAttendanceRate = Math.round((memberStats.daysStudied.size / daysInMonth) * 100);
                     
                     const avatarHTML = userData.photo_url
-                        ? `<img src="${userData.photo_url}" class="w-full h-full object-cover">`
+                        ? `<img src="${userData.photo_url.split('?')[0]}?t=${new Date().getTime()}" class="w-full h-full object-cover">`
                         : `<span>${(userData.username || 'U').charAt(0).toUpperCase()}</span>`;
 
                     return `
