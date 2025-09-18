@@ -2710,31 +2710,54 @@ let pauseStartTime = 0;
         const BUCKET_IS_PRIVATE = false; // <-- set to true if your bucket is private
 
         async function uploadProfilePicture(file) {
-            try {
-                if (!currentUser) { showToast('Please sign in first.', 'info'); return; }
-                if (!file || !file.type?.startsWith('image/')) { showToast('Pick a valid image.', 'error'); return; }
-                if (file.size > 10 * 1024 * 1024) { showToast('Max size 10MB.', 'error'); return; }
+        try {
+            if (!currentUser) { showToast('Please sign in first.', 'info'); return; }
+            if (!file || !file.type?.startsWith('image/')) { showToast('Pick a valid image.', 'error'); return; }
+            if (file.size > 10 * 1024 * 1024) { showToast('Max size 10MB.', 'error'); return; }
 
-                showToast('Compressing photo...', 'info');
-                // Compress the image before uploading
-                const compressedFile = await compressImage(file, { maxWidth: 800, quality: 0.8 });
+            showToast('Compressing photo...', 'info');
+            // Compress the image before uploading
+            const compressedFile = await compressImage(file, { maxWidth: 800, quality: 0.8 });
 
-                const ext = file.name.split('.').pop();
-                const filePath = `${currentUser.id}/profile.${ext}`;
+            const ext = file.name.split('.').pop();
+            const newFilePath = `${currentUser.id}/profile.${ext}`;
 
-                // upload with contentType + upsert
-                const { error: upErr } = await storage
-                    .from(PROFILE_BUCKET)
-                    .upload(filePath, compressedFile, { upsert: true, contentType: compressedFile.type });
-                if (upErr) throw upErr;
+            // --- FIX START: Clean up old profile pictures with different extensions ---
+            const { data: fileList, error: listError } = await storage
+                .from(PROFILE_BUCKET)
+                .list(currentUser.id, { search: 'profile.' });
 
-                // public or signed URL
-                let publicUrl = '';
-                if (!BUCKET_IS_PRIVATE) {
-                    const { data } = storage.from(PROFILE_BUCKET).getPublicUrl(filePath);
-                    // FIX: Store the clean base URL without any cache-busting parameters.
-                    publicUrl = data?.publicUrl || '';
-                } else {
+            if (listError) {
+                console.warn("Could not list old profile pictures, proceeding with upload anyway.", listError);
+            } else if (fileList && fileList.length > 0) {
+                const filesToRemove = fileList
+                    .map(x => `${currentUser.id}/${x.name}`)
+                    .filter(path => path !== newFilePath); // Important: don't remove the file if the name is the same
+
+                if (filesToRemove.length > 0) {
+                    await storage.from(PROFILE_BUCKET).remove(filesToRemove);
+                }
+            }
+            // --- END FIX ---
+
+
+            // upload with contentType + upsert
+            const { error: upErr } = await storage
+                .from(PROFILE_BUCKET)
+                .upload(newFilePath, compressedFile, { 
+                    upsert: true, 
+                    contentType: compressedFile.type,
+                    cacheControl: '0' // --- FIX: Tell CDN to not cache the image ---
+                });
+            if (upErr) throw upErr;
+
+            // public or signed URL
+            let publicUrl = '';
+            if (!BUCKET_IS_PRIVATE) {
+                const { data } = storage.from(PROFILE_BUCKET).getPublicUrl(newFilePath);
+                // FIX: Store the clean base URL without any cache-busting parameters.
+                publicUrl = data?.publicUrl || '';
+            } else {
                     const { data, error: sErr } = await storage
                         .from(PROFILE_BUCKET)
                         .createSignedUrl(filePath, 60 * 60 * 24); // 24h
@@ -8865,3 +8888,4 @@ async function updateUsername(newName) {
 
 </body>
 </html>
+
