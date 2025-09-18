@@ -83,6 +83,192 @@
             overflow-y: auto;
         }
 
+        /* Pomodoro Quick Setup Modal */
+        #pomodoro-setup-modal .modal-content {
+            max-width: 420px;
+            width: 90%;
+            padding: 32px 28px 28px;
+            border-radius: 28px;
+            border: none;
+            background: radial-gradient(circle at top, rgba(248, 113, 113, 0.12), transparent 55%),
+                        linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(10, 12, 20, 0.92) 100%);
+            box-shadow: 0 35px 60px rgba(8, 47, 73, 0.45);
+        }
+        #pomodoro-setup-modal .modal-header {
+            justify-content: center;
+            position: relative;
+            margin-bottom: 18px;
+        }
+        #pomodoro-setup-modal .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #e2e8f0;
+        }
+        #pomodoro-setup-modal .modal-header .close-modal {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.75rem;
+            color: #94a3b8;
+        }
+        .pomodoro-setup-summary {
+            font-size: 0.95rem;
+            color: #94a3b8;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .pomodoro-setup-summary span {
+            color: #f87171;
+            font-weight: 600;
+        }
+        .pomodoro-setup-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+        .pomodoro-picker {
+            position: relative;
+            border-radius: 26px;
+            padding: 26px 10px 22px;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(148, 163, 184, 0.12) 0%, rgba(30, 41, 59, 0.4) 100%);
+            border: 1px solid rgba(148, 163, 184, 0.16);
+            overflow: hidden;
+        }
+        .pomodoro-picker::before,
+        .pomodoro-picker::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 32px;
+            pointer-events: none;
+        }
+        .pomodoro-picker::before {
+            top: 18px;
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(15, 23, 42, 0) 100%);
+        }
+        .pomodoro-picker::after {
+            bottom: 42px;
+            background: linear-gradient(0deg, rgba(15, 23, 42, 0.95) 0%, rgba(15, 23, 42, 0) 100%);
+        }
+        .pomodoro-picker-wheel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            pointer-events: none;
+            min-height: 148px;
+            justify-content: center;
+        }
+        .picker-value-muted {
+            font-size: 1.45rem;
+            color: rgba(148, 163, 184, 0.45);
+            transition: color 0.2s ease;
+            min-height: 1.45rem;
+        }
+        .picker-value-current {
+            font-size: 2.6rem;
+            font-weight: 700;
+            color: #f87171;
+            transition: color 0.2s ease, transform 0.2s ease;
+        }
+        .picker-value-hidden {
+            opacity: 0;
+        }
+        .pomodoro-picker-label {
+            margin-top: 18px;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #cbd5f5;
+        }
+        .picker-overlay {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 48%;
+            cursor: pointer;
+        }
+        .picker-overlay.top { top: 0; }
+        .picker-overlay.bottom { bottom: 0; }
+        .pomodoro-setup-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 18px;
+            margin-top: 30px;
+        }
+        #pomodoro-setup-cancel {
+            flex: 1;
+            padding: 12px 0;
+            border-radius: 18px;
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            background: transparent;
+            color: #94a3b8;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        #pomodoro-setup-cancel:hover {
+            color: #e2e8f0;
+            border-color: rgba(248, 113, 113, 0.45);
+        }
+        #pomodoro-setup-done {
+            flex: 1;
+            padding: 12px 0;
+            border-radius: 18px;
+            border: none;
+            background: linear-gradient(135deg, #fb7185 0%, #ef4444 100%);
+            color: white;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            box-shadow: 0 12px 30px rgba(239, 68, 68, 0.3);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        #pomodoro-setup-done:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 18px 34px rgba(239, 68, 68, 0.35);
+        }
+        .pomodoro-summary-button {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.55rem 0.85rem;
+            border-radius: 18px;
+            background: rgba(148, 163, 184, 0.16);
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .pomodoro-summary-button:hover {
+            background: rgba(148, 163, 184, 0.24);
+            border-color: rgba(14, 165, 233, 0.35);
+            transform: translateY(-1px);
+        }
+        .pomodoro-summary-button .numbers {
+            text-align: right;
+            line-height: 1.2;
+        }
+        .pomodoro-summary-button .numbers .estimate {
+            font-size: 0.95rem;
+            color: #f87171;
+            font-weight: 600;
+        }
+        .pomodoro-summary-button .numbers .duration {
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+        .pomodoro-summary-button .numbers .progress {
+            font-size: 0.7rem;
+            color: #6ee7b7;
+        }
+        .pomodoro-summary-button i {
+            color: #94a3b8;
+            font-size: 0.85rem;
+        }
+
         /* Toggle Switch Styles */
         .toggle-switch {
             position: relative;
@@ -1045,6 +1231,32 @@
             border: 2px solid #10B981; /* Green border for drag over target */
             box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
         }
+        .selection-section-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #94a3b8;
+            margin-bottom: 0.5rem;
+        }
+        .task-selection-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            background-color: #1f2937;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .task-selection-item:hover {
+            background-color: #273449;
+        }
+        .task-selection-item.selected {
+            border-color: #38bdf8;
+            background: linear-gradient(to right, rgba(14, 165, 233, 0.12), rgba(56, 189, 248, 0.12));
+        }
         .subject-options-btn {
             position: absolute;
             right: 10px;
@@ -1411,6 +1623,39 @@
         #confirm-btn:hover { background-color: #DC2626; }
         #cancel-btn { background-color: #4B5563; color: white; }
         #cancel-btn:hover { background-color: #6B7280; }
+
+        /* NEW: Project options menu styles */
+        .project-options-menu {
+            display: none;
+            position: absolute;
+            background-color: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            z-index: 50;
+            overflow: hidden;
+            width: 150px;
+        }
+        .project-options-menu.active {
+            display: block;
+        }
+        .project-options-menu button {
+            display: block;
+            width: 100%;
+            padding: 8px 12px;
+            text-align: left;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+        .project-options-menu button:hover {
+            background-color: #30363d;
+        }
+        .project-options-menu .delete-btn:hover {
+            background-color: #ef4444;
+        }
 
         /* New Dashboard Styles */
         #insights-container {
@@ -1986,7 +2231,7 @@
 
     <div id="toast-container"></div>
     <div id="add-subject-modal" class="modal"><div class="modal-content"><div class="modal-header"><div id="add-subject-modal-title" class="modal-title">Add New Subject</div><button class="close-modal">&times;</button></div><form id="add-subject-form"><input type="hidden" id="edit-subject-id"><div class="mb-4"><label for="add-subject-name" class="block text-gray-300 mb-2">Subject Name</label><input type="text" id="add-subject-name" class="w-full bg-gray-700 rounded-lg p-3 text-white focus:outline-none focus:ring-2 focus:ring-teal-400" required></div><div class="mb-4"><label class="block text-gray-300 mb-2">Color</label><div class="subject-color-picker"><div class="color-dot bg-red-500" data-color="bg-red-500"></div><div class="color-dot bg-blue-500 selected" data-color="bg-blue-500"></div><div class="color-dot bg-green-500" data-color="bg-green-500"></div><div class="color-dot bg-yellow-500" data-color="bg-yellow-500"></div><div class="color-dot bg-purple-500" data-color="bg-purple-500"></div><div class="color-dot bg-pink-500" data-color="bg-pink-500"></div><div class="color-dot bg-indigo-500" data-color="bg-indigo-500"></div><div class="color-dot bg-teal-500" data-color="bg-teal-500"></div><div class="color-dot bg-orange-500" data-color="bg-orange-500"></div><div class="color-dot bg-cyan-500" data-color="bg-cyan-500"></div><div class="color-dot bg-lime-500" data-color="bg-lime-500"></div><div class="color-dot bg-fuchsia-500" data-color="bg-fuchsia-500"></div><div class="color-dot bg-rose-500" data-color="bg-rose-500"></div><div class="color-dot bg-sky-500" data-color="bg-sky-500"></div><div class="color-dot bg-emerald-500" data-color="bg-emerald-500"></div><div class="color-dot bg-amber-500" data-color="bg-amber-500"></div><div class="color-dot bg-violet-500" data-color="bg-violet-500"></div></div></div><button type="submit" id="add-subject-submit-btn" class="w-full bg-gradient-to-r from-teal-500 to-sky-500 text-white font-bold py-3 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-sky-500/40 hover:scale-105">Add Subject</button></form></div></div>
-    <div id="start-session-modal" class="modal"><div class="modal-content"><div class="modal-header"><div class="modal-title">Start New Session</div><button id="close-start-session-modal" class="close-modal">&times;</button></div><form id="start-session-form"><div id="subject-selection-list" class="mb-4 max-h-60 overflow-y-auto space-y-2"></div><div class="flex items-center gap-4 mt-4"><button type="button" id="open-add-subject-modal-from-start" class="w-full text-center py-3 bg-gray-600 hover:bg-gray-500 rounded-lg font-medium transition">Add New Subject</button><button type="submit" class="w-full bg-gradient-to-r from-teal-500 to-sky-500 text-white font-bold py-3 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-sky-500/40 hover:scale-105">Start Timer</button></div></form></div></div>
+    <div id="start-session-modal" class="modal"><div class="modal-content"><div class="modal-header"><div class="modal-title">Start New Session</div><button id="close-start-session-modal" class="close-modal">&times;</button></div><form id="start-session-form"><div class="mb-6"><div class="selection-section-title">Subjects</div><div id="subject-selection-list" class="max-h-60 overflow-y-auto space-y-2"></div></div><div class="mb-6"><div class="selection-section-title">Tasks</div><div id="task-selection-list" class="max-h-60 overflow-y-auto space-y-2"></div></div><div class="flex items-center gap-4 mt-4"><button type="button" id="open-add-subject-modal-from-start" class="w-full text-center py-3 bg-gray-600 hover:bg-gray-500 rounded-lg font-medium transition">Add New Subject</button><button type="submit" class="w-full bg-gradient-to-r from-teal-500 to-sky-500 text-white font-bold py-3 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-sky-500/40 hover:scale-105">Start Timer</button></div></form></div></div>
     <div id="add-task-modal" class="modal"><div class="modal-content"><div class="modal-header"><div class="modal-title">Add New Task</div><button class="close-modal">&times;</button></div><form id="add-task-form"><div class="mb-4"><label for="add-task-name" class="block text-gray-300 mb-2">Task Description</label><input type="text" id="add-task-name" class="w-full bg-gray-700 rounded-lg p-3 text-white focus:outline-none focus:ring-2 focus:ring-teal-400" required></div><div class="mb-4"><label for="add-task-date" class="block text-gray-300 mb-2">Date</label><input type="date" id="add-task-date" class="w-full bg-gray-700 rounded-lg p-3 text-white focus:outline-none focus:ring-2 focus:ring-teal-400" required></div><button type="submit" class="w-full bg-gradient-to-r from-teal-500 to-sky-500 text-white font-bold py-3 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-sky-500/40 hover:scale-105">Add Task</button></form></div></div>
     <div id="password-prompt-modal" class="modal"><div class="modal-content"><div class="modal-header"><div class="modal-title">Enter Group Password</div><button class="close-modal">&times;</button></div><form id="password-prompt-form"><input type="password" id="group-password-prompt-input" class="w-full bg-gray-700 rounded-lg p-3 text-white focus:outline-none focus:ring-2 focus:ring-teal-400" required><div class="flex gap-2 mt-4"><button type="button" class="close-modal w-full py-2 bg-gray-600 rounded-lg">Cancel</button><button type="submit" class="w-full bg-gradient-to-r from-teal-500 to-sky-500 text-white font-bold py-2 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-sky-500/40 hover:scale-105">Submit</button></div></form></div></div>
     <div id="confirmation-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2 id="confirmation-modal-title" class="modal-title">Are you sure?</h2><button class="close-modal">&times;</button></div><p id="confirmation-modal-message">This action cannot be undone.</p><div id="confirmation-modal-buttons"><button id="cancel-btn">Cancel</button><button id="confirm-btn">Confirm</button></div></div></div>
@@ -1995,6 +2240,41 @@
         <div class="modal-content"><div class="modal-header"><div class="modal-title">Set Study Goal</div><button class="close-modal">&times;</button></div><form id="study-goal-form"><div class="mb-4"><label for="study-goal-input" class="block text-gray-300 mb-2">Daily Study Goal (hours)</label><input type="number" id="study-goal-input" class="w-full bg-gray-700 rounded-lg p-3 text-white focus:outline-none focus:ring-2 focus:ring-teal-400" required min="1" max="24"></div><button type="submit" class="w-full bg-gradient-to-r from-teal-500 to-sky-500 text-white font-bold py-3 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-sky-500/40 hover:scale-105">Set Goal</button></form></div></div>
 
     <div id="pomodoro-settings-modal" class="modal"><div class="modal-content no-scrollbar"><div class="modal-header"><div class="modal-title">Pomodoro Settings</div><button class="close-modal">&times;</button></div><form id="pomodoro-settings-form" class="space-y-4"><div class="grid grid-cols-1 gap-4"><div><label for="pomodoro-work-duration" class="block text-sm font-medium text-gray-300">Focus Duration (minutes)</label><input type="number" id="pomodoro-work-duration" class="w-full bg-gray-700 border-gray-600 rounded-lg p-2 mt-1 text-white" min="1" required></div><div><label for="pomodoro-short-break-duration" class="block text-sm font-medium text-gray-300">Short Break (minutes)</label><input type="number" id="pomodoro-short-break-duration" class="w-full bg-gray-700 border-gray-600 rounded-lg p-2 mt-1 text-white" min="1" required></div><div><label for="pomodoro-long-break-duration" class="block text-sm font-medium text-gray-300">Long Break (minutes)</label><input type="number" id="pomodoro-long-break-duration" class="w-full bg-gray-700 border-gray-600 rounded-lg p-2 mt-1 text-white" min="1" required></div><div><label for="pomodoro-long-break-interval" class="block text-sm font-medium text-gray-300">Long Break Interval (sessions)</label><input type="number" id="pomodoro-long-break-interval" class="w-full bg-gray-700 border-gray-600 rounded-lg p-2 mt-1 text-white" min="2" required></div></div><hr class="border-gray-600 my-2"><h3 class="text-lg font-semibold text-gray-200">Alarms</h3><div class="grid grid-cols-1 gap-4"><div><label for="pomodoro-volume" class="block text-sm font-medium text-gray-300">Volume</label><input type="range" id="pomodoro-volume" min="0" max="1" step="0.1" class="w-full mt-1"></div><div><label for="pomodoro-start-sound" class="block text-sm font-medium text-gray-300">Starting Bell</label><select id="pomodoro-start-sound" class="w-full bg-gray-700 border-gray-600 rounded-lg p-2 mt-1 text-white"></select></div><div><label for="pomodoro-focus-sound" class="block text-sm font-medium text-gray-300">Focus Alarm (End of Break)</label><select id="pomodoro-focus-sound" class="w-full bg-gray-700 border-gray-600 rounded-lg p-2 mt-1 text-white"></select></div><div><label for="pomodoro-break-sound" class="block text-sm font-medium text-gray-300">Break Alarm (End of Focus)</label><select id="pomodoro-break-sound" class="w-full bg-gray-700 border-gray-600 rounded-lg p-2 mt-1 text-white"></select></div></div><hr class="border-gray-600 my-2"><h3 class="text-lg font-semibold text-gray-200">Automation</h3><div class="space-y-3"> <div class="flex items-center justify-between"><span class="text-sm font-medium text-gray-300">Auto-start next focus session?</span><label class="toggle-switch"><input type="checkbox" id="pomodoro-auto-start-focus"><span class="slider"></span></label></div><div class="flex items-center justify-between"><span class="text-sm font-medium text-gray-300">Auto-start next break?</span><label class="toggle-switch"><input type="checkbox" id="pomodoro-auto-start-break"><span class="slider"></span></label></div></div><button type="submit" class="w-full bg-gradient-to-r from-teal-500 to-sky-500 text-white font-bold py-3 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-sky-500/40 hover:scale-105 mt-4">Save Settings</button></form></div></div>
+    <div id="pomodoro-setup-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Pomodoro</div>
+                <button class="close-modal">&times;</button>
+            </div>
+            <p id="pomodoro-setup-summary" class="pomodoro-setup-summary">Estimated Pomodoro Time: <span>1 × 25m = 25m</span></p>
+            <div class="pomodoro-setup-grid">
+                <div class="pomodoro-picker" data-type="pomodoros">
+                    <div class="picker-overlay top" data-direction="-1"></div>
+                    <div class="picker-overlay bottom" data-direction="1"></div>
+                    <div class="pomodoro-picker-wheel">
+                        <span class="picker-value-muted" data-role="prev"></span>
+                        <span class="picker-value-current" data-role="current">1</span>
+                        <span class="picker-value-muted" data-role="next"></span>
+                    </div>
+                    <p class="pomodoro-picker-label">Estimated Pomodoros</p>
+                </div>
+                <div class="pomodoro-picker" data-type="length">
+                    <div class="picker-overlay top" data-direction="-1"></div>
+                    <div class="picker-overlay bottom" data-direction="1"></div>
+                    <div class="pomodoro-picker-wheel">
+                        <span class="picker-value-muted" data-role="prev"></span>
+                        <span class="picker-value-current" data-role="current">25m</span>
+                        <span class="picker-value-muted" data-role="next"></span>
+                    </div>
+                    <p class="pomodoro-picker-label">Pomodoro Length</p>
+                </div>
+            </div>
+            <div class="pomodoro-setup-actions">
+                <button type="button" id="pomodoro-setup-cancel">Cancel</button>
+                <button type="button" id="pomodoro-setup-done">Done</button>
+            </div>
+        </div>
+    </div>
 
     <!-- START: Added Missing Modals -->
     <div id="edit-profile-modal" class="modal">
@@ -2023,6 +2303,40 @@
     <div id="project-select-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2 class="modal-title">Move to Project</h2><button class="close-modal">&times;</button></div><div id="project-select-list" class="space-y-1 max-h-60 overflow-y-auto"></div></div></div>
     <div id="repeat-settings-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2 class="modal-title">Repeat Settings</h2><button class="close-modal">&times;</button></div><form id="repeat-settings-form"><div class="mb-4"><label for="repeat-type-select" class="block text-gray-300 mb-2">Repeat Frequency</label><select id="repeat-type-select" class="w-full bg-gray-700 rounded-lg p-3"><option value="none">None</option><option value="daily">Daily</option><option value="weekly">Weekly</option><option value="monthly">Monthly</option><option value="yearly">Yearly</option></select></div><button type="submit" class="w-full bg-gradient-to-r from-teal-500 to-sky-500 text-white font-bold py-3 rounded-lg">Set Repeat</button></form></div></div>
     <!-- END: Added Missing Modals -->
+
+    <!-- START: NEW TAGS MODAL -->
+    <div id="tags-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Edit Tags</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div id="tags-list" class="flex flex-wrap gap-2 mb-4"></div>
+            <form id="add-tag-form" class="flex gap-2">
+                <input id="add-tag-input" type="text" class="w-full bg-gray-700 rounded-lg p-3 text-white" placeholder="Add a new tag...">
+                <button type="submit" class="bg-blue-600 text-white px-4 rounded-lg font-semibold hover:bg-blue-700">Add</button>
+            </form>
+        </div>
+    </div>
+    <!-- END: NEW TAGS MODAL -->
+
+    <!-- START: NEW ADD PROJECT MODAL -->
+    <div id="add-project-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">New Project</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="add-project-form">
+                <div class="mb-4">
+                    <label for="add-project-name" class="block text-gray-300 mb-2">Project Name</label>
+                    <input id="add-project-name" type="text" class="w-full bg-gray-700 rounded-lg p-3 text-white" placeholder="e.g., University Thesis" required>
+                </div>
+                <button type="submit" class="w-full bg-gradient-to-r from-teal-500 to-sky-500 text-white font-bold py-3 rounded-lg">Create Project</button>
+            </form>
+        </div>
+    </div>
+    <!-- END: NEW ADD PROJECT MODAL -->
 
         <script type="module">
         // Supabase SDK
@@ -2478,7 +2792,39 @@
             const sessionType = oldState === 'work' ? 'study' : 'break';
             const subject = oldState === 'work' ? activeSubject : oldState.replace('_', ' ');
             await saveSession(subject, sessionDuration, sessionType);
-        
+
+            // If a work session just ended, increment the pomodoro count for the active task
+            if (oldState === 'work' && activeTaskId) {
+                const taskIndex = plannerState.tasks.findIndex(t => t.id === activeTaskId);
+                const task = taskIndex >= 0 ? plannerState.tasks[taskIndex] : null;
+                if (task) {
+                    const newCompletedCount = (task.pomodoros_completed || 0) + 1;
+                    if (activeTaskRemainingPomodoros !== null) {
+                        activeTaskRemainingPomodoros = Math.max(activeTaskRemainingPomodoros - 1, 0);
+                    }
+
+                    const updates = { pomodoros_completed: newCompletedCount };
+                    const estimatedPomos = Math.max(task.pomodoros_estimated || 0, 0);
+                    if (estimatedPomos > 0 && newCompletedCount >= estimatedPomos) {
+                        updates.completed = true;
+                        updates.completedAt = nowIso();
+                        showToast(`Task "${task.title}" completed!`, 'success');
+                    }
+
+                    await updatePlannerTask(task.id, updates);
+
+                    const updatedTask = {
+                        ...task,
+                        pomodoros_completed: newCompletedCount,
+                        completed: updates.completed ?? task.completed,
+                        completedAt: updates.completed ? updates.completedAt : task.completedAt
+                    };
+                    plannerState.tasks = plannerState.tasks.map(t => t.id === task.id ? updatedTask : t);
+                    renderPlannerPage();
+                    renderTaskSelectionList(plannerState.tasks);
+                }
+            }
+
             // Check auto-start settings to decide what to do next
             const shouldAutoStart = (newState === 'work' && pomodoroSettings.autoStartFocus) || 
                                     (newState.includes('break') && pomodoroSettings.autoStartBreak);
@@ -2535,6 +2881,12 @@ let pauseStartTime = 0;
         let totalTimeTodayInSeconds = 0;
         let totalBreakTimeTodayInSeconds = 0; // New: Track total break time today
         let activeSubject = '';
+        let activeTaskId = null;
+        let activeTaskTargetSeconds = null;
+        let activeTaskRemainingPomodoros = null;
+        let suppressTimerSave = false;
+        let startSessionSelected = { subjectId: null, taskId: null };
+        let subjectSelectionData = [];
         let groupDetailUnsubscribers = [];
         let memberTimerIntervals = [];
         let currentGroupId = null;
@@ -3722,9 +4074,37 @@ let pauseStartTime = 0;
             return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
         }
 
-        async function startTimer(subject) {
-            if (!subject) {
-                showToast("Please select a subject first.", "error");
+        function formatMinutesFriendly(minutes) {
+            if (!Number.isFinite(minutes) || minutes < 0) return '0m';
+            const hours = Math.floor(minutes / 60);
+            const remaining = Math.round(minutes % 60);
+            if (hours && remaining) {
+                return `${hours}h ${remaining}m`;
+            }
+            if (hours) {
+                return `${hours}h`;
+            }
+            return `${remaining}m`;
+        }
+
+        function escapeAttribute(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/"/g, '&quot;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+        }
+
+        async function startTimer(subject, options = {}) {
+            const { taskId = null } = options;
+            const tasks = Array.isArray(plannerState?.tasks) ? plannerState.tasks : [];
+            const task = taskId ? tasks.find(t => t.id === taskId) : null;
+            let resolvedSubject = subject;
+            if (!resolvedSubject && task) {
+                resolvedSubject = task.title;
+            }
+            if (!resolvedSubject) {
+                showToast("Please select a subject or task first.", "error");
                 return;
             }
             unlockAudio();
@@ -3758,25 +4138,55 @@ let pauseStartTime = 0;
             }
             // --- End New idle time tracking ---
 
+            activeTaskId = task ? task.id : null;
+            if (task) {
+                const estimated = Math.max(task.pomodoros_estimated || 0, 0);
+                const completed = Math.max(task.pomodoros_completed || 0, 0);
+                const remaining = Math.max(estimated - completed, 0);
+                if (remaining > 0) {
+                    activeTaskRemainingPomodoros = remaining;
+                    activeTaskTargetSeconds = remaining * (pomodoroSettings.work || 25) * 60;
+                } else {
+                    activeTaskRemainingPomodoros = null;
+                    activeTaskTargetSeconds = null;
+                    if (estimated > 0) {
+                        showToast('All planned pomodoros for this task are already completed. Starting without a limit.', 'info');
+                    }
+                }
+            } else {
+                activeTaskRemainingPomodoros = null;
+                activeTaskTargetSeconds = null;
+            }
 
-            activeSubject = subject;
+            activeSubject = resolvedSubject;
             activeSubjectDisplay.textContent = activeSubject;
-            
+
             if(timerInterval) clearInterval(timerInterval);
 
             if (timerMode === 'normal') {
                 sessionStartTime = Date.now();
+                sessionTimerDisplay.textContent = activeTaskTargetSeconds
+                    ? formatTime(activeTaskTargetSeconds)
+                    : formatTime(0);
                 timerInterval = setInterval(() => {
                     const elapsedSeconds = Math.floor((Date.now() - sessionStartTime) / 1000);
-                    sessionTimerDisplay.textContent = formatTime(elapsedSeconds);
+                    if (activeTaskTargetSeconds) {
+                        const remainingSeconds = activeTaskTargetSeconds - elapsedSeconds;
+                        sessionTimerDisplay.textContent = formatTime(Math.max(remainingSeconds, 0));
+                        if (remainingSeconds <= 0) {
+                            stopTimer().catch(err => console.error('Failed to auto-stop timer', err));
+                        }
+                    } else {
+                        sessionTimerDisplay.textContent = formatTime(elapsedSeconds);
+                    }
                 }, 1000);
             } else { // Pomodoro Mode
                 pomodoroState = 'work';
                 playSound(pomodoroSounds.start, pomodoroSounds.volume);
-                
+
                 const workDurationSeconds = pomodoroSettings.work * 60;
                 pomodoroWorker.postMessage({ command: 'start', duration: workDurationSeconds });
-                
+
                 // Use the new reliable SW alarm
                 await triggerServerNotification({
         title: 'Focus complete!',
@@ -3795,7 +4205,12 @@ let pauseStartTime = 0;
             document.getElementById('manual-start-btn').classList.add('hidden');
 
             if (currentUser) {
-                await updateUserPrivate(currentUser.id, { studying: { subject: activeSubject, startTime: nowIso(), type: 'study' } });
+                const studyingStatus = { subject: activeSubject, startTime: nowIso(), type: 'study' };
+                if (task) {
+                    studyingStatus.taskId = task.id;
+                    studyingStatus.taskTitle = task.title;
+                }
+                await updateUserPrivate(currentUser.id, { studying: studyingStatus });
             }
         }
         
@@ -3808,43 +4223,55 @@ let pauseStartTime = 0;
             pauseStartTime = 0;
             // --- END OF ADDED BLOCK ---
 
-            // If a Pomodoro session was running, save any partial time and cancel the background alarm
-            if (timerMode === 'pomodoro' && pomodoroState !== 'idle') {
-                const workDuration = pomodoroSettings.work * 60;
-                // Calculate elapsed time based on what's left on the display
-                const displayTime = sessionTimerDisplay.textContent;
-                const timeLeftInSeconds = (parseInt(displayTime.split(':')[0], 10) * 60) + parseInt(displayTime.split(':')[1], 10);
-                const elapsedSeconds = workDuration - timeLeftInSeconds;
-                
-                if (pomodoroState === 'work' && elapsedSeconds > 0) {
-                    await saveSession(activeSubject, elapsedSeconds, 'study');
-                }
-            }
-            // If a normal timer was running, stop it and save the session
-            else if (timerMode === 'normal' && timerInterval) {
+            const shouldSkipSave = suppressTimerSave;
+            suppressTimerSave = false;
+
+            if (timerInterval) {
                 clearInterval(timerInterval);
-                const elapsedMillis = Date.now() - sessionStartTime;
-                const sessionDurationSeconds = Math.floor(elapsedMillis / 1000);
-                if (sessionDurationSeconds > 0) {
-                    await saveSession(activeSubject, sessionDurationSeconds, 'study');
+            }
+
+            if (!shouldSkipSave) {
+                if (timerMode === 'pomodoro' && pomodoroState !== 'idle') {
+                    const workDuration = pomodoroSettings.work * 60;
+                    const displayTime = sessionTimerDisplay.textContent;
+                    const parts = displayTime.split(':');
+                    const timeLeftInSeconds = parts.length >= 2
+                        ? (parseInt(parts[0], 10) * 60) + parseInt(parts[1], 10)
+                        : 0;
+                    const elapsedSeconds = workDuration - timeLeftInSeconds;
+
+                    if (pomodoroState === 'work' && elapsedSeconds > 0) {
+                        await saveSession(activeSubject, elapsedSeconds, 'study');
+                    }
+                } else if (timerMode === 'normal') {
+                    const elapsedMillis = Date.now() - sessionStartTime;
+                    const sessionDurationSeconds = Math.floor(elapsedMillis / 1000);
+                    if (sessionDurationSeconds > 0) {
+                        await saveSession(activeSubject, sessionDurationSeconds, 'study');
+                    }
                 }
             }
-            
+
             // Reset all timer-related state variables and UI elements
             timerInterval = null;
             pomodoroState = 'idle';
+            nextPomodoroPhase = null;
+            activeSubject = '';
+            activeTaskId = null;
+            activeTaskTargetSeconds = null;
+            activeTaskRemainingPomodoros = null;
             activeSubjectDisplay.textContent = '';
-            sessionTimerDisplay.textContent = timerMode === 'pomodoro' ? formatPomodoroTime(pomodoroSettings.work * 60) : formatTime(0);
+            sessionTimerDisplay.textContent = timerMode === 'pomodoro'
+                ? formatPomodoroTime(pomodoroSettings.work * 60)
+                : formatTime(0);
             pomodoroStatusDisplay.textContent = timerMode === 'pomodoro' ? 'Ready for Pomodoro' : '';
             pomodoroStatusDisplay.style.color = '#9ca3af';
 
             // Reset button visibility
             document.getElementById('start-studying-btn').classList.remove('hidden');
             document.getElementById('stop-studying-btn').classList.add('hidden');
-            // --- ADD THESE 2 LINES TO HIDE PAUSE/RESUME ---
             document.getElementById('pause-btn').classList.add('hidden');
             document.getElementById('resume-btn').classList.add('hidden');
-            // --- END OF ADDED LINES ---
             document.getElementById('manual-start-btn').classList.add('hidden');
 
             // Update user status in Supabase to show they are no longer studying
@@ -3890,8 +4317,14 @@ let pauseStartTime = 0;
 
         // --- NEW: Helper to start the next Pomodoro phase ---
         async function startNextPomodoroPhase(state) {
+            if (state === 'work' && activeTaskRemainingPomodoros !== null && activeTaskRemainingPomodoros <= 0) {
+                suppressTimerSave = true;
+                await stopTimer();
+                showToast('All planned pomodoros for this task are complete!', 'success');
+                return;
+            }
             pomodoroState = state;
-            
+
             let durationSeconds = 0;
             let statusText = '';
             let transitionMessage = {};
@@ -3931,6 +4364,7 @@ let pauseStartTime = 0;
             // Update cycle in Supabase only after a break is completed (meaning a work session is starting)
             if (state === 'work') {
                 const newCycleCount = (currentUserData.pomodoroCycle || 0) + 1;
+                currentUserData.pomodoroCycle = newCycleCount;
                 if (currentUser) {
                     await updateUserPrivate(currentUser.id, { pomodoroCycle: newCycleCount });
                 }
@@ -4310,6 +4744,7 @@ if (achievementsGrid) {
             } else {
               plannerState.tasks = tasks || [];
               renderPlannerPage();
+              renderTaskSelectionList(plannerState.tasks);
             }
           
             // 4. Realtime subscription for lists
@@ -4348,6 +4783,7 @@ if (achievementsGrid) {
                   if (!error) {
                     plannerState.tasks = data || [];
                     renderPlannerPage();
+                    renderTaskSelectionList(plannerState.tasks);
                   }
                 }
               )
@@ -4389,10 +4825,11 @@ if (achievementsGrid) {
                 ${plannerState.lists.map(list => {
                   const taskCount = plannerState.tasks.filter(t => t.list_id === list.id && !t.completed).length;
                   return `
-                    <div class="planner-sidebar-item ${plannerState.activeListId === list.id ? 'active' : ''}" data-list-id="${list.id}">
+                    <div class="planner-sidebar-item relative ${plannerState.activeListId === list.id ? 'active' : ''}" data-list-id="${list.id}">
                       <i class="fas fa-folder w-5 mr-3"></i>
                       <span class="flex-grow">${list.name}</span>
                       <span class="text-xs bg-gray-600 px-2 py-0.5 rounded-full">${taskCount}</span>
+                      <button class="project-options-btn p-2 rounded-full hover:bg-gray-700/50 ml-2 -mr-1" data-list-id="${list.id}" data-list-name="${list.name}"><i class="fas fa-ellipsis-h text-xs pointer-events-none"></i></button>
                     </div>
                   `;
                 }).join('')}
@@ -4479,6 +4916,7 @@ if (achievementsGrid) {
               return taskDate >= startOfWeek && taskDate <= endOfWeek;
             });
             const plannedTasks = allTasks.filter(t => t.due_date && !t.completed);
+            const flaggedTasks = allTasks.filter(t => t.flagged && !t.completed);
             const completedTasks = allTasks.filter(t => t.completed);
             const inboxTasks = allTasks.filter(t => t.list_id === null && !t.completed);
           
@@ -4487,6 +4925,7 @@ if (achievementsGrid) {
               { name: 'Tomorrow', icon: 'fa-cloud-sun', color: 'bg-orange-400', count: tomorrowTasks.length },
               { name: 'This Week', icon: 'fa-calendar-week', color: 'bg-purple-500', count: thisWeekTasks.length },
               { name: 'Planned', icon: 'fa-calendar-alt', color: 'bg-blue-500', count: plannedTasks.length },
+              { name: 'Flagged', icon: 'fa-flag', color: 'bg-red-500', count: flaggedTasks.length },
               { name: 'Events', icon: 'fa-calendar-star', color: 'bg-green-500', count: 0 },
               { name: 'Completed', icon: 'fa-check-circle', color: 'bg-gray-500', count: completedTasks.length },
               { name: 'Tasks', icon: 'fa-tasks', color: 'bg-indigo-500', count: inboxTasks.length },
@@ -4513,8 +4952,8 @@ if (achievementsGrid) {
                     <span>Add Project</span>
                   </button>
                   <div class="action-icons">
-                    <i class="fas fa-flag"></i>
-                    <i class="fas fa-folder-open"></i>
+                    <i class="fas fa-flag planner-action-flag cursor-pointer"></i>
+                    <i class="fas fa-folder-open planner-action-folder cursor-pointer"></i>
                   </div>
                 </div>
               </div>
@@ -4559,6 +4998,9 @@ if (achievementsGrid) {
               case 'planned':
                 tasksToShow = allTasks.filter(t => t.due_date && !t.completed);
                 break;
+              case 'flagged':
+                tasksToShow = allTasks.filter(t => t.flagged);
+                break;
               case 'completed':
                 tasksToShow = allTasks.filter(t => t.completed);
                 break;
@@ -4573,16 +5015,19 @@ if (achievementsGrid) {
             const completedTasks = tasksToShow.filter(t => t.completed);
             const completedTasksCount = completedTasks.length;
 
-            const estimatedTimeMinutes = uncompletedTasks.reduce((total, task) => total + (task.estimatedMinutes || 0), 0);
+            const estimatedTimeMinutes = uncompletedTasks.reduce((total, task) => {
+                const estimatedPomos = task.pomodoros_estimated || 0;
+                return total + (estimatedPomos * (pomodoroSettings.work || 25));
+            }, 0);
             const estimatedHours = Math.floor(estimatedTimeMinutes / 60).toString().padStart(2, '0');
             const estimatedMins = (estimatedTimeMinutes % 60).toString().padStart(2, '0');
 
             const elapsedTimeMinutes = uncompletedTasks.reduce((total, task) => {
-                const session = userSessions.find(s => s.subject === task.title && s.type === 'study');
-                return total + (session ? session.durationSeconds / 60 : 0);
+                const completedPomos = task.pomodoros_completed || 0;
+                return total + (completedPomos * (pomodoroSettings.work || 25));
             }, 0);
             const elapsedHours = Math.floor(elapsedTimeMinutes / 60).toString().padStart(2, '0');
-            const elapsedMins = (elapsedTimeMinutes % 60).toString().padStart(2, '0');
+            const elapsedMins = Math.round(elapsedTimeMinutes % 60).toString().padStart(2, '0');
             
             let tasksToRender;
             if (category === 'completed') {
@@ -4790,6 +5235,32 @@ if (achievementsGrid) {
             const repeatText = selectedTask.repeat ? `Repeats ${selectedTask.repeat.type}` : 'None';
             const repeatTextColor = selectedTask.repeat ? 'text-gray-300' : 'text-gray-500';
           
+            const estimatedPomos = selectedTask.pomodoros_estimated || 1;
+            const completedPomos = selectedTask.pomodoros_completed || 0;
+            const pomodoroLength = pomodoroSettings.work || 25;
+            const estimatedTime = estimatedPomos * pomodoroLength;
+            const formattedEstimatedTime = formatMinutesFriendly(estimatedTime);
+            const pomodoroEquation = `${estimatedPomos} × ${pomodoroLength}m`;
+            const completedSummary = completedPomos === 1 ? '1 completed' : `${completedPomos} completed`;
+
+            // NEW: Prepare tags and subtasks HTML
+            // FIX: Ensure 'tags' is always an array to prevent .map() error.
+            // The error occurs if 'selectedTask.tags' is null, undefined, or not an array.
+            const tags = Array.isArray(selectedTask.tags) ? selectedTask.tags : [];
+            const tagsHtml = tags.map(tag => `
+                <span class="bg-gray-600 text-gray-200 text-xs font-medium px-2.5 py-1 rounded-full">${tag}</span>
+            `).join('');
+
+            const subtasks = selectedTask.subtasks || [];
+            const subtasksHtml = subtasks.map(subtask => `
+                <div class="flex items-center p-2 hover:bg-gray-700/50 rounded-md" data-subtask-id="${subtask.id}">
+                    <input type="checkbox" class="subtask-checkbox w-4 h-4 bg-gray-600 border-gray-500 rounded text-blue-500 focus:ring-blue-500 mr-3 flex-shrink-0" ${subtask.completed ? 'checked' : ''}>
+                    <span class="flex-grow text-sm ${subtask.completed ? 'line-through text-gray-500' : ''}">${subtask.title}</span>
+                    <button class="delete-subtask-btn text-gray-500 hover:text-red-400 ml-2 text-xs"><i class="fas fa-trash-alt"></i></button>
+                </div>
+            `).join('');
+
+
             detailsPanel.innerHTML = `
               <div class="p-4 h-full flex flex-col bg-gray-800 text-white">
                 <!-- Header -->
@@ -4808,21 +5279,33 @@ if (achievementsGrid) {
                       <a href="#" class="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600" data-priority="none">None</a>
                     </div>
                   </div>
+                  <button id="task-detail-flag-btn" class="${selectedTask.flagged ? 'text-yellow-400' : 'text-gray-500'} hover:opacity-80 transition ml-2" title="Flag Task">
+                      <i class="${selectedTask.flagged ? 'fas' : 'far'} fa-flag"></i>
+                  </button>
                   <button id="close-task-details" class="ml-2 p-1 rounded-full hover:bg-gray-700">&times;</button>
                 </div>
           
                 <!-- Main Content -->
                 <div class="flex-grow overflow-y-auto pr-2 text-sm">
-                  <button class="border border-gray-600 rounded-full px-3 py-1 text-gray-400 mb-4 hover:bg-gray-700">+ Tags</button>
+                  <button id="task-detail-tags-btn" class="border border-gray-600 rounded-full px-3 py-1 text-gray-400 mb-4 hover:bg-gray-700 flex items-center gap-2">
+                     <i class="fas fa-tags text-xs"></i>
+                     <div class="flex items-center gap-1.5">${tagsHtml || '<span>+ Tags</span>'}</div>
+                  </button>
           
                   <div class="space-y-3">
-                    <div id="task-detail-pomodoro-btn" class="flex items-center cursor-pointer p-2 -ml-2 rounded-lg hover:bg-gray-700 transition" title="Start Pomodoro Timer">
-                      <i class="fas fa-stopwatch text-gray-400 w-6 text-center mr-3"></i>
-                      <span>Pomodoro</span>
-                      <div class="ml-auto text-right">
-                        <span class="text-green-400">0 / 0</span>
-                        <p class="text-xs text-gray-500">= 25m</p>
+                    <div class="flex items-center">
+                      <div id="task-detail-pomodoro-btn" class="flex items-center cursor-pointer p-2 -ml-2 rounded-lg hover:bg-gray-700 transition flex-grow" title="Start Pomodoro Timer">
+                          <i class="fas fa-stopwatch text-gray-400 w-6 text-center mr-3"></i>
+                          <span>Pomodoro</span>
                       </div>
+                      <button type="button" id="open-pomodoro-setup-btn" class="pomodoro-summary-button">
+                          <div class="numbers">
+                              <div class="estimate">${pomodoroEquation}</div>
+                              <div class="duration">= ${formattedEstimatedTime}</div>
+                              <div class="progress">${completedSummary}</div>
+                          </div>
+                          <i class="fas fa-chevron-right"></i>
+                      </button>
                     </div>
           
                     <div class="flex items-center">
@@ -4853,9 +5336,12 @@ if (achievementsGrid) {
                       <span class="ml-auto ${repeatTextColor}">${repeatText}</span>
                     </div>
           
-                    <div class="flex items-center text-gray-400">
-                      <i class="fas fa-plus w-6 text-center mr-3"></i>
-                      <input class="bg-transparent w-full border-none p-0 focus:ring-0" placeholder="Add a subtask...">
+                    <div class="text-gray-400">
+                        <div id="subtasks-container" class="mt-2 space-y-1">${subtasksHtml}</div>
+                         <div class="flex items-center mt-1">
+                            <i class="fas fa-plus w-6 text-center mr-3"></i>
+                            <input id="add-subtask-input" class="bg-transparent w-full border-none p-0 focus:ring-0" placeholder="Add a subtask...">
+                        </div>
                     </div>
                   </div>
           
@@ -4872,7 +5358,55 @@ if (achievementsGrid) {
             `;
           }
           
-          /** SUPABASE-ONLY IMPLEMENTATION **/
+          // NEW: Function to open and manage the tags modal
+        function openTagsModal(taskId) {
+            const modal = document.getElementById('tags-modal');
+            const tagsList = document.getElementById('tags-list');
+            const addTagForm = document.getElementById('add-tag-form');
+            const addTagInput = document.getElementById('add-tag-input');
+
+            const task = plannerState.tasks.find(t => t.id === taskId);
+            if (!task) return;
+
+            const renderTags = () => {
+                const currentTags = Array.isArray(task.tags) ? task.tags : [];
+                tagsList.innerHTML = currentTags.map(tag => `
+                    <span class="flex items-center bg-gray-600 text-gray-200 text-sm font-medium pl-3 pr-2 py-1 rounded-full">
+                        ${tag}
+                        <button class="remove-tag-btn ml-2 text-gray-400 hover:text-white">&times;</button>
+                    </span>
+                `).join('');
+            };
+
+            renderTags();
+            modal.classList.add('active');
+            addTagInput.focus();
+
+            addTagForm.onsubmit = (e) => {
+                e.preventDefault();
+                const newTag = addTagInput.value.trim();
+                if (newTag) {
+                    const currentTags = Array.isArray(task.tags) ? task.tags : [];
+                    if (!currentTags.includes(newTag)) {
+                        const updatedTags = [...currentTags, newTag];
+                        updatePlannerTask(taskId, { tags: updatedTags });
+                        // We don't re-render here, the realtime listener will do it
+                    }
+                    addTagInput.value = '';
+                }
+            };
+
+            tagsList.onclick = (e) => {
+                if (e.target.classList.contains('remove-tag-btn')) {
+                    const tagText = e.target.parentElement.textContent.trim().slice(0, -1).trim();
+                    const currentTags = Array.isArray(task.tags) ? task.tags : [];
+                    const updatedTags = currentTags.filter(t => t !== tagText);
+                    updatePlannerTask(taskId, { tags: updatedTags });
+                }
+            };
+        }
+
+        /** SUPABASE-ONLY IMPLEMENTATION **/
           
           async function addPlannerTask(title, dueDateStr = null) {
             if (!currentUser || !title.trim()) return;
@@ -4885,6 +5419,7 @@ if (achievementsGrid) {
               title: title.trim(),
               completed: false,
               priority: 'none',
+              flagged: false, // Add default for flagging
               list_id: listIdForDb,
               created_by: currentUser.id,
               notes: ''
@@ -4914,6 +5449,29 @@ if (achievementsGrid) {
             plannerState.tasks.push(data);
             plannerState.selectedTaskId = data.id;
             renderPlannerPage();            // refresh list/board/calendar
+            renderTaskSelectionList(plannerState.tasks);
+          }
+
+          async function addPlannerList(name) {
+            if (!currentUser || !name.trim()) return;
+
+            const { data, error } = await supabase
+                .from('lists')
+                .insert([{
+                    name: name.trim(),
+                    created_by: currentUser.id,
+                }])
+                .select()
+                .single();
+
+            if (error) {
+                console.error('Error adding list:', error);
+                showToast('Failed to create project.', 'error');
+                return;
+            }
+            
+            // The realtime listener will handle the main update.
+            showToast(`Project "${name}" created!`, 'success');
           }
           
           function camelToSnake(obj) {
@@ -4961,7 +5519,173 @@ if (achievementsGrid) {
             plannerState.selectedTaskId = null;
             plannerState.tasks = plannerState.tasks.filter(t => t.id !== taskId);
             renderPlannerTaskDetails();
-          }          
+            renderTaskSelectionList(plannerState.tasks);
+          }
+
+        async function updatePlannerList(listId, newName) {
+            if (!currentUser || !listId || !newName.trim()) return;
+
+            const { error } = await supabase
+                .from('lists')
+                .update({ name: newName.trim() })
+                .eq('id', listId);
+
+            if (error) {
+                console.error('Error updating list:', error);
+                showToast('Failed to update project.', 'error');
+                return;
+            }
+            showToast('Project updated!', 'success');
+        }
+
+        async function deletePlannerList(listId) {
+            if (!currentUser || !listId) return;
+
+            // Move tasks to inbox first
+            const { error: moveError } = await supabase
+                .from('tasks')
+                .update({ list_id: null })
+                .eq('list_id', listId);
+            
+            if (moveError) {
+                console.error('Error moving tasks from deleted list:', moveError);
+                showToast('Could not move tasks from project.', 'error');
+                return;
+            }
+
+            // Now delete the list
+            const { error: deleteError } = await supabase
+                .from('lists')
+                .delete()
+                .eq('id', listId);
+
+            if (deleteError) {
+                console.error('Error deleting list:', deleteError);
+                showToast('Failed to delete project.', 'error');
+                return;
+            }
+
+            if (plannerState.activeListId === listId) {
+                plannerState.activeListId = 'inbox';
+            }
+            
+            showToast('Project deleted.', 'success');
+        }
+
+        async function handleTaskCompletion(taskId) {
+            const task = plannerState.tasks.find(t => t.id === taskId);
+            if (!task) return;
+        
+            const isCompleting = !task.completed;
+        
+            // If a user is un-checking a task, it should simply become incomplete.
+            // We don't want to delete the future task in this case.
+            if (!isCompleting) {
+                await updatePlannerTask(taskId, { completed: false, completedAt: null });
+                return;
+            }
+        
+            // If the task being completed is a daily repeating task, handle it specially.
+            if (task.repeat && task.repeat.type === 'daily') {
+                // 1. Mark today's instance as complete to keep a record.
+                await updatePlannerTask(taskId, { completed: true, completedAt: nowIso() });
+                showToast(`Task "${task.title}" completed for today!`, 'success');
+        
+                // 2. Create a new, uncompleted instance of the task for tomorrow.
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                // Set to noon to avoid timezone issues that could place it on the wrong day.
+                tomorrow.setHours(12, 0, 0, 0); 
+        
+                const newTaskPayload = {
+                    ...task,
+                    due_date: tomorrow.toISOString(),
+                    completed: false,
+                    completedAt: null,
+                    pomodoros_completed: 0
+                };
+                // Remove properties that should be regenerated by the database for a new row.
+                delete newTaskPayload.id;
+                delete newTaskPayload.created_at;
+        
+                const { error } = await supabase.from('tasks').insert([newTaskPayload]);
+        
+                if (error) {
+                    console.error('Error creating next repeating task:', error);
+                    showToast('Failed to schedule the next task.', 'error');
+                } else {
+                    showToast(`Next task scheduled for tomorrow.`, 'info');
+                }
+            } else {
+                // For non-repeating tasks, just mark them as complete.
+                await updatePlannerTask(taskId, {
+                    completed: true,
+                    completedAt: nowIso()
+                });
+            }
+        }
+
+        function openProjectOptionsMenu(listId, listName, buttonElement) {
+            const existingMenu = document.getElementById('project-options-menu');
+            if (existingMenu) existingMenu.remove();
+
+            const menu = document.createElement('div');
+            menu.id = 'project-options-menu';
+            menu.className = 'project-options-menu active';
+            menu.innerHTML = `
+                <button class="edit-project-btn">Edit Project</button>
+                <button class="delete-project-btn delete-btn">Delete Project</button>
+            `;
+            document.body.appendChild(menu);
+
+            const btnRect = buttonElement.getBoundingClientRect();
+            menu.style.left = `${btnRect.left}px`;
+            menu.style.top = `${btnRect.bottom + 5}px`;
+
+            menu.querySelector('.edit-project-btn').onclick = () => {
+                openEditProjectModal(listId, listName);
+                menu.remove();
+            };
+
+            menu.querySelector('.delete-project-btn').onclick = () => {
+                showConfirmationModal(
+                    `Delete "${listName}"?`,
+                    "All tasks in this project will be moved to your Inbox. This cannot be undone.",
+                    () => deletePlannerList(listId)
+                );
+                menu.remove();
+            };
+
+            setTimeout(() => {
+                document.addEventListener('click', function closeMenu(event) {
+                    if (!menu.contains(event.target)) {
+                        menu.remove();
+                        document.removeEventListener('click', closeMenu);
+                    }
+                });
+            }, 0);
+        }
+
+        function openEditProjectModal(listId, listName) {
+            const modal = document.getElementById('add-project-modal');
+            if (modal) {
+                const form = modal.querySelector('#add-project-form');
+                let hiddenInput = form.querySelector('#edit-project-id');
+                if (!hiddenInput) {
+                    hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.id = 'edit-project-id';
+                    form.prepend(hiddenInput);
+                }
+                hiddenInput.value = listId;
+
+                modal.querySelector('.modal-title').textContent = 'Edit Project';
+                modal.querySelector('#add-project-name').value = listName;
+                modal.querySelector('button[type="submit"]').textContent = 'Save Changes';
+
+                modal.classList.add('active');
+            }
+        }
 
         // --- Leaderboard Infinite Scroll State & Functions ---
         const rankingPageContainer = document.getElementById('page-ranking');
@@ -6024,15 +6748,25 @@ if (achievementsGrid) {
         function renderSubjectSelectionList(subjects, newlyAddedSubjectName = null) {
             const container = document.getElementById('subject-selection-list');
             if (!container) return;
-            if (subjects.length === 0) {
+
+            subjectSelectionData = Array.isArray(subjects) ? subjects : [];
+
+            const hasSelectedSubject = subjectSelectionData.some(sub => String(sub.id) === String(startSessionSelected.subjectId));
+            if (!hasSelectedSubject && startSessionSelected.subjectId) {
+                startSessionSelected.subjectId = null;
+            }
+
+            if (subjectSelectionData.length === 0) {
                 container.innerHTML = `<p class="text-gray-400 text-center">No subjects added yet. Add one below!</p>`;
+                updateStartSessionSelectionUI();
                 return;
             }
-            container.innerHTML = subjects.map(subject => `
-                <div class="subject-item p-3 rounded-lg flex items-center gap-3" 
-                     draggable="true" 
-                     data-subject-id="${subject.id}" 
-                     data-subject-name="${subject.name}"
+
+            container.innerHTML = subjectSelectionData.map(subject => `
+                <div class="subject-item p-3 rounded-lg flex items-center gap-3 ${String(subject.id) === String(startSessionSelected.subjectId) ? 'selected' : ''}"
+                     draggable="true"
+                     data-subject-id="${escapeAttribute(subject.id)}"
+                     data-subject-name="${escapeAttribute(subject.name)}"
                      data-order="${subject.order || 0}">
                     <div class="flex-grow flex items-center gap-3">
                         <div class="w-4 h-4 rounded-full ${subject.color}"></div>
@@ -6046,20 +6780,87 @@ if (achievementsGrid) {
                 </div>
             `).join('');
 
-            // Auto-select the newly added subject if provided
             if (newlyAddedSubjectName) {
-                const newSubjectElement = container.querySelector(`[data-subject-name="${newlyAddedSubjectName}"]`);
-                if (newSubjectElement) {
-                    // Remove 'selected' from any previously selected subject
-                    container.querySelectorAll('.subject-item.selected').forEach(el => el.classList.remove('selected'));
-                    // Add 'selected' to the new subject
-                    newSubjectElement.classList.add('selected');
-                    newSubjectElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                const newSubject = subjectSelectionData.find(sub => sub.name === newlyAddedSubjectName);
+                if (newSubject) {
+                    startSessionSelected.subjectId = newSubject.id;
                 }
-            } else {
-                // If no new subject, ensure no subject is selected by default
-                container.querySelectorAll('.subject-item.selected').forEach(el => el.classList.remove('selected'));
             }
+
+            updateStartSessionSelectionUI();
+        }
+
+        function renderTaskSelectionList(tasks) {
+            const container = document.getElementById('task-selection-list');
+            if (!container) return;
+
+            const taskList = Array.isArray(tasks) ? tasks.filter(task => !task.completed) : [];
+
+            if (!taskList.length) {
+                container.innerHTML = `<p class="text-gray-400 text-center">No active tasks. Create a task to link it with your sessions.</p>`;
+                if (startSessionSelected.taskId) {
+                    startSessionSelected.taskId = null;
+                }
+                updateStartSessionSelectionUI();
+                return;
+            }
+
+            const sortedTasks = taskList.slice().sort((a, b) => {
+                const aDate = a.due_date ? new Date(a.due_date) : null;
+                const bDate = b.due_date ? new Date(b.due_date) : null;
+                const aDue = aDate && !isNaN(aDate) ? aDate.getTime() : Infinity;
+                const bDue = bDate && !isNaN(bDate) ? bDate.getTime() : Infinity;
+                if (aDue === bDue) {
+                    return (a.created_at || '').localeCompare(b.created_at || '');
+                }
+                return aDue - bDue;
+            });
+
+            const hasSelectedTask = sortedTasks.some(task => String(task.id) === String(startSessionSelected.taskId));
+            if (!hasSelectedTask && startSessionSelected.taskId) {
+                startSessionSelected.taskId = null;
+            }
+
+            container.innerHTML = sortedTasks.map(task => {
+                const estimated = Math.max(task.pomodoros_estimated || 0, 0);
+                const completed = Math.max(task.pomodoros_completed || 0, 0);
+                const remaining = Math.max(estimated - completed, 0);
+                const dueDate = task.due_date ? new Date(task.due_date) : null;
+                const dueLabel = dueDate && !isNaN(dueDate)
+                    ? dueDate.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+                    : 'No due date';
+                const progressText = estimated
+                    ? `${completed}/${estimated} pomodoros`
+                    : `${completed} pomodoros done`;
+                const remainingText = estimated ? `${remaining} remaining` : '';
+                const infoPieces = [progressText, remainingText].filter(Boolean);
+                const infoText = infoPieces.join(' • ');
+                const isSelected = String(task.id) === String(startSessionSelected.taskId);
+
+                return `
+                    <div class="task-selection-item ${isSelected ? 'selected' : ''}" data-task-id="${escapeAttribute(task.id)}">
+                        <div class="flex flex-col">
+                            <span class="font-medium text-white">${task.title}</span>
+                            <span class="text-xs text-gray-400">${infoText || 'No pomodoro estimate'}</span>
+                        </div>
+                        <div class="text-xs text-gray-400 text-right whitespace-nowrap">${dueLabel}</div>
+                    </div>
+                `;
+            }).join('');
+
+            updateStartSessionSelectionUI();
+        }
+
+        function updateStartSessionSelectionUI() {
+            const subjectEls = document.querySelectorAll('#subject-selection-list .subject-item');
+            subjectEls.forEach(el => {
+                el.classList.toggle('selected', String(el.dataset.subjectId) === String(startSessionSelected.subjectId));
+            });
+
+            const taskEls = document.querySelectorAll('#task-selection-list .task-selection-item');
+            taskEls.forEach(el => {
+                el.classList.toggle('selected', String(el.dataset.taskId) === String(startSessionSelected.taskId));
+            });
         }
         
         function renderPlanner(tasks) {
@@ -6916,6 +7717,175 @@ if (achievementsGrid) {
             if (el) el.addEventListener(event, callback);
         };
 
+        const pomodoroPickerConfig = {
+            pomodoros: { min: 1, max: 24, step: 1 },
+            length: { min: 5, max: 180, step: 1 }
+        };
+        const pomodoroSetupModal = document.getElementById('pomodoro-setup-modal');
+        const pomodoroSetupSummary = document.getElementById('pomodoro-setup-summary');
+        const pomodoroSetupPickers = {};
+        const clampValue = (value, min, max) => Math.min(max, Math.max(min, value));
+        let pomodoroSetupState = { taskId: null, pomodoros: 1, length: 25 };
+
+        if (pomodoroSetupModal) {
+            pomodoroSetupModal.querySelectorAll('.pomodoro-picker').forEach(picker => {
+                const type = picker.dataset.type;
+                if (type) pomodoroSetupPickers[type] = picker;
+            });
+        }
+
+        function formatPickerValue(type, value) {
+            if (type === 'length') {
+                return `${value}m`;
+            }
+            return `${value}`;
+        }
+
+        function updatePomodoroPicker(type) {
+            const picker = pomodoroSetupPickers[type];
+            if (!picker) return;
+            const config = pomodoroPickerConfig[type];
+            if (!config) return;
+            const currentValue = pomodoroSetupState[type];
+            const prevValue = currentValue - config.step >= config.min ? currentValue - config.step : null;
+            const nextValue = currentValue + config.step <= config.max ? currentValue + config.step : null;
+
+            const prevEl = picker.querySelector('[data-role="prev"]');
+            const currentEl = picker.querySelector('[data-role="current"]');
+            const nextEl = picker.querySelector('[data-role="next"]');
+
+            if (prevEl) {
+                prevEl.textContent = prevValue !== null ? formatPickerValue(type, prevValue) : '';
+                prevEl.classList.toggle('picker-value-hidden', prevValue === null);
+            }
+            if (currentEl) {
+                currentEl.textContent = formatPickerValue(type, currentValue);
+            }
+            if (nextEl) {
+                nextEl.textContent = nextValue !== null ? formatPickerValue(type, nextValue) : '';
+                nextEl.classList.toggle('picker-value-hidden', nextValue === null);
+            }
+        }
+
+        function updatePomodoroSetupSummary() {
+            if (!pomodoroSetupSummary) return;
+            const { pomodoros, length } = pomodoroSetupState;
+            const totalMinutes = pomodoros * length;
+            const friendly = formatMinutesFriendly(totalMinutes);
+            pomodoroSetupSummary.innerHTML = `Estimated Pomodoro Time: <span>${pomodoros} × ${length}m</span> = <span>${friendly}</span>`;
+        }
+
+        function adjustPomodoroPicker(type, direction) {
+            const config = pomodoroPickerConfig[type];
+            if (!config) return;
+            const current = pomodoroSetupState[type];
+            const delta = direction * (config.step || 1);
+            const next = clampValue(current + delta, config.min, config.max);
+            if (next === current) return;
+            pomodoroSetupState = { ...pomodoroSetupState, [type]: next };
+            updatePomodoroPicker(type);
+            updatePomodoroSetupSummary();
+        }
+
+        function openPomodoroSetupModal(taskId = null) {
+            if (!pomodoroSetupModal) return;
+            const countConfig = pomodoroPickerConfig.pomodoros;
+            const lengthConfig = pomodoroPickerConfig.length;
+            const tasks = Array.isArray(plannerState?.tasks) ? plannerState.tasks : [];
+            const task = taskId ? tasks.find(t => t.id === taskId) : null;
+            const nextPomodoros = clampValue(task?.pomodoros_estimated || 1, countConfig.min, countConfig.max);
+            const nextLength = clampValue(pomodoroSettings.work || 25, lengthConfig.min, lengthConfig.max);
+            pomodoroSetupState = { taskId, pomodoros: nextPomodoros, length: nextLength };
+            updatePomodoroPicker('pomodoros');
+            updatePomodoroPicker('length');
+            updatePomodoroSetupSummary();
+            pomodoroSetupModal.classList.add('active');
+            pomodoroSetupModal.classList.remove('fade-in');
+            void pomodoroSetupModal.offsetWidth;
+            pomodoroSetupModal.classList.add('fade-in');
+        }
+
+        function closePomodoroSetupModal() {
+            if (!pomodoroSetupModal) return;
+            pomodoroSetupModal.classList.remove('active');
+            pomodoroSetupModal.classList.remove('fade-in');
+        }
+
+        async function savePomodoroSetupSelections() {
+            const { taskId, pomodoros, length } = pomodoroSetupState;
+            if (taskId) {
+                const tasks = Array.isArray(plannerState?.tasks) ? plannerState.tasks : [];
+                const task = tasks.find(t => t.id === taskId);
+                if (task && task.pomodoros_estimated !== pomodoros) {
+                    task.pomodoros_estimated = pomodoros;
+                    await updatePlannerTask(taskId, { pomodoros_estimated: pomodoros });
+                }
+            }
+
+            if (pomodoroSettings.work !== length) {
+                const newSettings = { ...pomodoroSettings, work: length };
+                pomodoroSettings = newSettings;
+                if (pomodoroWorker) {
+                    pomodoroWorker.postMessage({ command: 'updateSettings', newSettings });
+                }
+                if (currentUser) {
+                    try {
+                        await updateUserPrivate(currentUser.id, { pomodoro_settings: newSettings });
+                    } catch (error) {
+                        console.error('Failed to save pomodoro settings', error);
+                        showToast('Failed to update pomodoro settings.', 'error');
+                    }
+                }
+                currentUserData = { ...currentUserData, pomodoro_settings: newSettings };
+                if (timerMode === 'pomodoro' && pomodoroState === 'idle') {
+                    sessionTimerDisplay.textContent = formatPomodoroTime(length * 60);
+                }
+            }
+
+            renderPlannerTaskDetails();
+            closePomodoroSetupModal();
+        }
+
+        if (pomodoroSetupModal) {
+            const closeBtn = pomodoroSetupModal.querySelector('.close-modal');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', closePomodoroSetupModal);
+            }
+            pomodoroSetupModal.addEventListener('click', (event) => {
+                if (event.target === pomodoroSetupModal) {
+                    closePomodoroSetupModal();
+                }
+            });
+            pomodoroSetupModal.querySelectorAll('.picker-overlay').forEach(overlay => {
+                const direction = parseInt(overlay.dataset.direction, 10);
+                overlay.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    const type = overlay.closest('.pomodoro-picker')?.dataset.type;
+                    if (!type || Number.isNaN(direction)) return;
+                    adjustPomodoroPicker(type, direction);
+                });
+                overlay.addEventListener('touchstart', (event) => {
+                    event.preventDefault();
+                    const type = overlay.closest('.pomodoro-picker')?.dataset.type;
+                    if (!type || Number.isNaN(direction)) return;
+                    adjustPomodoroPicker(type, direction);
+                }, { passive: false });
+            });
+            pomodoroSetupModal.querySelectorAll('.pomodoro-picker').forEach(picker => {
+                picker.addEventListener('wheel', (event) => {
+                    event.preventDefault();
+                    const type = picker.dataset.type;
+                    if (!type) return;
+                    adjustPomodoroPicker(type, event.deltaY > 0 ? 1 : -1);
+                }, { passive: false });
+            });
+        }
+
+        ael('pomodoro-setup-cancel', 'click', () => closePomodoroSetupModal());
+        ael('pomodoro-setup-done', 'click', async () => {
+            await savePomodoroSetupSelections();
+        });
+
         // --- START: NEW EVENT LISTENERS FOR GUEST MODE ---
         // Anonymous Auth
         ael('anonymous-signin-btn', 'click', async () => {
@@ -7154,20 +8124,31 @@ if (achievementsGrid) {
         
         ael('start-session-form', 'submit', (e) => {
             e.preventDefault();
-            const selectedSubjectEl = document.querySelector('#subject-selection-list .subject-item.selected');
-            if (selectedSubjectEl) {
-                const subjectName = selectedSubjectEl.dataset.subjectName;
-                startTimer(subjectName);
-                document.getElementById('start-session-modal').classList.remove('active');
-            } else {
-                showToast("Please select a subject to start studying.", "error");
+            const subjectId = startSessionSelected.subjectId;
+            const taskId = startSessionSelected.taskId;
+            const subject = subjectId
+                ? subjectSelectionData.find(sub => String(sub.id) === String(subjectId))?.name || null
+                : null;
+
+            if (!subject && !taskId) {
+                showToast('Please select a subject or task to start studying.', 'error');
+                return;
             }
+
+            const options = {};
+            if (taskId) {
+                options.taskId = taskId;
+            }
+
+            startTimer(subject, options);
+            document.getElementById('start-session-modal').classList.remove('active');
         });
 
         // This listener replaces the original 'subject-selection-list' click listener
         // to handle more actions like edit and delete using event delegation.
         ael('start-session-modal', 'click', async (e) => {
             const subjectItem = e.target.closest('.subject-item');
+            const taskItem = e.target.closest('.task-selection-item');
             
             // Handle clicking the options button (...)
             if (e.target.closest('.subject-options-btn')) {
@@ -7238,8 +8219,24 @@ if (achievementsGrid) {
 
             // Handle selecting a subject (original functionality)
             if (subjectItem && !e.target.closest('button')) {
-                document.querySelectorAll('#subject-selection-list .subject-item.selected').forEach(el => el.classList.remove('selected'));
-                subjectItem.classList.add('selected');
+                const subjectId = subjectItem.dataset.subjectId;
+                if (String(startSessionSelected.subjectId) === String(subjectId)) {
+                    startSessionSelected.subjectId = null;
+                } else {
+                    startSessionSelected.subjectId = subjectId;
+                }
+                updateStartSessionSelectionUI();
+                return;
+            }
+
+            if (taskItem) {
+                const taskId = taskItem.dataset.taskId;
+                if (String(startSessionSelected.taskId) === String(taskId)) {
+                    startSessionSelected.taskId = null;
+                } else {
+                    startSessionSelected.taskId = taskId;
+                }
+                updateStartSessionSelectionUI();
             }
         });
 
@@ -7278,6 +8275,64 @@ if (achievementsGrid) {
             // Main click handler
             plannerPage.addEventListener('click', e => {
                 const target = e.target;
+
+                if (target.closest('.task-play-btn')) {
+                    const taskEl = target.closest('[data-task-id]');
+                    const taskId = taskEl?.dataset.taskId;
+                    if (taskId) {
+                        startSessionSelected.taskId = taskId;
+                        // Keep previously selected subject; just ensure the UI is up to date
+                        renderTaskSelectionList(plannerState.tasks);
+                        updateStartSessionSelectionUI();
+                        document.getElementById('start-session-modal').classList.add('active');
+                    }
+                    return;
+                }
+
+                // --- NEW: Project options menu ---
+                const optionsBtn = e.target.closest('.project-options-btn');
+                if (optionsBtn) {
+                    e.stopPropagation(); // Prevent sidebar item click
+                    const listId = optionsBtn.dataset.listId;
+                    const listName = optionsBtn.dataset.listName;
+                    openProjectOptionsMenu(listId, listName, optionsBtn);
+                    return;
+                }
+
+                // --- NEW: Planner Action Icons ---
+                if (target.closest('.planner-action-flag')) {
+                    plannerState.activeCategory = 'flagged';
+                    renderPlannerMainContent();
+                    return;
+                }
+                if (target.closest('.planner-action-folder')) {
+                    const modal = document.getElementById('add-project-modal');
+                    if (modal) {
+                        modal.classList.add('active');
+                        document.getElementById('add-project-name').focus();
+                    }
+                    return;
+                }
+                
+                // --- NEW: Add List/Project button ---
+                if (target.closest('#add-list-btn')) {
+                    const modal = document.getElementById('add-project-modal');
+                    if (modal) {
+                        modal.classList.add('active');
+                        document.getElementById('add-project-name').focus();
+                    }
+                    return;
+                }
+                
+                // --- FIX: Add Project button in List View ---
+                if (target.closest('.planner-add-project-btn')) {
+                    const modal = document.getElementById('add-project-modal');
+                    if (modal) {
+                        modal.classList.add('active');
+                        document.getElementById('add-project-name').focus();
+                    }
+                    return;
+                }
                 
                 // --- NEW: Category List Item Click ---
                 const categoryItem = target.closest('.planner-list-item');
@@ -7298,18 +8353,16 @@ if (achievementsGrid) {
                     return;
                 }
 
+                // --- START: MODIFIED COMPLETION LOGIC ---
                 // --- NEW: Category View Checkbox ---
                 const categoryCheckbox = target.closest('.task-checkbox-category');
                 if (categoryCheckbox) {
                     const taskItem = categoryCheckbox.closest('.category-task-item');
                     const taskId = taskItem.dataset.taskId;
-                    const isCompleted = !categoryCheckbox.classList.contains('completed');
-                    updatePlannerTask(taskId, {
-                        completed: isCompleted,
-                        completedAt: isCompleted ? nowIso() : null
-                    });
+                    handleTaskCompletion(taskId);
                     return;
                 }
+                // --- END: MODIFIED COMPLETION LOGIC ---
 
                 // --- NEW: Completed Tasks Toggle ---
                 if (target.closest('.completed-tasks-toggle')) {
@@ -7389,6 +8442,26 @@ if (achievementsGrid) {
                 if(detailsPanel) {
                     const taskId = plannerState.selectedTaskId;
                     if (!taskId) return;
+
+                    // NEW: Flag button click
+                    if (target.closest('#task-detail-flag-btn')) {
+                        const task = plannerState.tasks.find(t => t.id === taskId);
+                        if (task) {
+                            updatePlannerTask(taskId, { flagged: !task.flagged });
+                        }
+                        return;
+                    }
+
+                    // NEW: Tags button click
+                    if (target.closest('#task-detail-tags-btn')) {
+                        openTagsModal(taskId);
+                        return;
+                    }
+
+                    if (target.closest('#open-pomodoro-setup-btn')) {
+                        openPomodoroSetupModal(taskId);
+                        return;
+                    }
                     
                     // Priority menu toggle
                     if (target.closest('#task-detail-priority-btn')) {
@@ -7424,7 +8497,7 @@ if (achievementsGrid) {
                             } else {
                                 switchTimerMode('normal');
                             }
-                            startTimer(subjectName);
+                            startTimer(subjectName, { taskId: task.id });
                         }
                         return;
                     }
@@ -7470,6 +8543,15 @@ if (achievementsGrid) {
                     else if (target.closest('#delete-task-btn')) {
                         showConfirmationModal('Delete Task?', 'This task will be permanently deleted.', () => deletePlannerTask(taskId));
                     }
+                    // NEW: Subtask delete button
+                    else if (target.closest('.delete-subtask-btn')) {
+                        const subtaskId = target.closest('[data-subtask-id]').dataset.subtaskId;
+                        const task = plannerState.tasks.find(t => t.id === taskId);
+                        if (task && subtaskId) {
+                            const updatedSubtasks = (task.subtasks || []).filter(st => st.id !== subtaskId);
+                            updatePlannerTask(taskId, { subtasks: updatedSubtasks });
+                        }
+                    }
                 }
 
                  // Hide priority menu if clicking outside
@@ -7483,15 +8565,29 @@ if (achievementsGrid) {
             plannerPage.addEventListener('change', e => {
                 const target = e.target;
 
-                // Task checkbox in list view
+                // --- START: MODIFIED COMPLETION LOGIC ---
+                // Task checkbox in list view or details panel
                 if (target.classList.contains('task-checkbox-planner')) {
-                    const taskId = target.closest('.task-item, #planner-task-details').dataset.taskId || plannerState.selectedTaskId;
+                    // Find the task ID from the closest parent with a data-task-id, or fall back to the selected task in the details panel
+                    const taskItem = target.closest('[data-task-id]');
+                    const taskId = taskItem ? taskItem.dataset.taskId : plannerState.selectedTaskId;
                     if (taskId) {
-                        const isCompleted = target.checked;
-                        updatePlannerTask(taskId, {
-                            completed: isCompleted,
-                            completedAt: isCompleted ? nowIso() : null
-                        });
+                        handleTaskCompletion(taskId);
+                    }
+                }
+                // --- END: MODIFIED COMPLETION LOGIC ---
+                
+                // NEW: Subtask checkbox
+                if (target.classList.contains('subtask-checkbox')) {
+                    const taskId = plannerState.selectedTaskId;
+                    const subtaskId = target.closest('[data-subtask-id]').dataset.subtaskId;
+                    const task = plannerState.tasks.find(t => t.id === taskId);
+
+                    if (task && subtaskId) {
+                        const updatedSubtasks = (task.subtasks || []).map(st => 
+                            st.id === subtaskId ? { ...st, completed: target.checked } : st
+                        );
+                        updatePlannerTask(taskId, { subtasks: updatedSubtasks });
                     }
                 }
                 
@@ -7505,18 +8601,25 @@ if (achievementsGrid) {
                 }
             });
 
-            // Handler for form inputs that change value
-            plannerPage.addEventListener('change', e => {
+            // Handler for keydown events (for subtask input)
+            plannerPage.addEventListener('keydown', e => {
                 const target = e.target;
-
-                // Task checkbox in list view
-                if (target.classList.contains('task-checkbox-planner')) {
-                    const taskId = target.closest('.task-item').dataset.taskId;
-                    const isCompleted = target.checked;
-                    updatePlannerTask(taskId, {
-                        completed: isCompleted,
-                        completedAt: isCompleted ? nowIso() : null // Add/remove completion timestamp
-                    });
+                if (target.id === 'add-subtask-input' && e.key === 'Enter') {
+                    e.preventDefault();
+                    const title = target.value.trim();
+                    const taskId = plannerState.selectedTaskId;
+                    const task = plannerState.tasks.find(t => t.id === taskId);
+                    
+                    if (title && task) {
+                        const newSubtask = {
+                            id: crypto.randomUUID(),
+                            title: title,
+                            completed: false
+                        };
+                        const updatedSubtasks = [...(task.subtasks || []), newSubtask];
+                        updatePlannerTask(taskId, { subtasks: updatedSubtasks });
+                        target.value = '';
+                    }
                 }
             });
 
@@ -8652,6 +9755,34 @@ if (achievementsGrid) {
                 }
             });
             
+            // NEW: Add Project Form Submission
+            ael('add-project-form', 'submit', async (e) => {
+                e.preventDefault();
+                const form = e.target;
+                const modal = form.closest('.modal');
+                const input = form.querySelector('#add-project-name');
+                const name = input.value.trim();
+                const editIdInput = form.querySelector('#edit-project-id');
+                const editId = editIdInput ? editIdInput.value : null;
+
+                if (name) {
+                    if (editId) {
+                        await updatePlannerList(editId, name);
+                    } else {
+                        await addPlannerList(name);
+                    }
+                    form.reset();
+                    if (editIdInput) editIdInput.value = ''; // Clear the edit ID
+                    modal.classList.remove('active');
+                    // Reset modal to "Add" state for next time
+                    setTimeout(() => {
+                        modal.querySelector('.modal-title').textContent = 'New Project';
+                        modal.querySelector('button[type="submit"]').textContent = 'Create Project';
+                        if (editIdInput) editIdInput.remove();
+                    }, 300); // Delay to prevent flicker
+                }
+            });
+
             // Group Settings Modal Actions (Delegated)
             const groupSettingsModal = document.getElementById('group-settings-modal');
             if (groupSettingsModal) {
@@ -8866,4 +9997,3 @@ async function updateUsername(newName) {
 
 </body>
 </html>
-
