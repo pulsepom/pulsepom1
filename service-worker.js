@@ -3,6 +3,7 @@
 
 const CACHE_NAME = 'focusflow-cache-v2'; // Increment cache version for updates
 const OFFLINE_URL = './offline.html'; // Path to your dedicated offline page
+const DEFAULT_NOTIFICATION_ICON = 'https://placehold.co/192x192/0a0a0a/e0e0e0?text=Flow+192';
 
 // IMPORTANT: These paths should be relative to the root of the Service Worker's scope.
 // If your service-worker.js is at /Focus-Clock/service-worker.js, then './' refers to /Focus-Clock/
@@ -104,77 +105,59 @@ let notificationTag = 'pomodoro-timer'; // A tag for notifications to group them
 
 // Listen for messages from the main page
 self.addEventListener('message', (event) => {
-    const { type, payload } = event.data || {};
+    const { type, payload } = event.data;
 
     switch (type) {
         case 'SCHEDULE_ALARM':
             scheduleNotification(payload);
             break;
-        case 'SCHEDULE_NOTIFICATION':
-            scheduleNotification({
-                delay: payload?.delay,
-                timerId: payload?.timerId,
-                transitionMessage: payload?.transitionMessage || {
-                    type: payload?.type || 'TIMER_ENDED',
-                    newState: payload?.newState,
-                    oldState: payload?.oldState,
-                    title: payload?.title,
-                    options: payload?.options
-                }
-            });
-            break;
         case 'CANCEL_ALARM':
-            cancelAlarm(payload?.timerId);
+            cancelAlarm(payload.timerId);
             break;
     }
 });
 
 // --- Notification Scheduling ---
-function scheduleNotification(payload = {}) {
-    const delay = typeof payload.delay === 'number' ? payload.delay : 0;
-    const timerId = payload.timerId || 'pomodoro-transition';
-    const transitionMessage = payload.transitionMessage || {
-        type: payload.type || 'TIMER_ENDED',
-        newState: payload.newState,
-        oldState: payload.oldState,
-        title: payload.title,
-        options: payload.options
-    };
+function scheduleNotification(payload) {
+    // payload here is { delay: ..., timerId: ..., transitionMessage: { type, newState, oldState, title, options } }
 
-    if (!transitionMessage || !transitionMessage.title) {
-        console.warn('[Service Worker] Missing notification title, skipping schedule.');
-        return;
-    }
+    const { delay, transitionMessage } = payload; // Extract delay and the transitionMessage object
+    const { title, options } = transitionMessage; // Now extract title and options from transitionMessage
 
-    const { title, options = {} } = transitionMessage;
-    const notificationOptions = { ...options };
+    // Ensure options is an object, even if empty, before trying to set properties
+    const notificationOptions = options || {};
 
-    notificationOptions.tag = notificationOptions.tag || notificationTag;
-    notificationOptions.renotify = notificationOptions.renotify ?? true;
+    notificationOptions.tag = notificationTag; // This should now work
+    notificationOptions.renotify = true; // Ensures new notification if one with same tag exists
 
-    if (!notificationOptions.actions || notificationOptions.actions.length === 0) {
-        notificationOptions.actions = [
-            { action: 'pause', title: 'Pause', icon: './icons/pause.png' },
-            { action: 'resume', title: 'Resume', icon: './icons/play.png' },
-            { action: 'stop', title: 'Stop', icon: './icons/stop.png' }
-        ];
-    }
+    // Actions for notification buttons - ensure icons are accessible
+    // These paths are relative to the Service Worker's scope
+    notificationOptions.actions = [
+        { action: 'pause', title: 'Pause', icon: './icons/pause.png' },
+        { action: 'resume', title: 'Resume', icon: './icons/play.png' },
+        { action: 'stop', title: 'Stop', icon: './icons/stop.png' }
+    ];
 
-    self.registration.getNotifications({ tag: notificationOptions.tag }).then(notifications => {
+    // Clear any existing notifications with the same tag before scheduling a new one
+    self.registration.getNotifications({ tag: notificationTag }).then(notifications => {
         notifications.forEach(notification => notification.close());
     });
 
+    // Schedule the notification to appear after 'delay' milliseconds
+    // Note: setTimeout in Service Workers is not fully reliable for long background periods.
+    // However, it is the intended mechanism in your current design for local alarms.
     setTimeout(() => {
-        self.registration.showNotification(title, notificationOptions)
+        self.registration.showNotification(title, notificationOptions) // Use notificationOptions here
             .then(() => {
-                console.log(`[Service Worker]: Notification "${title}" shown for timerId ${timerId}.`);
+                console.log(`[Service Worker]: Notification "${title}" shown.`);
+                // Send message to all visible clients, or attempt to focus if none are visible
                 self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(clients => {
                     const visibleClients = clients.filter(client => client.visibilityState === 'visible');
                     if (visibleClients.length > 0) {
                         visibleClients.forEach(client => client.postMessage(transitionMessage));
-                    } else if (clients.length > 0) {
+                    } else if (clients.length > 0) { // If no clients are visible, but some exist, try to focus one
                         clients[0].focus().then(client => client.postMessage(transitionMessage));
-                    } else {
+                    } else { // No clients at all, just log
                         console.log('[Service Worker] No clients to send TIMER_ENDED message to.');
                     }
                 });
@@ -216,36 +199,40 @@ self.addEventListener('notificationclick', (event) => {
 });
 
 self.addEventListener('push', (event) => {
-    if (!event.data) {
-        console.warn('[Service Worker] Push event received without data.');
-        return;
-    }
-
     let payload = {};
-    try {
-        payload = event.data.json();
-    } catch (error) {
-        payload = { body: event.data.text() };
+    if (event.data) {
+        try {
+            payload = event.data.json();
+        } catch (error) {
+            console.warn('[Service Worker] Failed to parse push payload as JSON. Falling back to text.', error);
+            payload.body = event.data.text();
+        }
     }
 
     const title = payload.title || 'FocusFlow';
-    const options = payload.options ? { ...payload.options } : {};
-    if (payload.body && !options.body) {
-        options.body = payload.body;
-    }
+    const options = {
+        body: payload.body || '',
+        icon: payload.icon || DEFAULT_NOTIFICATION_ICON,
+        badge: payload.badge || DEFAULT_NOTIFICATION_ICON,
+        data: payload.data || {},
+        tag: payload.tag || 'focusflow-push',
+        renotify: payload.renotify !== undefined ? payload.renotify : true
+    };
 
-    options.tag = options.tag || notificationTag;
-    options.renotify = options.renotify ?? true;
+    event.waitUntil((async () => {
+        await self.registration.showNotification(title, options);
+        const clients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+        clients.forEach(client => {
+            client.postMessage({ type: 'PUSH_NOTIFICATION', payload });
+        });
+    })());
+});
 
-    if (!options.actions || options.actions.length === 0) {
-        options.actions = [
-            { action: 'pause', title: 'Pause', icon: './icons/pause.png' },
-            { action: 'resume', title: 'Resume', icon: './icons/play.png' },
-            { action: 'stop', title: 'Stop', icon: './icons/stop.png' }
-        ];
-    }
-
+self.addEventListener('pushsubscriptionchange', (event) => {
+    console.log('[Service Worker] Push subscription change detected. Notifying clients to resubscribe.');
     event.waitUntil(
-        self.registration.showNotification(title, options)
+        self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(clients => {
+            clients.forEach(client => client.postMessage({ type: 'PUSH_SUBSCRIPTION_CHANGED' }));
+        })
     );
 });
