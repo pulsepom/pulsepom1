@@ -3089,9 +3089,10 @@
     const supabaseUrl = 'https://ofysppndssyllkolxjky.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9meXNwcG5kc3N5bGxrb2x4amt5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcxNDg1MTAsImV4cCI6MjA3MjcyNDUxMH0.x6_aRXrbxSOP7I71oSooWx8x8dedczrtemoUEWiDta8';
     const supabase = createClient(supabaseUrl, supabaseKey);
-    const VAPID_PUBLIC_KEY = window.FOCUSFLOW_VAPID_PUBLIC_KEY || window.__VAPID_PUBLIC_KEY || 'BJqi2nFBuazVXwx9OdCSLwKDhG65fZOL7IBsAzQI1YxBr0zmV4nTl80JtAZFeOIobDgJ0kNqwVpPf_BjEmblNa0';
     const auth = supabase.auth;
     const storage = supabase.storage;
+    // Provide your public VAPID key via a global (window.__FOCUSFLOW_VAPID_PUBLIC_KEY__) or replace the empty string below.
+    window.__FOCUSFLOW_VAPID_PUBLIC_KEY__ = "BJqi2nFBuazVXwx9OdCSLwKDhG65fZOL7IBsAzQI1YxBr0zmV4nTl80JtAZFeOIobDgJ0kNqwVpPf_BjEmblNa0";
 
     /**
      * Compresses an image file using a canvas.
@@ -3245,6 +3246,9 @@
     }
 
     let currentUser = null;
+    let serviceWorkerRegistration = null;
+    let pushSubscriptionSynced = false;
+    let hasDisplayedPushSuccessToast = false;
 
     // restore user on page load + watch changes
     async function restoreUser() {
@@ -3263,78 +3267,6 @@
             loadMyProfile();
         }
     });
-
-    function urlBase64ToUint8Array(base64String) {
-        const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
-        const base64 = (base64String + padding)
-            .replace(/-/g, '+')
-            .replace(/_/g, '/');
-
-        const rawData = atob(base64);
-        const outputArray = new Uint8Array(rawData.length);
-
-        for (let i = 0; i < rawData.length; ++i) {
-            outputArray[i] = rawData.charCodeAt(i);
-        }
-        return outputArray;
-    }
-
-    async function ensurePushSubscription() {
-        try {
-            if (!currentUser || !currentUser.id) {
-                return;
-            }
-            if (!serviceWorkerRegistration) {
-                return;
-            }
-            if (!('Notification' in window) || !('PushManager' in window)) {
-                console.warn('Push notifications are not supported in this browser.');
-                return;
-            }
-
-            if (Notification.permission === 'default') {
-                const permission = await Notification.requestPermission();
-                if (permission !== 'granted') {
-                    console.warn('Notification permission not granted. Push subscription skipped.');
-                    return;
-                }
-            } else if (Notification.permission !== 'granted') {
-                console.warn('Notification permission denied. Push subscription skipped.');
-                return;
-            }
-
-            let subscription = await serviceWorkerRegistration.pushManager.getSubscription();
-            if (!subscription) {
-                if (!VAPID_PUBLIC_KEY || VAPID_PUBLIC_KEY === 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9meXNwcG5kc3N5bGxrb2x4amt5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcxNDg1MTAsImV4cCI6MjA3MjcyNDUxMH0.x6_aRXrbxSOP7I71oSooWx8x8dedczrtemoUEWiDta8') {
-                    console.warn('Missing VAPID public key. Unable to create push subscription. Set window.FOCUSFLOW_VAPID_PUBLIC_KEY to enable.');
-                    return;
-                }
-
-                subscription = await serviceWorkerRegistration.pushManager.subscribe({
-                    userVisibleOnly: true,
-                    applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
-                });
-            }
-
-            if (!subscription) {
-                return;
-            }
-
-            const subscriptionPayload = subscription.toJSON ? subscription.toJSON() : subscription;
-            const { error } = await supabase
-                .from('profiles')
-                .update({ push_subscription: subscriptionPayload })
-                .eq('id', currentUser.id);
-
-            if (error) {
-                throw error;
-            }
-            console.log('Push subscription synced with Supabase.');
-        } catch (error) {
-            console.error('Failed to initialise push notifications:', error);
-            showToast('Unable to enable push notifications. Check console for details.', 'error');
-        }
-    }
 
     // ensure profile row exists (call after sign up / first login)
     async function ensureProfileRow() {
@@ -3419,8 +3351,8 @@
             setupRealtimeListeners();
             // Ensure daily totals persist across refreshes
             await loadDailyTotal();
-            await ensurePushSubscription();
             showPage('page-timer');
+            ensurePushSubscription();
         }
     }
         const ACHIEVEMENTS = {
@@ -3591,7 +3523,6 @@
         // --- App State ---
         let currentUserData = {};
         let dashboardCharts = {};
-        let serviceWorkerRegistration = null;
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         let userSessions = [];
         let isAudioUnlocked = false;
@@ -3679,7 +3610,7 @@ async function triggerServerNotification(messageData) {
                 userId: currentUser.id,
                 appId,
                 title: messageData.title,
-                body: messageData.options.body,
+                body: messageData.options?.body || '',
                 newState: messageData.newState,
                 oldState: messageData.oldState
             }
@@ -3691,6 +3622,150 @@ async function triggerServerNotification(messageData) {
         showToast('Failed to schedule notification.', 'error');
     }
 }
+
+    function isPushNotificationSupported() {
+        return ('serviceWorker' in navigator) && ('PushManager' in window) && ('Notification' in window);
+    }
+
+    function urlBase64ToUint8Array(base64String) {
+        const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+        const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+        const rawData = atob(base64);
+        const outputArray = new Uint8Array(rawData.length);
+
+        for (let i = 0; i < rawData.length; ++i) {
+            outputArray[i] = rawData.charCodeAt(i);
+        }
+        return outputArray;
+    }
+
+    async function updatePushSubscriptionOnServer(subscription) {
+        if (!currentUser?.id) return;
+
+        try {
+            const { error } = await supabase
+                .from('profiles')
+                .update({ push_subscription: subscription })
+                .eq('id', currentUser.id);
+
+            if (error) throw error;
+
+            currentUserData = { ...currentUserData, push_subscription: subscription };
+        } catch (error) {
+            console.error('Failed to update push subscription on server:', error);
+            throw error;
+        }
+    }
+
+    async function ensurePushSubscription(force = false) {
+        if (!isPushNotificationSupported()) return;
+        if (!currentUser || currentUser.isAnonymous) return;
+        if (!VAPID_PUBLIC_KEY) {
+            console.warn('Push notifications disabled: missing public VAPID key.');
+            return;
+        }
+
+        const registration = serviceWorkerRegistration || await navigator.serviceWorker.ready.catch(() => null);
+        if (!registration) return;
+
+        if (!force && pushSubscriptionSynced) return;
+
+        try {
+            let permission = Notification.permission;
+            if (permission === 'default') {
+                permission = await Notification.requestPermission();
+            }
+
+            if (permission !== 'granted') {
+                console.warn('Notification permission not granted. Push subscription skipped.');
+                return;
+            }
+
+            let subscription = await registration.pushManager.getSubscription();
+
+            if (!subscription) {
+                const applicationServerKey = urlBase64ToUint8Array(VAPID_PUBLIC_KEY);
+                subscription = await registration.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey
+                });
+
+                if (!hasDisplayedPushSuccessToast) {
+                    showToast('Push notifications enabled! We\'ll keep you on track.', 'success');
+                    hasDisplayedPushSuccessToast = true;
+                }
+            }
+
+            const serialized = subscription.toJSON();
+            const existing = currentUserData?.push_subscription || null;
+            if (force || JSON.stringify(serialized) !== JSON.stringify(existing)) {
+                await updatePushSubscriptionOnServer(serialized);
+            }
+
+            pushSubscriptionSynced = true;
+        } catch (error) {
+            pushSubscriptionSynced = false;
+            console.error('Failed to ensure push subscription:', error);
+        }
+    }
+
+    async function disablePushNotificationsForCurrentUser() {
+        pushSubscriptionSynced = false;
+        hasDisplayedPushSuccessToast = false;
+
+        if (currentUser?.id) {
+            try {
+                await updatePushSubscriptionOnServer(null);
+            } catch (error) {
+                console.warn('Could not clear push subscription on server:', error);
+            }
+        }
+
+        if (!isPushNotificationSupported()) return;
+
+        try {
+            const registration = serviceWorkerRegistration || await navigator.serviceWorker.ready.catch(() => null);
+            if (!registration) return;
+
+            const subscription = await registration.pushManager.getSubscription();
+            if (subscription) {
+                await subscription.unsubscribe();
+            }
+        } catch (error) {
+            console.warn('Failed to unsubscribe from push notifications:', error);
+        }
+    }
+
+    function handleNotificationAction(action) {
+        switch (action) {
+            case 'pause':
+                pauseTimer();
+                break;
+            case 'resume':
+                resumeTimer();
+                break;
+            case 'stop':
+                stopTimer();
+                break;
+            default:
+                break;
+        }
+    }
+
+    async function handleUserSignOut() {
+        try {
+            await disablePushNotificationsForCurrentUser();
+        } catch (error) {
+            console.warn('Error disabling push notifications during sign out:', error);
+        }
+
+        try {
+            await auth.signOut();
+        } catch (error) {
+            console.error('Sign out error', error);
+            showToast('Failed to sign out.', 'error');
+        }
+    }
 
         // Timer State
         // Add these lines
@@ -3956,7 +4031,8 @@ let pauseStartTime = 0;
             
             if (data) {
                 // This function will now update all parts of the profile UI
-                updateProfileUI(data); 
+                updateProfileUI(data);
+                ensurePushSubscription();
             }
         }
 
@@ -10248,7 +10324,7 @@ if (achievementsGrid) {
 
         ael('go-to-auth-btn', 'click', async () => {
             // Sign out the anonymous user and show the auth screen
-            await auth.signOut();
+            await handleUserSignOut();
             // showPage will be called by onAuthStateChanged
         });
         // --- END: NEW EVENT LISTENERS FOR GUEST MODE ---
@@ -10399,12 +10475,7 @@ if (achievementsGrid) {
         });
 
         ael('sign-out-btn', 'click', async () => {
-            try {
-                await auth.signOut();
-            } catch (error) {
-                console.error("Sign out error", error);
-                showToast("Failed to sign out.", "error");
-            }
+            await handleUserSignOut();
         });
 
         // Navigation
@@ -12359,15 +12430,30 @@ if (achievementsGrid) {
             // Service Workers require a secure context (HTTPS or localhost) to register.
             // This check prevents the registration error in unsupported environments (like 'blob:').
             if (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
-                // IMPORTANT CHANGE HERE: Use './service_worker.js' or '/Focus-Clock/service_worker.js'
-                // if your app is hosted in a subfolder like /Focus-Clock/
-                // './service_worker.js' is generally preferred for relative paths.
+                const handleServiceWorkerMessage = (event) => {
+                    const data = event.data;
+                    if (!data) return;
+
+                    if (data.type === 'TIMER_ENDED') {
+                        handlePomodoroPhaseEnd(data);
+                    } else if (data.type === 'notification_action') {
+                        handleNotificationAction(data.action);
+                    } else if (data.type === 'PUSH_SUBSCRIPTION_EXPIRED') {
+                        pushSubscriptionSynced = false;
+                        ensurePushSubscription(true);
+                    } else if (data.type === 'SERVER_PUSH_NOTIFICATION') {
+                        console.log('Push notification delivered:', data.payload);
+                    }
+                };
+
+                navigator.serviceWorker.addEventListener('message', handleServiceWorkerMessage);
+
                 navigator.serviceWorker
-                    .register('./service_worker.js', { scope: './' }) // Updated path and added scope
+                    .register('./service-worker.js', { scope: './' }) // Updated path and added scope
                     .then(registration => {
                         serviceWorkerRegistration = registration;
-                        ensurePushSubscription();
                         console.log('Service Worker registered successfully with scope:', registration.scope);
+                        ensurePushSubscription();
                         // --- START NEW CODE FOR SERVICE WORKER UPDATES ---
                         registration.onupdatefound = () => {
                             const installingWorker = registration.installing;
@@ -12396,7 +12482,7 @@ if (achievementsGrid) {
                         ensurePushSubscription();
                     })
                     .catch(error => {
-                        console.error('Service Worker ready promise rejected:', error);
+                        console.error('Service Worker ready check failed:', error);
                     });
 
                 // --- START NEW CODE TO RELOAD PAGE ON CONTROLLER CHANGE ---
@@ -12405,32 +12491,6 @@ if (achievementsGrid) {
                     window.location.reload();
                 });
                 // --- END NEW CODE TO RELOAD PAGE ON CONTROLLER CHANGE ---
-
-                navigator.serviceWorker.addEventListener('message', (event) => {
-                    const message = event.data || {};
-                    switch (message.type) {
-                        case 'TIMER_ENDED':
-                            handlePomodoroPhaseEnd(message);
-                            break;
-                        case 'notification_action':
-                            if (message.action === 'pause') {
-                                pauseTimer();
-                            } else if (message.action === 'resume') {
-                                resumeTimer();
-                            } else if (message.action === 'stop') {
-                                stopTimer().catch(err => console.error('Failed to stop timer from notification action', err));
-                            }
-                            break;
-                        case 'PUSH_SUBSCRIPTION_CHANGED':
-                            ensurePushSubscription();
-                            break;
-                        case 'PUSH_NOTIFICATION':
-                            console.log('Push notification payload received:', message.payload);
-                            break;
-                        default:
-                            break;
-                    }
-                });
 
             } else {
                 console.warn('Service Worker not registered. This feature requires a secure context (HTTPS or localhost). The Pomodoro timer will be less reliable in the background.');
