@@ -4836,21 +4836,28 @@ let pauseStartTime = 0;
             // Clear break status from UI
             pomodoroStatusDisplay.textContent = ''; // Clear the "On Break" status
 
-            // --- New: Check and save idle time before starting a new study session ---
-            if (currentUser) {
+            // --- Modified: Check and save idle time before starting a new study session ---
+            if (currentUser && !currentUser.isAnonymous) {
                 const lastSession = await fetchLatestSession(currentUser.id);
-                if (lastSession?.endedAt && lastSession.type === 'study') {
+                
+                // Only calculate idle time if there was a previous session
+                if (lastSession?.endedAt) {
                     const endedAt = new Date(lastSession.endedAt);
-                    const now = Date.now();
-                    if (!isNaN(endedAt) && endedAt.getTime() < now) {
-                        const idleDurationSeconds = Math.floor((now - endedAt.getTime()) / 1000);
+                    const now = new Date(); // Use Date object for consistency
+                    const todayStr = now.toISOString().split('T')[0];
+                    const endedAtStr = endedAt.toISOString().split('T')[0];
+
+                    // Condition: The last session must have ended *today* to count the gap as today's break.
+                    if (endedAtStr === todayStr && endedAt.getTime() < now.getTime()) {
+                        const idleDurationSeconds = Math.floor((now.getTime() - endedAt.getTime()) / 1000);
                         if (idleDurationSeconds > 0) {
+                            // The session type of the gap is 'break', regardless of what the last session was.
                             await saveSession('Idle Break', idleDurationSeconds, 'break');
                         }
                     }
                 }
             }
-            // --- End New idle time tracking ---
+            // --- End Modified idle time tracking ---
 
             activeTaskId = task ? task.id : null;
             if (task) {
@@ -12431,6 +12438,7 @@ async function updateUsername(newName) {
 
 </body>
 </html>
+
 
 
 
