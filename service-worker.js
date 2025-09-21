@@ -234,14 +234,6 @@ self.addEventListener('push', (event) => {
         options.body = payload.body;
     }
 
-    if (payload.newState || payload.oldState) {
-        options.data = {
-            ...(options.data || {}),
-            newState: payload.newState,
-            oldState: payload.oldState
-        };
-    }
-
     options.tag = options.tag || notificationTag;
     options.renotify = options.renotify ?? true;
 
@@ -253,18 +245,7 @@ self.addEventListener('push', (event) => {
         ];
     }
 
-    event.waitUntil((async () => {
-        await self.registration.showNotification(title, options);
-        const clients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
-        if (clients.length > 0) {
-            clients.forEach(client => client.postMessage({
-                type: 'PUSH_NOTIFICATION',
-                title,
-                body: options.body,
-                newState: payload.newState,
-                oldState: payload.oldState,
-                data: options.data || null
-            }));
-        }
-    })());
+    event.waitUntil(
+        self.registration.showNotification(title, options)
+    );
 });
